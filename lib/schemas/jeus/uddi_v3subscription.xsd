@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xsd:schema xmlns:uddi="urn:uddi-org:api_v3" xmlns:uddi_sub="urn:uddi-org:sub_v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="uddi_sub" targetNamespace="urn:uddi-org:sub_v3" version="3.0.2">
+	<!-- 
+	Copyright (c) 2000-2002 by Accenture, Ariba, Inc., Commerce One, Inc. 
+	Fujitsu Limited, Hewlett-Packard Company, i2 Technologies, Inc., 
+	Intel Corporation, International Business Machines Corporation,  
+	Microsoft Corporation, Oracle Corporation, SAP AG, Sun Microsystems, Inc., 
+	and VeriSign, Inc.  All Rights Reserved.
+    
+	Copyright (c) OASIS Open 2002-2004. All Rights Reserved.
+	-->
+	<xsd:import namespace="urn:uddi-org:api_v3" schemaLocation="uddi_v3.xsd"/>
+	<!-- Attribute type descriptions -->
+	<xsd:simpleType final="restriction" name="brief">
+		<xsd:restriction base="xsd:boolean"/>
+	</xsd:simpleType>
+	<xsd:simpleType final="restriction" name="maxEntities">
+		<xsd:restriction base="xsd:int"/>
+	</xsd:simpleType>
+	<!-- Element definitions -->
+	<xsd:element final="restriction" name="keyBag" type="uddi_sub:keyBag"/>
+	<xsd:complexType final="restriction" name="keyBag">
+		<xsd:sequence>
+			<xsd:element ref="uddi_sub:deleted"/>
+			<xsd:choice>
+				<xsd:element maxOccurs="unbounded" ref="uddi:tModelKey"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:businessKey"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:serviceKey"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:bindingKey"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="coveragePeriod" type="uddi_sub:coveragePeriod"/>
+	<xsd:complexType final="restriction" name="coveragePeriod">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi_sub:startPoint"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:endPoint"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="notificationInterval" type="xsd:duration"/>
+	<xsd:element final="restriction" name="subscriptionResultsList" type="uddi_sub:subscriptionResultsList"/>
+	<xsd:complexType final="restriction" name="subscriptionResultsList">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi_sub:chunkToken"/>
+			<xsd:element ref="uddi_sub:coveragePeriod"/>
+			<xsd:element ref="uddi_sub:subscription"/>
+			<xsd:choice minOccurs="0">
+				<xsd:element ref="uddi:bindingDetail"/>
+				<xsd:element ref="uddi:businessDetail"/>
+				<xsd:element ref="uddi:serviceDetail"/>
+				<xsd:element ref="uddi:tModelDetail"/>
+				<xsd:element ref="uddi:businessList"/>
+				<xsd:element ref="uddi:relatedBusinessesList"/>
+				<xsd:element ref="uddi:serviceList"/>
+				<xsd:element ref="uddi:tModelList"/>
+				<xsd:element ref="uddi:assertionStatusReport"/>
+			</xsd:choice>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" ref="uddi_sub:keyBag"/>
+		</xsd:sequence>
+		<xsd:attribute name="someResultsUnavailable" type="xsd:boolean" use="optional"/>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="expiresAfter" type="uddi_sub:expiresAfter"/>
+	<xsd:simpleType final="restriction" name="expiresAfter">
+		<xsd:restriction base="xsd:dateTime"/>
+	</xsd:simpleType>
+	<xsd:element final="restriction" name="subscriptionFilter" type="uddi_sub:subscriptionFilter"/>
+	<xsd:complexType final="restriction" name="subscriptionFilter">
+		<xsd:choice>
+			<xsd:element ref="uddi:find_binding"/>
+			<xsd:element ref="uddi:find_business"/>
+			<xsd:element ref="uddi:find_relatedBusinesses"/>
+			<xsd:element ref="uddi:find_service"/>
+			<xsd:element ref="uddi:find_tModel"/>
+			<xsd:element ref="uddi:get_bindingDetail"/>
+			<xsd:element ref="uddi:get_businessDetail"/>
+			<xsd:element ref="uddi:get_serviceDetail"/>
+			<xsd:element ref="uddi:get_tModelDetail"/>
+			<xsd:element ref="uddi:get_assertionStatusReport"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="subscriptions" type="uddi_sub:subscriptions"/>
+	<xsd:complexType final="restriction" name="subscriptions">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" ref="uddi_sub:subscription"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="subscriptionKey" type="uddi_sub:subscriptionKey"/>
+	<xsd:simpleType final="restriction" name="subscriptionKey">
+		<xsd:restriction base="uddi:uddiKey"/>
+	</xsd:simpleType>
+	<xsd:element final="restriction" name="subscription" type="uddi_sub:subscription"/>
+	<xsd:complexType final="restriction" name="subscription">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi_sub:subscriptionKey"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:subscriptionFilter"/>
+			<xsd:element minOccurs="0" ref="uddi:bindingKey"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:notificationInterval"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:maxEntities"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:expiresAfter"/>
+		</xsd:sequence>
+		<xsd:attribute name="brief" type="uddi_sub:brief" use="optional"/>
+	</xsd:complexType>
+	<xsd:simpleType name="chunkToken">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element final="restriction" name="chunkToken" type="uddi_sub:chunkToken"/>
+	<xsd:element name="maxEntities" type="uddi_sub:maxEntities"/>
+	<xsd:element final="restriction" name="deleted" type="xsd:boolean"/>
+	<xsd:element final="restriction" name="startPoint" type="xsd:dateTime"/>
+	<xsd:element name="endPoint" type="xsd:dateTime"/>
+	<!-- Subscription messages -->
+	<xsd:element final="restriction" name="delete_subscription" type="uddi_sub:delete_subscription"/>
+	<xsd:complexType final="restriction" name="delete_subscription">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element maxOccurs="unbounded" ref="uddi_sub:subscriptionKey"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="get_subscriptions" type="uddi_sub:get_subscriptions"/>
+	<xsd:complexType final="restriction" name="get_subscriptions">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="get_subscriptionResults" type="uddi_sub:get_subscriptionResults"/>
+	<xsd:complexType final="restriction" name="get_subscriptionResults">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element ref="uddi_sub:subscriptionKey"/>
+			<xsd:element ref="uddi_sub:coveragePeriod"/>
+			<xsd:element minOccurs="0" ref="uddi_sub:chunkToken"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="save_subscription" type="uddi_sub:save_subscription"/>
+	<xsd:complexType final="restriction" name="save_subscription">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element maxOccurs="unbounded" ref="uddi_sub:subscription"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

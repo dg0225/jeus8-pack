@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+echo "****************************************************************************"
+echo "  - Usage : stopNodeManager -host host -port port "
+echo "****************************************************************************"
+
+# set boot parameter
+BOOT_PARAMETER=$*
+
+# execute jeusadmin
+"${JAVA_HOME}/bin/java" -classpath "${BOOTSTRAP_CLASSPATH}" ${TOOL_OPTION}        \
+     -Djeus.home="${JEUS_HOME}"                                                   \
+     -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                             \
+     -Djava.naming.factory.initial=jeus.jndi.JNSContextFactory                    \
+     -Djava.naming.factory.url.pkgs=jeus.jndi.jns.url                             \
+     -Djava.util.logging.config.file="${JEUS_HOME}/bin/logging.properties"        \
+     ${JAVA_ARGS}                                                                 \
+     ${BOOTSTRAPPER}                                                              \
+     jeus.tool.console.console.ConsoleMain "stop-nodemanager ${BOOT_PARAMETER}"

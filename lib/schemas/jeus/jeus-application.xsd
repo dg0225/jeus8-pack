@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="application" type="applicationType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: jeus-application-dd.xml의 설정 항목이다.
+				[Label]: Application
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="applicationType">
+        <xs:sequence>
+            <xs:group ref="application-propertyGroup"/>
+            <xs:group ref="jndiEnvironmentMappingGroup"/>
+            <xs:element minOccurs="0" name="message-destination" type="jndi-refType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: application.xml의 <message-destination>에 선언된 Message Destination과
+                    JNDI에 등록된 실제 Destination객체를 매핑한다.
+                    [Dependency]: message-destination/jndi-info/ref = application/message-destination-ref/message-destination-ref-name
+						[Label]: Message Destination
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="deploy-modules-concurrently" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EAR에 속한 module들에 대해서 concurrent deploy를 수행할지의 여부를 결정한다.
+                        다만 application.xml의 initialize-in-order가 true인 경우에는 이 설정값과 관계 없이 EAR에 속한 module들을 순서대로 deploy한다.
+                        즉 이 설정은 initialize-in-order가 false인 경우에만 유효하다.
+						[Label]: Deploy Modules Concurrently
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="classloading" type="classloadType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 애플리케이션 수행 시 필요한 클래스 로딩에 관한 설정을 한다.
+						[Label]: Classloading
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="batch-thread-pool" type="dedicated-poolType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: JBatch(JSR-352) 애플리케이션이 작동하기 위한 환경을 제공한다.
+                        값이 설정되지 않을 경우, 컨테이너 내부적으로 JBatch 서비스를 실행가능한 최소한의 스레드풀 사이즈를 가진다.
+							[Label]: Batch Thread Pool                    
+						]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:group name="application-propertyGroup">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="role-permission" type="rolePermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+							[Description]: 애플리케이션의 모든 모듈에 적용할 Principal Role 매핑을 설정한다.
+							[Label]: Role Permission
+						]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="java-security-permission" type="securityPermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+				[Description]: JEUS가 J2SE Security를 사용할 때 해당 애플리케이션에게 허용할 J2SE Permission을 지정할 수 있다.
+				[Label]: Java Security Permission
+			]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:group ref="library-ref-group"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:complexType name="classloadType">
+        <xs:sequence>
+            <xs:element default="false" minOccurs="0" name="local-lib-first" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클래스를 로딩할 때 애플리케이션에 지정된 클래스 패스 내에서 먼저 찾을 것인지 여부를 설정한다.
+                        true로 설정할 경우 중복된 클래스로 인한 ClassCastException을 주의해야 한다.
+						[Label]: Local Lib First
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="batchType">
+        <xs:sequence>
+            <xs:element name="thread-pool" type="batch-thread-poolType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: Batch 서비스를 위해 서버가 가지는 Thread pool 의 크기를 설정한다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="batch-thread-poolType">
+        <xs:sequence>
+            <xs:element name="min" type="nonNegativeIntType" minOccurs="0" default="1">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                    [Description]: Thread pool의 최소 크기를 지정한다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="max" type="positiveIntType" minOccurs="0" default="1">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                    [Description]: Thread pool의 최대 크기를 지정한다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="keep-alive-time" type="nonNegativeIntType" minOccurs="0" default="300">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                    [Description]: min 설정 개수를 초과하는 Thread들 중에서 여기에 지정된 시간 동안 사용되지 않은 것은 소멸된다.
+                    단위는 초이며 기본값은 300이다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="queue-size" type="nonNegativeIntType" minOccurs="0" default="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: Thread의 BlockingQueue 의 엔트리 수를 정한다.
+                        0인 경우 Queue 의 사이즈가 무한이 된다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

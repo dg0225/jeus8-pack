@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xsd:schema xmlns:uddi="urn:uddi-org:api_v3" xmlns:uddi_vs="urn:uddi-org:vs_v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="uddi_vs" targetNamespace="urn:uddi-org:vs_v3" version="3.0.1">
+	<!-- 
+	Copyright (c) 2000-2002 by Accenture, Ariba, Inc., Commerce One, Inc. 
+	Fujitsu Limited, Hewlett-Packard Company, i2 Technologies, Inc., 
+	Intel Corporation, International Business Machines Corporation,  
+	Microsoft Corporation, Oracle Corporation, SAP AG, Sun Microsystems, Inc., 
+	and VeriSign, Inc.  All Rights Reserved.
+    
+	Copyright (c) OASIS Open 2002-2003. All Rights Reserved.
+	-->
+	<xsd:import namespace="urn:uddi-org:api_v3" schemaLocation="uddi_v3.xsd"/>
+	<xsd:element final="restriction" name="validate_values" type="uddi_vs:validate_values"/>
+	<xsd:complexType final="restriction" name="validate_values">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:choice>
+				<xsd:element maxOccurs="unbounded" ref="uddi:businessEntity"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:businessService"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:bindingTemplate"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:tModel"/>
+				<xsd:element maxOccurs="unbounded" ref="uddi:publisherAssertion"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+echo "***************************************************************"
+echo "  - JEUS Home         : ${JEUS_HOME}                           "
+echo "  - Java Vendor       : ${JAVA_VENDOR}                         "
+echo "  - Added Java Option : ${JAVA_ARGS}                           "
+echo "***************************************************************"
+
+# execute jeus with echo
+set -x
+"${JAVA_HOME}/bin/java" -classpath "${JEUS_HOME}/lib/client/mcast-test.jar" \
+    com.tmax.jeus.multicast.MulticastReceiver $*

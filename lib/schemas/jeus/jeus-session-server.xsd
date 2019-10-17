@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:complexType name="session-configType">
+        <xs:sequence>
+            <xs:element default="30" minOccurs="0" name="timeout" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서버에서 생성되는 세션의 유효기간을 결정한다. 마지막 세션 접근 이후 유효기간 이상의 시간이 지난 세션은
+                                       사용되지 않으며 제거 대상이 된다.
+                                       서블릿에서 설정하는 web.xml에 세션 Timeout보다는 우선순위가 낮아 개별적인 설정은 web.xml에 설정할 수 있다.
+                        			   -1 을 설정할 경우 세션을 제거하지 않는다.
+                                        세션의 사용 가능 유효기간을 나타내며 단위는 분이다. 설정하지 않을 경우 기본값으로 30분이 설정된다.
+                        [Defined Value]: [-1] (값을 설정했다면 세션 Timeout 검사는 수행되지 않는다. web.xml에 다른 설정이 없다면 세션은 계속 유지된다.)
+						[Label]: Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-session-count" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메모리에 유지하는 최대 세션 수입니다. 기본값은 -1(무제한)입니다.
+                                       설정한 개수 이상의 세션 유지 중 세션 생성 요청이 있을 경우 오류가 발생됩니다.
+                                       메모리에 유지되는 세션의 최대 갯수이며 설정하지 않을 경우 무제한으로 세션 생성이 가능하다.
+                        [Defined Value]: [-1] 음수 무제한으로 제한을 두지 않는다.
+						[Label]: Max Session Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="shared" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 하나의 컨텍스트에서 생성된 세션 객체를 다른 컨텍스트에서도 접근할 수 있도록 컨텍스트 간의 세션 공유 여부를 결정한다.
+                                       shared를 활성화시키지 않을 경우에 세션의 공유는 애플리케이션 단위이다.
+                        			   세션 공유를 활성화시키면 해당 서버 내의 세션이 공유된다.
+                                       Boolean 타입이고, 기본값은 false이다.
+						[Label]: Shared
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="reload-persistent" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 컨텍스트가 Reload될 때 세션의 Attribute 객체들을 계속 유지할지 여부를 결정한다.
+                        			   true일 경우 Reload와 관계없이 세션의 Attribute들은 계속 유지되며, false일 경우 Reload할 때
+                        			   모든 Attribute들이 제거된다. 지속적으로 세션을 유지하기 때문에 성능적인 효율은 떨어진다.
+                        			   이 부분은 Redeploy 기술과는 다른 Reload의 경우에 적용된다.
+                                       Boolean 타입이고, 기본값은 false이다.
+						[Label]: Reload Persistent
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="tracking-mode" type="session-tracking-modeType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션을 전달하는 방법인 세션 트래킹 방법을 결정하는 설정으로 중복 사용할 수 있다.
+                                       "Cookie", "Url", "Ssl"이 있으며 "Ssl"과 다른 설정과는 중복 사용할 수 없다.
+                                       아무런 설정을 하지 않으면 "Cookie"로 설정되지만 강제로 "Cookie"를 사용하지 않도록 한다면
+                                       세션이 유지되지 않음을 유의해야 한다.
+						[Label]: Tracking Mode
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="session-cookie" type="session-cookie-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 쿠키를 사용하여 세션을 전달할 때 해당 세션 쿠키에 대한 세부 설정들을 구성하고 있다.
+						[Label]: Session Cookie
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="session-tracking-modeType">
+        <xs:sequence>
+            <xs:element default="true" minOccurs="0" name="cookie" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션을 전달하는 세션 트래킹의 방법으로 쿠키를 사용할 때 세션을 쿠키로 전달할지를 설정한다.
+                                       Boolean 타입으로, 기본값은 true이다.
+						[Label]: Cookie
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="url" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션을 전달하는 세션 트래킹의 방법으로 URL Rewriting 방법을 사용할 때 사용하는 설정이다.
+                                       기본값은 false이기에 기본적으로 사용되어 지지 않는다. URL에 세션이 노출되기 때문에
+                                       보안상의 문제가 발생할 수 있다.
+                                       Boolean 타입으로, 기본값은 false이다.
+						[Label]: Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="ssl" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션 트래킹을 진행할 때 SSL을 사용하는 설정으로 기본값은 false이다. 
+                                        Boolean 타입으로, 기본값은 false이다.
+						[Label]: Ssl
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="session-cookie-configType">
+        <xs:sequence>
+            <xs:element default="JSESSIONID" minOccurs="0" name="cookie-name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 쿠키를 사용하여 세션을 전달할 때 해당 세션 쿠키의 이름을 설정한다.
+                                       기본값은 JSESSIONID로 해당 이름 외의 값으로 세션 쿠키를 전달할 경우에 설정할 수 있다.
+                                       String 타입으로 세션 쿠키의 Key 값으로 동작한다.
+						[Label]: Cookie Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="version" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 쿠키 ID 버전을 설정한다.
+                                       0 또는 1로 설정하며, 기본값으로 0이 설정된다.
+                                       [0] : Default Netscape 쿠키 유형
+                                       [1] : RFC 2109 Version의 쿠키
+						[Label]: Version
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="domain" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션 쿠키가 적용되는 도메인 이름을 설정한다. 여기에 설정하는 도메인의 요청에 의해서 세션 쿠키가 사용된다.
+                                       .foo.com으로 설정할 경우 first.foo.com, second.foo.com의 요청에 모두 해당 세션 쿠키가 사용된다.
+                                       하나의 적합한 도메인 이름. 이는 "."으로 시작되고 호스트 이름을 지정하면 안 된다(RFC-2109 스펙에 의해).
+						[Label]: Domain
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="path" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션 쿠키가 적용 되는 경로를 설정한다. 해당 경로 내의 요청에 대해서는 세션 쿠키가 사용된다.
+                                       쿠키는 도메인이 적합할 때까지 해당 URL에 요청과 함께 보내진다(<domain> 설정 항목 참조).
+                                       예를 들어, 경로가 "/examples", 도메인은 ".foo.com", 클라이언트 요청들은 "www.foo.com/examples"이라면
+                                       클라이언트의 쿠키는 요청과 함께 보내진다.
+                                       도메인 하위에 하나의 적합한 URL 경로를 입력한다.
+                        [Defined Value]: [/] (동일한 도메인 내의 경로와 상관없는 모든 요청에 세션 쿠키가 사용된다.)
+						[Label]: Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-age" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션 ID 쿠키의 expires 속성을 설정한다.
+                                       세션 쿠키의 유효한 시간은 현재 시간으로부터 설정한 시간 동안만 유지된다. 해당 시간이 지나면 세션 쿠키는 효력이 없어져 사용되지 않는다.
+                                       초 단위로 설정하고, 기본값은 -1이다.
+                        [Defined Value]: [-1] (-1은 쿠키의 expires 속성을 사용하지 않는 것을 나타내고 따라서 쿠키는 브라우저가 닫힐 때 제거된다.)
+						[Label]: Max Age
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="secure" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션 ID 쿠키의 Secure 속성을 설정한다.
+                                       true로 설정하면 세션 ID 쿠키는 오직 Secure HTTPS 커넥션으로 보내진다.
+                                       쿠키가 오직 HTTPS 위로 보내질지 여부를 결정하는 Boolean 타입이다. 기본값은 false이다.
+						[Label]: Secure
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="http-only" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description] : 세션 ID 쿠키가 HTTP 외의 Script 요청에 의해서 사용되는 것을 방지하는 보안기술을 설정한다.
+                                        해당 쿠키에 HttpOnly 옵션을 사용할지를 Boolean 타입으로 설정하며, 기본값은 true이다.
+						[Label]: Http Only
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="comment" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]  : 해당 쿠키에 대한 목적 또는 설명을 기록한다.
+                                         사용자가 해당 쿠키에 대한 정보를 쉽게 알 수 있는 기능을 제공한다.
+                                         Netscape Version 0의 쿠키에서는 지원되지 않는다.
+						[Label]: Comment
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

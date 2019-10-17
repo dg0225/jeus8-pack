@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set class path
+CLASS_PATH="${JEUS_HOME}/derby/lib/derby.jar"
+CLASS_PATH="${CLASS_PATH}:${JEUS_HOME}/derby/lib/derbytools.jar"
+CLASS_PATH="${CLASS_PATH}:${JEUS_HOME}/derby/lib/derbynet.jar"
+
+# move to JEUS HOME's bin
+cd "${JEUS_HOME}/bin"
+
+# set the host information of derby server
+if [  "$1" ]
+then
+   DERBY_SERVER_HOST=$1
+fi
+
+if [ -z "$DERBY_SERVER_HOST" ]
+then
+   DERBY_SERVER_HOST=localhost
+fi
+
+# set the port information of derby server
+if [  "$2" ]
+then
+   DERBY_SERVER_PORT=$2
+fi
+
+if [ -z "$DERBY_SERVER_PORT" ]
+then
+   DERBY_SERVER_PORT=1527
+fi
+
+# set boot parameter
+BOOT_PARAMETER="start -h ${DERBY_SERVER_HOST} -p ${DERBY_SERVER_PORT}"
+
+# execute startderby
+"${JAVA_HOME}/bin/java"  -classpath "${CLASS_PATH}"                 \
+    ${JAVA_ARGS}                                                    \
+    -Dderby.system.home="${JEUS_HOME}/derby/databases"              \
+    org.apache.derby.drda.NetworkServerControl ${BOOT_PARAMETER}
+    

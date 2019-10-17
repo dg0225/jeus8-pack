@@ -1,0 +1,1858 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    <xs:include schemaLocation="jeus-session-server.xsd"/>
+
+    <xs:element name="web-container" type="web-containerType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: JEUS 웹 엔진의 설정을 위한 항목이다.
+				[Label]: Web Container
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="web-containerType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="response-header" type="response-headerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션의 응답에 포함시킬 헤더를 설정한다.
+						[Label]: Response Header
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+ 			
+            <xs:element minOccurs="0" name="encoding" type="encodingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션의 요청이나 응답을 처리할 때 사용되는 Encoding을 설정한다.
+						[Label]: Encoding
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="cookie-policy" type="httpCookiePolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTP header에서 쿠키를 읽고 쓸 때 적용할 정책을 설정한다.
+                        javax.servlet.http.Cookie API에 적용하는 설정이 아님을 주의한다.
+						[Label]: Cookie Policy
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="jsp-engine" type="jsp-engineType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션에 포함된 JSP를 컴파일 및 서비스하기 위해 사용되는 JSP 엔진을 설정한다.
+						[Label]: Jsp Engine
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="default-error-page" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션에 별도의 에러 페이지를 설정하지 않았을 경우에 사용하는 에러 페이지를 나타낸다.
+                        정적인 페이지(HTML, HTM)만 설정할 수 있으며, 절대 경로여야 한다.
+                        참고로 forward, redirect 방식이 아니며, HTTP 응답 바디의 내용으로 사용한다.
+                        [Value Description]: HTML 또는 HTM 파일에 대한 절대 경로
+						[Label]: Default Error Page
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>       
+
+            <xs:element default="false" minOccurs="0" name="attach-stacktrace-on-error" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS에서 보내주는 에러 페이지에 Stacktrace를 첨부할지를 설정한다.
+                                       개발 기간 동안에는 유용하지만 운영 환경에서는 비활성화해야 한다.
+                                       만약, 위의 Default Error Page 항목을 사용자가 설정하여 사용한다면 이 옵션은 무의미하다.
+                        [Value Description]: Boolean 타입으로, 이 설정을 활성화 또는 비활성화한다.
+                        [Defined Value]: [true] (Stacktrace를 첨부한다.)
+                                         [false] (Stacktrace를 첨부하지 않는다.)
+						[Label]: Attach Stacktrace On Error
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="virtual-host" type="virtual-hostType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 도메인 이름을 기준으로 서로 같은 URL로 서로 다른 웹 어플리케이션을 서비스 할 수 있도록 설정한다.
+                                        같은 가상 호스트에 속한 도메인들은 같은 서비스가 가능하지만, 서로 다른 가상 호스트에 속한 도메인들은
+                                        같은 서비스를 할 수 없다.
+						[Label]: Virtual Host
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="web-connections" type="web-connectionsType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서버와의 커넥션 설정을 구성하거나 JEUS 단독으로 제공하는 Web Listener를 설정한다.
+						[Label]: Web Connections
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="monitoring" type="monitoringType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진의 여러 모니터링 스레드의 환경을 설정한다.
+                        모니터링 스레드는 일정 간격으로 여러 Pool이나 자원의 상태를 점검하는 스레드이다.
+                        [Dynamic]: 동적으로 모니터링 설정을 변경할 수 있다.
+						[Label]: Monitoring
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="access-log" type="access-logType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진 레벨에서의 Access 로그를 설정한다.
+						[Label]: Access Log
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="properties" type="propertiesType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진에 적용되는 속성을 설정한다.
+						[Label]: Properties
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="session-config" type="session-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진에서 공통적으로 사용할 세션을 설정한다.
+                                       컨텍스트별로 이 설정을 Override할 수 있으며, 우선순위는 컨텍스트, 웹 엔진 순이다.
+						[Label]: Session Config
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1" minOccurs="0" name="async-timeout-min-threads" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Servlet 3.0의 Asynchronous Servlet를 사용할 경우 Timeout 처리를 하기 위한 Thread Pool의 최소 개수를 설정한다.
+                                       0이면 Timeout이 제대로 동작하지 않을 수 있으므로 항상 1 이상으로 설정해야 한다.
+                        [Value Description]: 양의 정수
+						[Label]: Async Timeout Min Threads
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="blocked-url-patterns" type="blocked-url-patternsType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: URL 공격시 사용하는 패턴에 대해서 원천 차단한다. 단, Query String에 포함된 패턴은 체크하지 않는다.
+                        설정하지 않을 경우 기존 동작 유지를 위해서 URL Encoded 패턴은 %00, %23, %2e, %2f, %5c, Decoded 패턴은 #, \에 대해서 차단한다.
+                        대소문자는 구분하지 않으며, 모두 소문자로 변경해서 처리한다.
+                        차단된 응답은 404로 처리되며, <default-error-page>에 설정된 파일 컨텐츠를 내보낸다.
+                        <default-error-page> 설정이 없으면 내장된 컨텐츠를 내보낸다.
+						[Label]: Blocked Url Patterns
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="monitoringType">
+        <xs:sequence>
+            <xs:element default="300000" minOccurs="0" name="check-thread-pool" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Worker Thread Pool 내의 Worker Thread의 상태를 점검하기 위한 시간 간격을 설정한다.
+                                       Worker Thread들은 엔진으로 온 클라이언트의 요청을 처리하는 스레드이다.
+                                       Worker Thread는 Worker Thread Pool 내에 존재하며 각 웹 서버와의 연결을 위해 존재한다.
+                                       점검 시간 간격은 엔진 내의 모든 Worker Thread에 적용된다. 설정된 시간 주기가 되면, 각 Thread Pool을 점검한다.
+                                       만약, 어떤 상태에 직면하게 되면(예를 들어 특정 스레드에 대해 Max Idle Time이 만기되면) 해당 스레드를 제거하기 위한 작업이 수행된다.
+                        [Value Description]: 밀리세컨드 단위(가장 근접한 초의 반올림이 된다)로 설정하고, 가능한 가장 짧은 주기는 1000 밀리세컨드이다(1 초).
+                        [Defined Value]: [-1] (Thread pool의 점검을 비활성화한다.)
+						[Label]: Check Thread Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="300000" minOccurs="0" name="check-class-reload" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 각 웹 애플리케이션에서 컨텍스트를 자동으로 Reloading하기 위해 클래스 변경 여부를 체크하는 주기를 설정한다.
+                                       jeus-web-dd.xml에 <auto-reload><enable-reload>를 설정해야 의미를 갖는다.
+                                       단, <check-on-demand> 값이 true인 웹 애플리케이션들은 점검하지 않는다.
+                        [Value Description]: 밀리세컨드 단위(가장 근접한 초의 반올림이 된다)로 설정하고, 가능한 가장 짧은 주기는 1000 밀리세컨드이다(1 초).
+                        [Defined Value]: [-1] (클래스 Reloading을 위한 점검을 비활성화한다.)
+						[Label]: Check Class Reload
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="300000" minOccurs="0" name="check-session" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 세션의 Timeout 상태에 대한 점검 주기를 설정한다.
+                                       세션의 Timeout 상태는 웹 엔진 또는 각 컨텍스트들의 web.xml에 정의된다.
+                        [Value Description]: 밀리세컨드 단위(가장 근접한 초의 반올림이 된다)로 설정하고, 가능한 가장 짧은 주기는 1000 밀리세컨드이다(1 초).
+                        [Defined Value]: [-1] (세션의 Timeout 점검을 비활성화 한다는 것은 HTTPSession.invalidate()가 발생하기 전까지 모든 세션이 보존된다는 것을 의미한다.)
+						[Label]: Check Session
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="virtual-hostType">
+        <xs:sequence>
+            <xs:element name="virtual-host-name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[ID]: ID
+                        [Description]: 가상 호스트의 내부 식별 이름을 설정한다. DEFAULT_HOST는 예약어이므로 사용할 수 없다.
+						[Label]: Virtual Host Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" name="host-name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: DNS 이름(예, "www.foo.com") 또는 IP 주소를 포함한다.
+                        필요에 따라서는 TCP 포트를 기술할 수 있다. (예, "www.foo.com:8088")
+                        여기에 기술된 문자열은 웹 엔진 내에서 유일해야 한다.
+						[Label]: Host Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="encoding" type="webContainerEncodingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션의 요청이나 응답을 처리할 때 사용되는 Encoding을 설정한다.
+						[Label]: Encoding
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="cookie-policy" type="httpCookiePolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTP header에서 쿠키를 읽고 쓸 때 적용할 정책을 설정한다.
+                        javax.servlet.http.Cookie API에 적용하는 설정이 아님을 주의한다.
+						[Label]: Cookie Policy
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="attach-stacktrace-on-error" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS에서 보내주는 에러 페이지에 Stacktrace를 첨부할지를 설정한다.
+                                       개발 기간 동안에는 유용하지만 운영 환경에서는 비활성화해야 한다.
+                                       만약, 위의 Default Error Page 항목을 사용자가 설정하여 사용한다면 이 옵션은 무의미하다.
+                        [Value Description]: Boolean 타입으로, 이 설정을 활성화 또는 비활성화한다.
+                        [Defined Value]: [true] (Stacktrace를 첨부한다.)
+                                         [false] (Stacktrace를 첨부하지 않는다.)
+						[Label]: Attach Stacktrace On Error
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="access-log" type="access-logType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 가상 호스트 레벨에서의 Access 로그를 설정한다.
+                                       기본적으로 가상 호스트마다 남기는 Access 로그는 웹 엔진 레벨의 Access 로그에도 남는다.
+						[Label]: Access Log
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="properties" type="propertiesType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 가상호스트에 적용되는 속성을 설정한다.
+						[Label]: Properties
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="web-connectionsType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="http-listener" type="http-listenerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: HTTP Listener는 웹 엔진에서 제공하는 웹 서버이다.
+                        이것은 소규모 운영 환경 내지는 내부 관리 용도로만 사용해야 한다.
+                        대규모 운영 환경에서는 WebtoB 또는 Apache 웹 서버 사용을 권장한다.
+                        [Label]: Http Listener
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="webtob-connector" type="webtob-connectorType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: WebtoB와의 연동을 위한 Connector이다. 연결을 생성할 때 JEUS가 클라이언트이다.
+                        [Label]: Webtob Connector
+                        ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="ajp13-listener" type="ajp13-listenerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: Apache mod_jk 모듈을 사용하는 AJP 1.3 프로토콜을 지원한다.
+                        [Label]: Ajp13 Listener
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="tcp-listener" type="tcp-listenerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: TCP Listener는 HTTP가 아닌 TCP 기반의 Custom 프로토콜을 지원한다.
+                    서비스 개발자가 직접 프로토콜을 정의해야 한다.
+                        [Label]: Tcp Listener
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="tmax-connector" type="tmax-connectorType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Tmax와의 연동을 위한 Connector이다. 연결을 생성할 때 JEUS가 클라이언트이다.
+						[Label]: Tmax Connector
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="common-web-listenerType">
+        <xs:sequence>
+            <xs:element name="name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[ID]: ID
+                        [Description]: 해당 Listener 또는 Connector를 식별할 수 있는 유일한 이름을 설정한다.
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="output-buffer-size" type="nonNegativeIntType">
+                <xs:annotation>
+                     <xs:documentation><![CDATA[
+						[Description]: out.write()메소드들로부터 출력되는 JSP/Servlet 출력물을 임시 저장하는 출력 Buffer의 크기를 설정한다.
+                                       이 Buffer가 가득 차면 자동으로 클라이언트에게 데이터를 보낸다.
+                                       기본값은 AJP13의 경우 8192이다. 다른 프로토콜의 경우 new Socket().getSendBufferSize()를 따르되, 최소 8192, 최대 16384을 기본값으로 한다.
+                        [Value Description]: Byte 단위의 Buffer 크기를 설정한다.
+						[Label]: Output Buffer Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="30000" minOccurs="0" name="postdata-read-timeout" type="positiveIntType">
+                <xs:annotation>
+                     <xs:documentation><![CDATA[
+						[Description]: 웹 서버/웹 클라이언트로부터 Post 데이터를 읽어올 때 기다리는 최대시간을 설정한다.
+                        request.getInputStream().read() 메소드를 통해 수행한다.
+                        [Value Description]: 밀리세컨드
+						[Label]: Postdata Read Timeout
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-post-size" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: POST 요청의 경우, 서블릿 엔진이 처리할 데이터의 제한을 설정한다.
+                                        설정값 이상 크기의 데이터의 경우, 처리를 하지 않음으로 다른 요청의 응답이 특정 요청(공격)들로부터 보호될 수
+                                        있는 기능을 제공한다.
+                                        Content-Type이 "application/x-www-urlencoded"의 경우 첨부되는 파라미터 데이터의 Byte 수가 제한대상이 된다.
+                                        "chunked"로 데이터가 전송될 경우, 전송된 chunkded 데이터의 Byte 합이 설정값을 넘어가면 제한대상이 된다.
+                                        "multipart/form-data"의 경우는 Servlet 3.0 스펙에 의해 web.xml에서 <multipart-config>에 설정하여 제한할 것을 권장한다.
+                        [Value Description]: Byte 단위로 설정한다.
+                        [Defined Value]: [-1] (무한대로 설정된다.)
+						[Label]: Max Post Size
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-parameter-count" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진에서 자동적으로 Parsing될 파라미터와 값의 쌍(GET과 POST 모두 포함)의 최대 숫자이다. 이 제한을 넘어가는
+                                        파라미터와 값의 쌍을 가진 요청은 더 이상 처리되지 않는다. 0보다 작은 값으로 설정되면 제한이 없음을 의미한다. 
+                                        설정하지 않으면 기본값인 -1로 설정되고 제한이 없게 된다.
+                        [Value Description]: 허용하는 최대 파라미터와 값의 쌍의 개수
+                        [Defined Value]: [-1] (무한대로 설정된다.)
+						[Label]: Max Parameter Count
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-header-count" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 한 요청이 포함할 수 있는 최대 header의 개수를 설정한다. 설정된 값을 넘어가면 해당 요청은 처리하지 않는다. 0보다 작은 값을
+                                        설정할 경우, 제한이 없음을 나타낸다.
+                        [Value Description]: 허용하는 최대 header의 개수
+                        [Defined Value]: [-1] (무한대로 설정된다.)
+						[Label]: Max Header Count
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-header-size" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청의 HTTP header 최대 크기를 설정한다. 해당 설정값을 넘어가는 요청의 경우는 처리하지 않는다. 이 설정은 서버가 필요로 하는
+                                        메모리보다 많은 양을 할당하도록 하는 DOS 공격을 방지하여 다른 요청들에게 빠른 응답을 보장해 줄 수 있는 기능을 제공한다.
+                                        기본값은 8096(8 KByte)이고, 0보다 작게 설정할 경우는 제한이 없다.
+                        [Value Description]: Byte 단위의 한 Request header에 대한 최대 크기
+                        [Defined Value]: [-1] (무한대로 설정된다.)
+						[Label]: Max Header Size
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="8192" minOccurs="0" name="max-querystring-size" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청에 포함된 Query String의 최대 크기를 설정한다. 설정된 크기 이상의 Query String이 들어온다면 해당 요청은 처리하지 않는다.
+                                        기본값은 8192 Byte이고, 이 설정값을 포함한 Request Line의 총 사이즈가 64 kbyte를 넘을 수 없다.
+                        [Value Description]: Byte 단위의 한 요청에 포함된 Query string의 최대 크기
+						[Label]: Max Querystring Size
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webtob-ip-addressType">
+        <xs:sequence>
+            <xs:element name="port" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB에 접속할 포트이다. 이 포트 번호는 WebtoB 설정 파일의 JSVPORT 값과 일치해야 한다.
+						[Label]: Port
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="localhost" minOccurs="0" name="ip-address" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB의 IP 주소를 설정한다.
+						[Label]: Ip Address
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webtob-domain-socket-addressType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="webtob-home" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB의 홈 디렉터리를 설정한다.
+                                   이 설정값은 WebtoB 홈 디렉터리를 나타내는 OS 환경변수(JEUS_WSDIR 또는 WEBTOBDIR)를 Override한다.
+                    [Value Description]: 마지막에 경로 분리자가 붙는 절대 디렉터리 경로로 설정한다(Windows의 경우 "\", UNIX의 경우 "/").
+						[Label]: Webtob Home
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="6666" minOccurs="0" name="webtob-ipcbaseport" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Windows에서 WebtoB HTH 프로세스와의 IPC 통신을 하기 위한 포트를 설정한다.
+                                   OS 환경변수로 설정된 WEBTOB_IPCBASEPORT를 치환한다.
+						[Label]: Webtob Ipcbaseport
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webtob-connectorType">
+        <xs:complexContent>
+            <xs:extension base="common-web-listenerType">
+            <xs:sequence>
+                <xs:element default="2" minOccurs="0" name="wjp-version" type="nonNegativeIntType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB와 연결할 때 사용하는 WJP 프로토콜 버전을 결정한다.
+                            1, 2만 설정 가능하다.
+                            WebtoB 4.1.6 이하인 경우 버전 2를 지원하지 않으므로 1로 설정해야 한다.
+				[Label]: Wjp Version
+			]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="registration-id" type="xs:token">
+                    <xs:annotation>
+                          <xs:documentation><![CDATA[
+				[Description]: WebtoB 서버와 연결할 때 사용할 Registration ID 이름을 설정한다. WebtoB와의 약속된 프로토콜로 인하여 최대 15자 제한이 있다.
+                            [Value Description]: Registration ID 이름은 WebtoB 설정 파일의 *SERVER 절 하위의 값과 동일해야 한다. 15자 이내로 설정해야 한다.
+				[Label]: Registration Id
+			]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:choice>
+                    <xs:element name="network-address" type="webtob-ip-addressType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: WebtoB TCP/IP 주소 정보를 설정한다.
+				[Label]: Network Address
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="domain-socket-address" type="webtob-domain-socket-addressType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: UNIX 도메인 소켓 정보 또는 Windows에서 HTH 프로세스와의 IPC 통신을 하기 위한 정보를 설정한다.
+                                               WebtoB가 웹 엔진과 같은 머신에 있을 경우, UNIX 도메인 소켓(파이프)을 통해서 서로 통신한다.
+                                               단, Windows에서는 일반 소켓 통신을 한다.
+				[Label]: Domain Socket Address
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:choice>
+                <xs:element name="thread-pool" type="webtob-thread-poolType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB Connector에서 요청을 받아 처리할 Thread Pool을 설정한다.
+				[Label]: Thread Pool
+			]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element default="1" minOccurs="0" name="hth-count" type="nonNegativeIntType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB 서버에 지정되어 있는 HTH 프로세스 개수를 설정한다. WebtoB 서버의 HTH 프로세스 개수와 동일하게 설정한다.
+				[Label]: Hth Count
+			]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element default="false" minOccurs="0" name="request-prefetch" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB Request prefetch 기능이다. 이 기능이 true이면 현재 처리하는 WebtoB Request 외에 1개의 다음 WebtoB
+                                           Request를 미리 받아 Request Queue에 저장하여 처리 속도를 향상시킬 수 있다.
+                                           단, 웹 엔진이 abnormal하게 다운되는 경우 Prefetch된 WebtoB Request가 유실될 수 있다.
+				[Label]: Request Prefetch
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element default="120000" minOccurs="0" name="read-timeout" type="xs:int">
+                    <xs:annotation>
+                         <xs:documentation><![CDATA[
+				[Description]: 여기에 설정된 시간 동안 WebtoB로부터 아무런 메시지가 오지 않는다면 커넥션에 문제가 있다고 간주하고 새로 맺는다.
+                            WebtoB와 JEUS 사이에 방화벽이 있을 경우, WebtoB가 보내는 Ping 메시지 도착 여부를 이 설정으로 체크할 수 있다.
+                            기본적으로 WebtoB의 svrchktime값보다 크게 설정되어야 한다.
+                            0보다 크고 1초보다 작은 값으로 설정되어 있으면 무조건 1초로 가정한다.
+                            -1일 경우에는 OS의 설정을 따른다.
+                            [Value Description]: 밀리세컨드
+                            [Defined Value]: [0] (무한대)
+				[Label]: Read Timeout
+			]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element default="5000" minOccurs="0" name="reconnect-interval" type="nonNegativeLongType">
+                    <xs:annotation>
+                         <xs:documentation><![CDATA[
+				[Description]: WebtoB와 JEUS 사이의 커넥션이 끊어진 경우에 성공할 때까지 재연결을 시도하며,
+                            시도할 때마다 여기에 설정된 간격만큼 기다린 후에 시도한다. 1초보다 작은 값으로 설정되어 있으면 무조건 1초로 가정한다.
+				[Label]: Reconnect Interval
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element default="12" minOccurs="0" name="reconnect-count-for-backup" type="positiveIntType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: 이 설정은 webtob-backup 이 설정되어 있을 경우에만 사용한다.
+                            WebtoB와 JEUS 사이의 커넥션이 끊어진 경우에 재연결을 시도하는데, 이때 재연결을 시도하는 최대 횟수를 설정한다.
+                            해당 횟수만큼 시도해도 연결되지 않으면 백업으로 설정된 WebtoB 로 Failover를 시도한다. 이값은 항상 0보다 커야 한다.
+				[Label]: Reconnect Count For Backup
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="webtob-backup" type="webtob-backupType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: JEUS와 연결되는 WebtoB가 어떤 이유로든 정상 서비스가 불가능할 경우,
+                                           이를 대신하여 서비스를 해줄 WebtoB를 설정한다.
+				[Label]: Webtob Backup
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="secure" type="webtob-secure-type">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB로 연결할 때 TLS와 같은 보안 프로토콜을 사용하는 설정이다.
+				[Label]: Secure
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="connection-type" type="webConnectionType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: Response의 커넥션 타입을 강제로 설정한다.
+				[Label]: Connection Type
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="send-buffer-size" type="nonNegativeIntType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB로 연결할 TCP 소켓이나 UNIX 도메인 소켓 연결 시 설정할 sndbuf의 바이트 수이다.
+                            이값을 너무 크게 잡으면 커널 메모리가 부족해서 소켓 생성이 되지 않을 수 있으므로 주의한다.
+                            [Value Description]: 바이트
+				[Label]: Send Buffer Size
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="receive-buffer-size" type="nonNegativeIntType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+				[Description]: WebtoB로 연결할 TCP 소켓이나 UNIX 도메인 소켓 연결 시 설정할 rcvbuf의 바이트 수이다.
+                            이값을 너무 크게 잡으면 커널 메모리가 부족해서 소켓 생성이 되지 않을 수 있으므로 주의한다.
+                            [Value Description]: 바이트
+				[Label]: Receive Buffer Size
+			]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="compression" type="compression-Type" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+                            [Description]: 응답을 압축할 대상을 결정하는 설정이다.
+                            압축할 MIME-Type을 설정하며, Servlet이 세팅한 Content-Type 헤더값과 매칭한다.
+                            해당되는 응답은 클라이언트로 전송되기 전에 gzip을 사용해서 압축된다.
+                            MIME-Type 갯수에 제한은 없으나 반드시 1개 이상을 설정해야 한다.
+                            압축 기능은 Accept-Encoding 요청 헤더에 gzip이 있을 때만 적용된다.
+                            또한 output-buffer-size가 0일 때는 적용되지 않는다.
+                            [Label]: Compression
+                            ]]></xs:documentation>
+                        <xs:appinfo>
+                            <metadata>
+                                <element-level>ADVANCED</element-level>
+                            </metadata>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="webtob-secure-type">
+        <xs:sequence>
+            <xs:element name="trust-store-file-path" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB 인증서가 저장된 파일을 지정한다.
+                        절대 경로, 상대 경로 모두 허용된다. 상대 경로의 경우, ${JEUS_HOME}/domains/${DOMAIN_NAME}/config/servlet을 기준으로 파일을 찾는다.
+						[Label]: Trust Store File Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="trust-store-file-password" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: <trust-store-file-path>에 지정된 파일을 열기 위한 암호다.
+                        {DES}FQrLbQ/D8O1lDVS71L28rw==와 같은 형식으로 적기를 권장한다.
+						[Label]: Trust Store File Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="JKS" minOccurs="0" name="trust-store-file-type" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: <truststore-file-path>에 지정된 파일의 형식이다.
+                        일반적으로 JKS(Java KeyStore 형식) 또는 PKCS12 형식을 쓴다.
+                        기본값은 JKS이다.
+						[Label]: Trust Store File Type
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="key-store-file-path" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비밀키, 그에 매칭되는 인증서가 저장된 파일을 지정한다.
+                        WebtoB 쪽에서 JEUS를 인증하기 위해서 Client Authentication 기능을 사용하는 경우, 이 파일이 필요하다.
+                        절대 경로, 상대 경로 모두 허용된다.
+                        상대 경로의 경우, ${JEUS_HOME}/domains/${DOMAIN_NAME}/config/servlet을 기준으로 파일을 찾는다.
+						[Label]: Key Store File Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="key-store-file-password" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: <key-store-file-path>에 지정된 파일을 열기 위한 암호다.
+                        <key-store-file-path>가 설정될 경우 반드시 필요하다.
+                        {DES}FQrLbQ/D8O1lDVS71L28rw==와 같은 형식으로 적기를 권장한다.
+						[Label]: Key Store File Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="private-key-password" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: <key-store-file-path>로 지정된 파일에 저장된 비밀키의 암호다.
+                        이 값을 설정하지 않을 경우에는 <key-store-file-password> 값을 사용한다.
+                        이 암호는 javax.net.ssl.KeyManagerFactory 구현체 내부에서 해당 비밀키를 접근할 때 사용할 것이다.
+                        {DES}FQrLbQ/D8O1lDVS71L28rw==와 같은 형식으로 적기를 권장한다.
+						[Label]: Private Key Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="JKS" minOccurs="0" name="key-store-file-type" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: <key-store-file-path>에 지정된 파일의 형식이다.
+                        일반적으로 JKS(Java key-store 형식) 또는 PKCS12 형식을 쓴다.
+                        기본값은 JKS이다.
+						[Label]: Key Store File Type
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="TLS" minOccurs="0" name="secure-protocol-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서버와 통신할 때 사용할 통신 보안 프로토콜을 선택한다.
+                        javax.net.ssl.SSLContext#getInstance(String protocol)을 통해서 javax.net.ssl.SSLContext를 생성할 때 사용한다.
+                        기본값으로 TLS이다.
+						[Label]: Secure Protocol Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="trust-manager-factory-algorithm-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 인증서를 다루는 javax.net.ssl.TrustManagerFactory를 생성할 때 사용하는 알고리즘을 선택한다.
+                        참고로 JEUS는 별도의 JSSE Provider를 제공하지 않는다. 아무 것도 설정하지 않으면 JVM 벤더에 따른 기본값으로 사용한다.
+						[Label]: Trust Manager Factory Algorithm Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="key-manager-factory-algorithm-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비밀키를 다루는 javax.net.ssl.KeyManagerFactory를 생성할 때 사용하는 알고리즘을 선택한다.
+                        참고로 JEUS는 별도의 JSSE Provider를 제공하지 않는다. 아무 것도 설정하지 않으면 JVM 벤더에 따른 기본값으로 사용한다.
+                        WebtoB 쪽에서 JEUS를 인증하기 위해서 Client Authentication 기능을 사용하는 경우에 사용한다.
+						[Label]: Key Manager Factory Algorithm Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tmax-connectorType">
+        <xs:complexContent>
+            <xs:extension base="common-web-listenerType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="connection-type" type="webConnectionType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Response의 커넥션 타입을 강제로 설정한다.
+				[Label]: Connection Type
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="port" type="nonNegativeIntType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Tmax 서버에 접속할 포트 번호를 설정한다.
+                                [Value Description]: 포트 번호는 0보다 큰 값이어야 한다.
+				[Label]: Port
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="thread-pool" type="thread-poolType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Tmax Connector에서 요청을 받아 처리할 Thread Pool을 설정한다.
+				[Label]: Thread Pool
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="server-group-name" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 연결하려는 Tmax 서버가 포함된 그룹을 의미한다.
+                                [Value Description]: Tmax 서버 그룹의 이름
+				[Label]: Server Group Name
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="server-name" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 연결하려는 Tmax 서버의 이름이다.
+                                [Value Description]: Tmax 서버의 이름
+				[Label]: Server Name
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="dispatcher-config-class" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: dispatcher 설정 클래스를 지정한다. 이때 클래스는 반드시 classpath로 설정된 곳에 위치해야 하며,
+                                               클래스의 이름은 Fully Qualified Class Name이어야 한다.
+				[Label]: Dispatcher Config Class
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="0" minOccurs="0" name="read-timeout" type="xs:int">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Tmax로부터 요청을 읽어 올때 기다리는 최대의 시간을 설정한다.
+				[Label]: Read Timeout
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="5000" minOccurs="0" name="reconnect-interval" type="nonNegativeLongType">
+                        <xs:annotation>
+                             <xs:documentation><![CDATA[
+				[Description]: Tmax와 JEUS 사이의 커넥션이 끊어진 경우에 재연결을 시도하게 되는데, 재연결을 시도하는 시간 간격을 설정한다.
+                                               각 횟수마다 여기에 설정된 간격만큼 기다린 후에 시도한다.
+                                               이때 1초보다 작은 값으로 설정되어 있으면 무조건 1초로 가정한다.
+                                               연결이 성공할 때까지 무한히 시도한다. 단, Backup 설정이 있을 경우에는 Reconnect Count For Backup 값만큼 시도한 뒤 FailOver를 시도한다.
+				[Label]: Reconnect Interval
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="12" minOccurs="0" name="reconnect-count-for-backup" type="positiveIntType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 이 설정은 Tmax Backup Address 와 Tmax Backup Port 가 설정되어 있을 경우에만 사용한다.
+                                Tmax 와 JEUS 사이의 커넥션이 끊어진 경우에 재연결을 시도하게 되는데, 재연결을 시도하는 최대 횟수를 설정한다.
+                                해당 횟수만큼 시도해도 연결되지 않으면 백업으로 FailOver 를 시도한다. 이값은 항상 0보다 커야 한다.
+				[Label]: Reconnect Count For Backup
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="localhost" minOccurs="0" name="tmax-address" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Tmax 서버의 IP 주소를 설정한다.
+                                [Value Description]: Tmax 서버의 IP 주소
+				[Label]: Tmax Address
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="tmax-version" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 연결하려는 Tmax 서버의 버전이다. 4.0, 3.x의 두 버전을 지원한다.
+                                4.0은 40, 3.x는 3X라고 입력한다.
+                                [Value Description]: Tmax 서버의 버전
+				[Label]: Tmax Version
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="server-type" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 연결하려는 Tmax 서버의 종류이다. TMS, HTTPGW 등 특수한 서버일 경우에 설정한다.
+                                [Value Description]: Tmax 서버의 종류
+				[Label]: Server Type
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="xaresource-class" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: XAResource 클래스의 이름 Transaction Recovery 기능을 사용하고자 할 때 설정한다.
+                                [Value Description]: XAResource 클래스 이름
+				[Label]: XA Resource Class
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="tmax-backup-address" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 백업으로 사용할 Tmax 서버의 IP 주소를 설정한다.
+                                [Value Description]: Tmax 서버의 IP 주소
+				[Label]: Tmax Backup Address
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="tmax-backup-port" type="nonNegativeIntType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 백업으로 사용할 Tmax 서버의 포트 번호를 설정한다.
+                                [Value Description]: 포트 번호는 0보다 큰 값이어야 한다.
+				[Label]: Tmax Backup Port
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="webConnectionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="keep-alive">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 커넥션을 계속 유지한다.
+						[Label]: keep-alive
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="close">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청 처리 후 연결을 끊는다.
+						[Label]: close
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="none">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Request header에 정의된 속성을 따른다.
+						[Label]: none
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="webtob-backupType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="network-address" type="webtob-ip-addressType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: WebtoB TCP/IP 주소 정보를 설정한다.
+							[Label]: Network Address
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="domain-socket-address" type="webtob-domain-socket-addressType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: UNIX 도메인 소켓 정보 또는 Windows에서 HTH 프로세스와의 소켓 통신을 하기 위한 정보를 설정한다.
+							[Label]: Domain Socket Address
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element minOccurs="0" name="thread-pool" type="webtob-thread-poolType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB Connector에서 요청을 받아 처리할 Thread Pool을 설정한다.
+                    설정하지 않을 경우 primary WebtoB의 thread-pool과 같은 내용으로 Thread Pool을 구성한다.
+						[Label]: Thread Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1" minOccurs="0" name="hth-count" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebtoB 서버에 지정되어 있는 HTH 프로세스 개수를 의미한다.
+                        [Value Description]: WebtoB 서버의 HTH 프로세스 개수와 동일하게 설정한다.
+						[Label]: Hth Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ajp13-listenerType">
+        <xs:complexContent>
+            <xs:extension base="common-web-listenerType">
+                <xs:sequence>
+                    <xs:element name="server-listener-ref" type="valuableToken">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: AJP13 Listener가 참조하는 서버 리스너를 설정한다.
+                                               "BASE" Listener를 선택할 수 없다.
+				[Label]: Server Listener Ref
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="thread-pool" type="thread-poolType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: AJP13 Listener에서 요청을 받아 처리할 Thread Pool을 설정한다.
+				[Label]: Thread Pool
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="0" minOccurs="0" name="read-timeout" type="nonNegativeLongType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 이 설정값은 더이상 사용하지 않는다.
+				[Label]: Read Timeout
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="false" minOccurs="0" name="server-access-control" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 서버에 대한 접근 제어 여부를 설정한다.
+                                               true로 설정하면 허용된 서버(Allowed Server에서 지정된)만 해당 Listener에 접속할 수 있다.
+                                [Value Description]: Boolean 타입으로, 설정을 활성화 또는 비활성화한다.
+                                [Defined Value]: [true] (서버 접근 제어를 활성화한다.)
+                                                 [false] (서버 접근 제어를 비활성화한다.)
+				[Label]: Server Access Control
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="allowed-server" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]:  Listener에 접속하려는 하나의 서버 IP 주소를 설정한다.
+                                                Server Access Control의 설정값이 true일 경우에만 사용되고,
+                                                설정되지 않은 서버로부터 온 모든 요청들은 거절된다.
+                                [Value Description]: 해당 Listener에 연결이 허용되는 서버의 IP 주소
+				[Label]: Allowed Server
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="http-listenerType">
+        <xs:complexContent>
+            <xs:extension base="common-web-listenerType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="connection-type" type="webConnectionType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Response의 커넥션 타입을 강제로 설정한다.
+				[Label]: Connection Type
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="server-listener-ref" type="valuableToken">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 해당 Listener가 참조하는 서버의 Listener를 선택한다.
+                                               이름을 "ADMIN-HTTP"로 할 경우 내부 관리용 HTTP Listener에 대해 설정할 수 있다.
+                                               내부 관리용 HTTP Listener는 항상 "BASE" 서버 Listener를 참조한다.
+                                               이 Listener를 통해서 도메인 관리 서버의 WebAdmin을 사용할 수 있으며,
+                                               일반 서버에서는 Graceful Redistribute한 웹 애플리케이션을 테스트할 수 있다.
+                                               내부 관리용 HTTP Listener로는 일반 웹 애플리케이션에 접근할 수 없다.
+                                               내부 관리용 HTTP Listener는 Server Access Control 및 Allowed Server 설정을 권장한다.
+				[Label]: Server Listener Ref
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="thread-pool" type="thread-poolType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Web Listener에서 요청을 받아 처리할 Thread Pool을 설정한다.
+				[Label]: Thread Pool
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="http2" type="http2Type" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                                [Description]: HTTP/2 프로토콜 지원 여부를 결정한다.
+                                JEUS 8에서의 HTTP/2 리스너는 h2c(clear text), h2(over TLS)를 모두 지원한다.
+                                하지만, Java7에서 지원하는 Cipher Suites 중 HTTP/2의 Spec.을 만족하는 하는 것이 없어서
+                                h2로 사용하기 위해선 Java8 이상의 Java 버젼을 사용하여야 한다.
+                                [Label]: HTTP/2
+                            ]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="false" minOccurs="0" name="server-access-control" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 서버 접근 제어를 활성화 또는 비활성화한다.
+                                               true로 설정하면 허용된 서버(Allowed Server에서 지정된)만 해당 Listener에 접속할 수 있다.
+                                [Value Description]: Boolean 타입으로, 설정을 활성화 또는 비활성화한다.
+                                [Defined Value]: [true] (서버 접근 제어를 활성화한다.)
+                                                 [false] (서버 접근 제어를 비활성화한다.)
+				[Label]: Server Access Control
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="allowed-server" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 해당 Listener에 접속하려는 하나의 서버 IP 주소를 설정한다.
+                                               Server Access Control의 설정값이 true일 경우에만 사용되고,
+                                               설정에 포함되지 않은 서버로부터 온 모든 요청들은 거절된다.
+                                [Value Description]: 해당 Listener에 연결이 허용되는 서버의 IP 주소를 입력한다.
+				[Label]: Allowed Server
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="compression" type="compression-Type" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                            [Description]: 응답을 압축할 대상을 결정하는 설정이다.
+                            압축할 MIME-Type을 설정하며, Servlet이 세팅한 Content-Type 헤더값과 매칭한다.
+                            해당되는 응답은 클라이언트로 전송되기 전에 gzip을 사용해서 압축된다.
+                            MIME-Type 갯수에 제한은 없으나 반드시 1개 이상을 설정해야 한다.
+                            압축 기능은 Accept-Encoding 요청 헤더에 gzip이 있을 때만 적용된다.
+                            또한 output-buffer-size가 0일 때는 적용되지 않는다.
+                            [Label]: Compression
+                            ]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                 </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="http2Type">
+        <xs:sequence>
+            <xs:element name="settings-enable-push" type="xs:boolean" minOccurs="0" default="true">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: HTTP/2 Server Push를 지원할지 설정한다.
+                        [Label]: Enable Server Push
+                    ]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="settings-max-concurrent-streams" type="positiveIntType" minOccurs="0" default="32">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: HTTP/2 RFC에 정의된 SETTINGS_MAX_CONCURRENT_STREAMS 기본값을 치환한다.
+                        이 설정은 특정 클라이언트가 TCP 커넥션에 한꺼번에 보내는 요청 수를 제한하는 의미를 갖는다.
+                        이값이 너무 크면 특정 클라이언트가 리스너에 속한 다수의 스레드들을 일시적으로 점유하게 될 수 있다.
+                        리스너 스레드 풀의 max 값을 감안해서 적정한 값이 설정되어야 한다.
+                        [Label]: Max Concurrent Streams
+                    ]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="settings-max-frame-size" type="positiveIntType" minOccurs="0" default="16384">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: HTTP/2 RFC에 정의된 SETTINGS_MAX_FRAME_SIZE 기본값을 치환한다.
+                        RFC 정의에 따라 이값은 16384부터 2^24-1 (16,777,215) 이다.
+                        [Label]: Max Frame Size
+                    ]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="settings-ack-timeout" type="positiveIntType" minOccurs="0" default="5000">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: SETTINGS frame에 대한 ACK을 기다리는 timeout을 설정한다.
+                        timeout이 지나도 ACK이 오지 않을 경우에는 SETTINGS_TIMEOUT 에러 코드와 함께 connection error로 처리한다.
+                        [Label]: SETTINGS Frame Ack Timeout
+                    ]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tcp-listenerType">
+        <xs:complexContent>
+            <xs:extension base="common-web-listenerType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="connection-type" type="webConnectionType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Response의 커넥션 타입을 강제로 설정한다.
+				[Label]: Connection Type
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="server-listener-ref" type="valuableToken">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 해당 Listener가 참조하는 서버의 Listener를 선택한다.
+                                               "BASE" Listener를 선택할 수 없다. 또한 다른 Web Listener들과 서버 Listener를 공유할 수 없다.
+				[Label]: Server Listener Ref
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="thread-pool" type="thread-poolType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: TCP Listener에서 요청을 받아 처리할 Thread Pool을 설정한다.
+				[Label]: Thread Pool
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="dispatcher-config-class" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: dispatcher 설정 클래스를 지정한다.
+                                               이때 클래스는 반드시 classpath로 설정된 곳에 위치해야 하며,
+                                               클래스의 이름은 Fully Qualified Class Name이어야 한다.
+				[Label]: Dispatcher Config Class
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="false" minOccurs="0" name="server-access-control" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 서버 접근 제어를 활성화 또는 비활성화한다.
+                                               true로 설정하면 허용된 서버(Allowed Server에서 지정된)만 해당 Listener에 접속할 수 있다.
+                                [Value Description]: Boolean 타입으로, 설정을 활성화 또는 비활성화한다.
+                                [Defined Value]: [true] (서버 접근 제어를 활성화한다.)
+                                                 [false] (서버 접근 제어를 비활성화한다.)
+				[Label]: Server Access Control
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="allowed-server" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: 해당 Listener에 접속하려는 하나의 서버 IP 주소를 설정한다.
+                                               Server Access Control의 설정값이 true일 경우에만 사용되고,
+                                               설정에 포함되지 않은 서버로부터 온 모든 요청들은 거절된다.
+                                [Value Description]: 해당 Listener에 연결이 허용되는 서버의 IP 주소
+				[Label]: Allowed Server
+			]]></xs:documentation>
+                            <xs:appinfo>
+                                <metadata>
+                                    <element-level>ADVANCED</element-level>
+                                </metadata>
+                            </xs:appinfo>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="thread-poolType">
+        <xs:sequence>
+            <xs:element default="false" minOccurs="0" name="use-auto-tuning" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: auto-tuning의 적용 여부. 이 옵션을 켜면 min, max는 설정을 해도 적용되지 않는다.
+						 http connection에 대해서만 적용된다.
+						[Label]: Auto Tuning
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" default="0" name="limit" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: auto-tuning 적용시 Thread 수의 한계점.
+                        [Value Description]: 스레드 수
+						[Label]: Limit
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="min" type="positiveIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Pool에서 Worker Thread를 유지해야 하는 최소 개수를 설정한다.
+                        [Value Description]: 스레드 수
+                        [Dynamic]: 동적 변경이 가능하다.
+						[Label]: Min
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="max" type="positiveIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Pool에서 Worker Thread를 유지해야 하는 최대 개수를 설정한다.
+                        [Value Description]: 스레드 수
+                        [Dynamic]: 동적 변경이 가능하다.
+						[Label]: Max
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="step" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 더이상 사용하지 않는다.
+						[Label]: Step
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="300000" minOccurs="0" name="max-idle-time" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Pool에서 제거되기 전에 Idle 상태로 머물러 있는 Worker Thread의 최대 시간을 설정한다.
+                        <min>을 초과해서 생성된 스레드에 적용하는 값이다.
+                        [Value Description]: 밀리세컨드
+						[Label]: Max Idle Time
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="max-wait-queue" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 더이상 사용하지 않는다.
+						[Label]: Max Wait Queue
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-queue" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Queue에 대기할 수 있는 최대 요청값을 설정한다.
+                                       이 설정은 Tmax/WebtoB connector에서는 사용되지 않는다.
+                                       WebtoB connector의 Queue 사이즈는 WebtoB 설정 파일에 MaxQCount 값으로 구성된다.
+                        [Defined Value]: [-1] (무한대를 의미한다.)
+						[Label]: Max Queue
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="thread-state-notify" type="thread-state-notifyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Block되는 Worker Thread를 정의하고, Block될 때 통지될 스레드의 수를 설정한다.
+						[Label]: Thread State Notify
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="compression-Type">
+        <xs:sequence>
+            <xs:element name="max-nonchunked-compression-size" type="positiveIntType" minOccurs="0" default="128">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: 압축해야 할 응답의 크기가 큰 경우 memory를 너무 많이 차지하게 될 수 있다.
+                         만약 Servlet이 지정한 content-length 값이 여기에 설정한 크기를 초과하는 경우에는 chunked 응답으로 나간다.
+                        응답 크기는 KB 단위이며, 기본값은 128KB 이다.
+                        [Value Description]: 한번에 압축해서 나가게 되는 응답의 최대 크기 (Servlet이 content-length 지정한 값)
+                   		[Label]: Max Nonchunked Compression Size
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="mime-type" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]:
+                        압축 기능을 사용할 mime-type을 지정한다.
+                        반드시 하나 이상의 mime-type을 지정해야 한다.
+                        [Value Description]: mime type
+                        [Label]: Mime Type
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webtob-thread-poolType">
+        <xs:sequence>
+            <xs:element name="number" type="positiveIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:
+                        WJP 커넥션 갯수를 의미하며, 이 설정에서 지정된 수 만큼 스레드를 생성한다.
+                        이 설정에 지정된 수 만큼 WebtoB와의 연결을 생성하므로 반드시 WebtoB 설정의 MinProc, MaxProc를 바탕으로 해야 한다.
+                        동적 변경을 시도할 때 기존 값보다 작은 값을 넣는 경우 서비스 중인 thread가 종료될 수 있으므로 요청이 있는 경우에는 값을 줄이지 않기를 권장한다.
+                        [Value Description]: WJP 연결 갯수
+                        [Dynamic]: 동적 변경이 가능하다.
+						[Label]: Number
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="thread-state-notify" type="thread-state-notifyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Block되는 Worker Thread를 정의하고, Block될 때 통지될 스레드의 수를 설정한다.
+						[Label]: Thread State Notify
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="thread-state-notifyType">
+        <xs:sequence>
+        	<xs:element default="0" minOccurs="0" name="max-thread-active-time" type="xs:long">
+        		<xs:annotation>
+        			<xs:documentation><![CDATA[
+						[Description]: 스레드를 Block 상태로 간주하는 시간 간격을 설정한다.
+                        단, 체크 주기는 <monitoring><check-thread-pool>을 사용한다.
+                        기본적으로 Block 상태에 있는 스레드는 버리고 새로운 스레드를 생성해서 스레드 풀을 채운다.
+                        하지만 webtob-connector 및 tmax-connector 에 속한 스레드 풀의 경우에는 아무런 액션을 취하지 않고 Block 상태로 표시만 해준다.
+                        [Value Description]: 밀리세컨드 단위로 설정한다. 이 값이 0과 같거나 작으면 무시된다.
+						[Label]: Max Thread Active Time
+					]]></xs:documentation>
+        		</xs:annotation>
+        	</xs:element>
+            <xs:element default="false" minOccurs="0" name="interrupt-thread" type="xs:boolean">
+           		<xs:annotation>
+           			<xs:documentation><![CDATA[
+						[Description]: 스레드가 Block 상태가 되었을 때 인터럽트 여부를 설정한다.
+                           단, 인터럽트는 스레드에게 진행중인 동작을 취소하라고 힌트를 주는 것일 뿐이다.
+                           만약 스레드 내부적으로 인터럽트 상태를 체크하지 않으면 아무런 영향을 주지 않는다.
+						[Label]: Interrupt Thread
+					]]></xs:documentation>
+           		</xs:annotation>
+           	</xs:element>
+            <xs:element default="false" minOccurs="0" name="active-timeout-notification" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Blocked 상태의 스레드가 발생한 사실에 대해 e-mail 통지 여부를 설정한다.
+						[Label]: Active Timeout Notification
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0.0" minOccurs="0" name="notify-threshold-ratio" type="xs:double">
+        		<xs:annotation>
+        			<xs:documentation><![CDATA[
+						[Description]: 스레드 풀 max 값을 기준으로 Blocked 상태인 스레드의 비율을 입력한다.
+                        여기에 지정한 비율 이상으로 Blocked 상태의 스레드가 늘어날 경우 e-mail 통지를 해준다.
+                        [Value Description]: 이 값이 0과 같거나 작으면 이 설정은 무시된다.
+						[Label]: Notify Threshold Ratio
+					]]></xs:documentation>
+        		</xs:annotation>
+        	</xs:element>
+            <xs:element minOccurs="0" name="notify-subject" type="xs:token">
+           		<xs:annotation>
+           			<xs:documentation><![CDATA[
+						[Description]: notify-threshold-ratio 에 의해 통지되는 e-mail 제목을 설정한다.
+                           [Value Description]: 수신자(관리자)가 해당 e-mail에 대해 어떤 내용인지 바로 알아볼 수 있는 메시지를 입력한다.
+						[Label]: Notify Subject
+					]]></xs:documentation>
+           		</xs:annotation>
+           	</xs:element>
+        	<xs:element default="0.0" minOccurs="0" name="restart-threshold-ratio" type="xs:double">
+        		<xs:annotation>
+        			<xs:documentation><![CDATA[
+						[Description]: 웹 엔진의 재시작 권고를 위한 Blocked Thread의 비율을 설정한다. 1보다 작은 소수점의 값을 입력한다.
+                                       설정한 비율을 초과하여 Blocked Thread가 존재한다면 서버재시작을 권고하는 메세지가 출력된다.
+                        [Value Description]: 총 Worker Thread 중에서 Blocked Thread 비율을 입력한다. 이 값이 0과 같거나 작으면 이 설정은 무시된다.
+						[Label]: Restart Threshold Ratio
+					]]></xs:documentation>
+        		</xs:annotation>
+        	</xs:element>
+        	<xs:element minOccurs="0" name="restart-subject" type="xs:token">
+        		<xs:annotation>
+        			<xs:documentation><![CDATA[
+						[Description]: restart-threshold-ratio 에 의해 통지되는 e-mail 제목을 설정한다.
+                        [Value Description]: 수신자(관리자)가 해당 e-mail에 대해 어떤 내용인지 바로 알아볼 수 있는 메시지를 입력한다.
+						[Label]: Restart Subject
+					]]></xs:documentation>
+        		</xs:annotation>
+        	</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="encodingType">
+        <xs:complexContent>
+            <xs:extension base="webContainerEncodingType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="request-url-encoding" type="encodingSubType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: HTTP 요청의 첫 번째 라인에 적용할 Encoding을 지정한다.
+                                Request Line에 포함된 Query string을 Decode할 때 Request Encoding에 설정된 값보다 먼저 이 설정이 적용된다.
+				[Label]: Request Url Encoding
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="access-logType">
+        <xs:complexContent>
+            <xs:extension base="loggingType">
+                <xs:sequence>
+                    <xs:element default="true" minOccurs="0" name="enable" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                                [Description]: Access 로그 사용 여부를 설정한다. 가상 호스트 별 액세스 로그의 경우 이 값을 false로 하면 웹 엔진 액세스 로거를 사용한다.
+                                    웹 엔진 액세스 로거의 경우 이 값을 false로 하면 액세스 로그를 남기지 않는다.
+                                [Dynamic]: 동적으로 Access 로그 사용 여부를 설정할 수 있다.
+                                [Label]: Enable
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="default" minOccurs="0" name="format" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                                [Description]: Apache에서 정의한 Common Log Format을 설정한다.
+                                default, common, combined, debug 의 Aliases가 있다.
+                                default는 common 형식에 요청 처리 시간(%D)를 추가한 것이다.
+                                common, combined는 Apache에서 많이 사용하는 형식을 Alias한 것이고,
+                                debug는 default 형식에 Session ID, 요청 스레드 이름이 추가되었다.
+                                만약 JEUS 6 이전 버전의 포맷을 사용하고 싶은 경우에는 6deprecated 로 설정한다. 단, 이 포맷은 동적으로 변경되지 않는다.
+                                [Dynamic]: 동적으로 Access 로그의 포맷을 변경할 수 있다.
+                                [Label]: Format
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="exclude-ext" type="valuableToken">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                                [Description]: Access 로그를 남기지 않는 확장자들을 설정한다. 여러 개를 입력하고 싶은 경우 콤마(,)로 구분한다.
+                                [Dynamic]: 동적으로 Access 로그 제외 확장자를 변경할 수 있다.
+                                [Label]: Exclude Ext
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element default="false" minOccurs="0" name="enable-host-name-lookup" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+                                [Description]: %h 포맷에 대해 IP 주소 대신 호스트 이름을 로깅할 것인지 결정한다.
+                                이값을 true로 할 경우 DNS lookup으로 인한 오버헤드가 발생할 수 있다.
+                                [Dynamic]: 동적으로 호스트 이름 로깅 여부를 변경할 수 있다.
+                                [Label]: Enable Host Name Lookup
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="response-headerType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="custom-header" type="custom-headerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTP 응답 메시지에 포함하기 위한 Custom 필드들을 정의한다.
+						[Label]: Custom Header
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="custom-headerType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="header-field" type="header-fieldType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 엔진의 모든 HTTP 응답들에 포함하는 필드 이름과 값을 설정한다.
+						[Label]: Header Field
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="header-fieldType">
+        <xs:sequence>
+            <xs:element name="field-name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[ID]: ID
+                        [Description]: HTTP 응답 필드 이름을 설정한다.
+                        [Value Description]: 필드 이름
+						[Label]: Field Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="field-value" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 필드를 위해 사용하는 값을 설정한다.
+                        [Value Description]: 필드값
+						[Label]: Field Value
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="blocked-url-patternsType">
+        <xs:sequence>
+            <xs:element default="true" minOccurs="0" name="deny-last-space-character" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Request URI 마지막 문자가 공백(space) 문자라면 404로 응답한다.
+                        [Value Description]: Boolean
+						[Label]: Deny Last Space Character
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="deny-null-character" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Query String을 제외한 Request URI에 널(null) 문자가 포함되어 있으면 404로 응답한다.
+                        [Value Description]: Boolean
+						[Label]: Deny Null Character
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="encoded-pattern" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Query String을 제외한 Request URI에 여기에 정의된 형태의 문자열이 포함되어 있으면 404로 응답한다. (예) %2e
+                        [Value Description]: %XX 형태의 문자열
+						[Label]: Encoded Pattern
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="decoded-pattern" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Query String을 제외한 Request URI에 여기에 정의된 형태의 문자열이 포함되어 있으면 404로 응답한다. (예) #, ::$
+                        [Value Description]: ASCII 형태로 나타내는 문자열
+						[Label]: Decoded Pattern
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

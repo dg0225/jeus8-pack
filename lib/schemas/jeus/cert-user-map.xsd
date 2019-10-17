@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+        
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="cert-user-map" type="CertUserMapType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: User와 Certificate Attribute 간의 매핑 정보를 정의한다.
+				[Label]: Cert User Map
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="CertUserMapType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="cert-user" type="CertUserType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: User와 Certificate 간의 매핑을 정의한다.
+						[Label]: Cert User
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="CertUserType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="username" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore 내의 Certificate에 대한 Username을 정의한다. "Primary" Identify로서 유일해야 한다.
+						[Label]: Username
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="cert" type="CertType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 정보들을 정의한다.
+						[Label]: Cert
+					]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CertType">
+        <xs:all>
+            <xs:element maxOccurs="1" minOccurs="0" name="subjectDN" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 SubjectDN을 정의한다.
+						[Label]: SubjectDN
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="SKI" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 SKI를 정의한다.
+						[Label]: SKI
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="issuer" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 Issuer를 정의한다.
+						[Label]: Issuer
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="serialNo" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 Serial Number를 정의한다.
+						[Label]: SerialNo
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="alias" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 Alias를 정의한다.
+						[Label]: Alias
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

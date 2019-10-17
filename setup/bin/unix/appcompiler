@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set boot parameter
+BOOT_PARAMETER=$*
+
+# execute appcompiler
+"${JAVA_HOME}/bin/java" -classpath "${BOOTSTRAP_CLASSPATH}" ${TOOL_OPTION}    \
+     -Xmx512m                                                                 \
+     -Djeus.home="${JEUS_HOME}"                                               \
+     -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                         \
+     ${JAVA_ARGS}                                                             \
+     jeus.tool.compiler.AppCompilerBootstrapper ${BOOT_PARAMETER}

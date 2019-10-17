@@ -1,0 +1,1461 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    
+	<xs:element name="web-services-config" type="web-services-configType">
+	    <xs:annotation>
+	        <xs:documentation><![CDATA[
+				[Description]: 웹 서비스 설정 문서의 최상위 항목을 설정한다.
+				[Label]: Web Services Config
+			]]></xs:documentation>
+	    </xs:annotation>
+	</xs:element>
+
+	<xs:complexType name="web-services-configType">
+	    <xs:choice>
+	        <xs:element maxOccurs="unbounded" name="service" type="service-configType">
+		        <xs:annotation>
+		            <xs:documentation><![CDATA[
+						[Description]: WSDL과 매핑(JARX-RPC 매핑) 파일을 생성하기 위하여
+                            Endpoint 인터페이스와 메시징 스타일(Messaging Style) 등의 서비스 정보를 기술한다.
+						[Label]: Service
+					]]></xs:documentation>
+		        </xs:annotation>
+		    </xs:element>
+            <xs:element maxOccurs="unbounded" name="policy" type="policy-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 여러 가지 JAX-WS 웹 서비스의 기능들을 추가적으로 설정한다.
+                                       웹 서비스 Addressing, 신뢰성 메시징, 보안, 트랜잭션 등의 정보를 설정한다.
+                                       (Since JEUS 6)
+						[Label]: Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+	    </xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="service-configType">
+		<xs:sequence>
+            <xs:element name="service-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성하려는 서비스의 이름을 설정한다.
+						[Label]: Service Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="target-namespace" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 다른 서비스와의 논리적인 구별 기준이 되는 서비스 고유의 Target Namespace를 설정한다.
+						[Label]: Target Namespace
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="package-mapping" type="package-mappingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 어떤 Java Package를 특정한 Namespace로 매핑하는 설정이다.
+						[Label]: Package Mapping
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="output-wsdl-file" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성하고자 하는 출력 WSDL 파일의 이름을 설정한다.
+						[Label]: Output Wsdl File
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="output-jaxrpc-mapping-file" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성하고자 하는 출력 매핑 파일의 이름을 설정한다.
+						[Label]: Output Jaxrpc Mapping File
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            
+			<xs:element minOccurs="0" name="style" type="styleType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성될 서비스의 메시징 스타일(Messaging Style)을 정의한다.
+                            rpc, document, wrapped 3가지 중 하나를 선택한다.
+                            기본 설정은 wrapped이다.
+						[Label]: Style
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="use" type="useType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Encoding 스타일을 정의한다. encoded 혹은 literal 중 하나를 선택한다.
+                            기본 설정은 literal이다.
+						[Label]: Use
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			
+            <xs:element minOccurs="0" name="map-mime-to-anytype" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 사용자가 정의한 임의의 타입을 사용하는 것을 허용할 것인지 여부를 설정한다.
+						[Label]: Map Mime To Anytype
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element maxOccurs="unbounded" name="interface" type="interfaceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Service Endpoint 인터페이스를 설정한다.
+						[Label]: Interface
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="interfaceType">
+		<xs:sequence>
+			<xs:element name="endpoint-interface-class" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Back-end로 동작하는 Java 클래스의 이름을 설정한다.
+						[Label]: Endpoint Interface Class
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-port-type-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL에 나타나는 실제 포트 타입의 이름을 임의로 설정한다.
+						[Label]: Wsdl Port Type Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-binding-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL에 나타나는 실제 바인딩의 이름을 임의로 설정한다.
+						[Label]: Wsdl Binding Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-port-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL에 나타나는 실제 포트 이름을 임의로 설정한다.
+						[Label]: Wsdl Port Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="operation" type="operationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서비스로 공개하는 Operation들에 대해 각각의 추가적인 설정을 기술한다.
+						[Label]: Operation
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="service-impl-bean" type="service-impl-beanType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Description]: 서비스 구현(Service Implementation)에 필요한 추가적인 설정을 기술한다.
+						[Label]: Service Impl Bean
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>     
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="handler" type="port-component_handlerType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Handler
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:complexType name="operationType">
+		<xs:sequence>
+			<xs:element name="java-method-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정하려는 Operation 이름을 값으로 설정한다.
+						[Label]: Java Method Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL에 공개되는 Operation 이름을 설정한다.
+						[Label]: Wsdl Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="soap-action" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Operation의 SOAP-ACTION을 설정한다.
+						[Label]: Soap Action
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="one-way" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청-응답 메커니즘이 아닌 One-Way 호출을 허용하는 설정이다.
+                            비동기 One-Way 호출은 클라이언트가 SOAP 응답을 받지 않으며,
+                            결함(fault)이나 예외 상황(exception)이 발생했을 경우에도 마찬가지로 응답을 받지 않는다.
+                            기본값은 false이다.
+						[Label]: One Way
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="parameter" type="parameterType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 하나의 Operation에 대한 하나의 파라미터를 정의한다.
+                            Operation을 구현한 메소드 안에 정의된 순서대로 나열되어야 한다.
+                            설정값은 메소드에 정의된 파라미터의 수와 일치해야 한다.
+						[Label]: Parameter
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="return" type="returnType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스 Operation의 리턴되는 값을 정의한다.
+                            하나의 Operation에 하나의 <return> 설정만 가능하다.
+						[Label]: Return
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+	    </xs:sequence>						
+	</xs:complexType>
+
+    <xs:simpleType name="styleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="rpc"/>
+            <xs:enumeration value="document"/>
+            <xs:enumeration value="wrapped"/>    
+        </xs:restriction>            
+    </xs:simpleType>
+    
+    <xs:simpleType name="useType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="encoded"/>
+            <xs:enumeration value="literal"/>
+        </xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="parameterType">
+		<xs:sequence>
+			<xs:element name="class-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 입력 파라미터 데이터 타입이 Java 클래스로 매핑될 때의 Java 클래스 이름을 설정한다.
+						[Label]: Class Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-name" type="xs:string"> 
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성될 WSDL에 사용될 입력 파라미터의 이름을 설정한다.
+                            입력하지 않을 경우의 기본값은 메소드의 Signature의 파라미터 이름이다
+						[Label]: Wsdl Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="location" type="locationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SOAP 메시지에서 입력 파라미터가 위치할 부분을 정의한다.
+                            header, body, attachment 중 하나의 값을 가진다. 기본값은 body이다.
+                            attachment로 설정하면, 파라미터가 SOAP Envelope가 아니라
+                            SOAP 메시지의 attachment로부터 추출되며,
+                            JAX-RPC 스펙에서 지정하는 타입(java.awt.Image, java.lang.String,
+                            javax.mail.internet.MimeMultipart, javax.xml.transform.Source,
+                            javax.activation.DataHandler)만이 SOAP 메시지 attachment에서 추출될 수 있다.
+						[Label]: Location
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="mime-type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성될 WSDL에 표시될 파라미터의 MIME 타입을 정의한다.
+						[Label]: Mime Type
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="mode" type="modeType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 입력 파라미터가 표준 입력 파라미터인지, 리턴 값으로 사용되는 출력 파라미터인지,
+                            아니면 입력과 출력 모두를 위한 입력-출력(in-out)파라미터인지를 지정한다.
+                            IN, INOUT, OUT 3가지 중에 하나를 설정한다.
+						[Label]: Mode
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="locationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="header"/>
+			<xs:enumeration value="body"/>
+			<xs:enumeration value="attachment"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="modeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IN"/>
+			<xs:enumeration value="INOUT"/>
+			<xs:enumeration value="OUT"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="returnType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="wsdl-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성될 WSDL에 사용될 리턴 파라미터의 이름이다.
+						[Label]: Wsdl Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="location" type="locationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SOAP 메시지에서 리턴 파라미터가 위치할 부분을 정의한다.
+                            header, body, attachment 중 하나의 값을 가진다. 기본값은 body이다.
+                            attachment로 설정하면, 파라미터가 SOAP Envelope가 아니라
+                            SOAP 메시지의 attachment로부터 추출되며,
+                            JAX-RPC 스펙에서 지정하는 타입(java.awt.Image, java.lang.String,
+                            javax.mail.internet.MimeMultipart, javax.xml.transform.Source,
+                            javax.activation.DataHandler)만이 SOAP 메시지 attachment에서 추출될 수 있다.
+						[Label]: Location
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="mime-type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 생성될 WSDL에 표시될 파라미터의 MIME 타입을 정의한다.
+						[Label]: Mime Type
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+    <xs:complexType name="package-mappingType">
+        <xs:sequence>
+            <xs:element name="package-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Namespace로 매핑할 Java Package의 이름을 설정한다.
+						[Label]: Package Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="namespace-uri" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Java Package 이름에 해당하는 Namespace를 설정한다.
+						[Label]: Namespace Uri
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="service-impl-beanType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="servlet-name" type="xs:string">
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							[Description]: 서비스 Endpoint가 서블릿인 경우, 서블릿의 이름을 설정한다.
+							[Label]: Servlet Name
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ejb-name" type="xs:string">
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							[Description]: 서비스 Endpoint가 EJB인 경우, EJB의 이름을 설정한다.
+							[Label]: Ejb Name
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="endpoint-implementation-class" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Description]: 서비스를 구현한 Bean 클래스의 이름을 설정한다.
+						[Label]: Endpoint Implementation Class
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="context-path" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Description]: 서비스가 배치될 컨텍스트의 이름을 설정한다.
+						[Label]: Context Path
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="endpoint-url" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Description]: 서비스에 접근하기 위한 URL을 설정한다.
+						[Label]: Endpoint Url
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>        
+    
+	<xs:complexType name="port-component_handlerType">	    
+	    <xs:sequence>
+            <xs:element name="handler-name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Handler Name
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="handler-class" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Handler Class
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="init-param" type="param-valueType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Init Param
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="soap-header" type="xs:QName">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Soap Header
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="soap-role" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Soap Role
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="id" type="xs:ID"/>
+	</xs:complexType>    
+	<xs:complexType name="param-valueType">
+        <xs:sequence>
+            <xs:element name="param-name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Param Name
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="param-value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Param Value
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    
+    <!-- Since JEUS v6.0 -->
+    <xs:complexType name="policy-configType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="endpoint-policy-subject" type="endpointPolicySubjectType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Endpoint에 대한 정책을 설정한다.
+						[Label]: Endpoint Policy Subject
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="endpointPolicySubjectType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="portcomponent-wsdl-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Endpoint의 Portcomponent 이름을 명시한다.
+                        wsimport을 사용할 경우에는 명시해야 하고, wsgen을 사용할 경우에는 생략한다.
+						[Label]: Portcomponent Wsdl Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="addressing-policy" type="addressingPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Endpoint의 Addressing에 대한 정책을 설정한다.
+						[Label]: Addressing Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="rm-policy" type="rmPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Endpoint의 신뢰성 메시징 정책을 설정한다.
+						[Label]: Rm Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="security-policy" type="endpointSecurityPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Endpoint의 메시지 보안 정책을 설정한다.
+						[Label]: Security Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="operation-policy-subject" type="operationPolicySubjectType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Endpoint 하위의 Operation들에 대한 정책을 설정한다.
+						[Label]: Operation Policy Subject
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="operationPolicySubjectType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="operation-wsdl-name" type="xs:token">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: 해당 Operation에 대한 이름을 명시한다.
+                            wsimport를 사용할 경우 명시해야 한다.
+							[Label]: Operation Wsdl Name
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="operation-java-name" type="xs:token">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: 해당 Operation에 대한 이름을 명시한다.
+                            wsgen을 사용할 경우 명시해야 한다.
+							[Label]: Operation Java Name
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element minOccurs="0" name="security-policy" type="operationSecurityPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Operation의 메시지 보안 정책을 설정한다.
+						[Label]: Security Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="tx-policy" type="txPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Operation의 트랜잭션 정책을 설정한다.
+						[Label]: Tx Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="input-message-policy-subject" type="messagePolicySubjectType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Operation 하위의 입력 메시지에 대한 정책을 설정한다.
+						[Label]: Input Message Policy Subject
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="output-message-policy-subject" type="messagePolicySubjectType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Operation 하위의 출력 메시지에 대한 정책을 설정한다.
+						[Label]: Output Message Policy Subject
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="messagePolicySubjectType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="security-policy" type="messageSecurityPolicyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지에 대한 메시지 보안 정책을 설정한다.
+						[Label]: Security Policy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="addressingPolicyType">
+        <xs:choice>
+            <xs:element name="www-w3-org" type="emptyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Addressing 정책에 대한 표준 스키마이다.
+						[Label]: Www W3 Org
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="schemas-xmlsoap-org" type="emptyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Addressing 정책에 대한 Member Submission 스키마이다.
+						[Label]: Schemas Xmlsoap Org
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="rmPolicyType">
+        <xs:sequence>
+            <xs:element default="600000" minOccurs="0" name="inactivityTimeout" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 신뢰성 메시징에서 비동작 시간제한을 설정한다.
+                                       설정하지 않을 경우, 밀리세컨드 단위로 600000이 기본값으로 설정된다.
+						[Label]: InactivityTimeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1000" minOccurs="0" name="acknowledgementInterval" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 신뢰성 메시징에서 확인 메시지를 보내는 간격을 설정한다.
+                                       설정하지 않을 경우, 밀리세컨드 단위로 1000이 기본값으로 설정된다.
+						[Label]: AcknowledgementInterval
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="endpointSecurityPolicyType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="security-binding" type="securityBindingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 바인딩을 설정한다.
+						[Label]: Security Binding
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="token" type="supportingTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Token을 설정한다.
+						[Label]: Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="protection" type="protectionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Protection을 설정한다.
+						[Label]: Protection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="10" minOccurs="0" name="wss-version" type="wssVersionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: ws-security 스펙에 대한 버전을 명시한다. 11, 10 중 하나를 설정할 수 있다.
+                        11은 버전 1.1, 10은 버전 1.0을 의미한다.
+						[Label]: Wss Version
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="trust" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: ws-trust 스펙을 따를 것인지 여부를 설정한다.기본값은 false이다.
+						[Label]: Trust
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="disable-streaming-security" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 보안 관련 처리를 Streaming 방식으로 하지 않도록 하는 설정이다. 
+                        기본값은 false이고, true로 설정하면 성능에 많은 저하를 가져올 수 있다.
+						[Label]: Disable Streaming Security
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="sts-configuration" type="stsConfigurationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Sts Configuration
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="keystore" type="keyTruststoreType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Security 바인딩에서 Keystore를 사용할 경우
+                        Keystore를 설정한다.
+						[Label]: Keystore
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="truststore" type="keyTruststoreType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Security 바인딩에서 Truststore를 사용할 경우
+                        Truststore를 설정한다.
+						[Label]: Truststore
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="operationSecurityPolicyType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="supporting-token" type="supportingTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Token을 설정한다.
+						[Label]: Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="protection" type="protectionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Protection을 설정한다.
+						[Label]: Protection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="messageSecurityPolicyType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="supporting-token" type="supportingTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Token을 설정한다.
+						[Label]: Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="protection" type="protectionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 메시지 보안에 대한 Protection을 설정한다.
+						[Label]: Protection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="securityBindingType">
+    	<xs:sequence>
+	        <xs:choice>
+	            <xs:element name="transport-binding" type="transportBindingType">
+	                <xs:annotation>
+	                    <xs:documentation><![CDATA[
+							[Description]: 전송 수준 보안에 대한 바인딩을 설정한다.
+							[Label]: Transport Binding
+						]]></xs:documentation>
+	                </xs:annotation>
+	            </xs:element>
+	            <xs:element name="symmetric-binding" type="symmetricBindingType">
+	                <xs:annotation>
+	                    <xs:documentation><![CDATA[
+							[Description]: 대칭키 보안에 대한 바인딩을 설정한다.
+							[Label]: Symmetric Binding
+						]]></xs:documentation>
+	                </xs:annotation>
+	            </xs:element>
+	            <xs:element name="asymmetric-binding" type="asymmetricBindingType">
+	                <xs:annotation>
+	                    <xs:documentation><![CDATA[
+							[Description]: 비대칭키 보안에 대한 바인딩을 설정한다.
+							[Label]: Asymmetric Binding
+						]]></xs:documentation>
+	                </xs:annotation>
+	            </xs:element>
+	        </xs:choice>
+	    </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="wssVersionType">
+        <xs:restriction base="xs:int">
+            <xs:enumeration value="10"/>
+            <xs:enumeration value="11"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="stsConfigurationType">
+	    <xs:sequence>
+            <xs:element default="36000" minOccurs="0" name="life-time" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Life Time
+					]]></xs:documentation>
+				</xs:annotation>
+            </xs:element>
+	        <xs:element name="contract" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Contract
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	        <xs:element name="issuer" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Issuer
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	        <xs:element name="service-providers" type="serviceProvidersType">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Service Providers
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	    </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="serviceProvidersType">
+	    <xs:sequence>
+	        <xs:element maxOccurs="unbounded" name="service-provider" type="serviceProviderType">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Service Provider
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	    </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="serviceProviderType">
+	    <xs:sequence>
+            <xs:element name="end-point" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: End Point
+					]]></xs:documentation>
+				</xs:annotation>
+            </xs:element>
+	        <xs:element name="cert-alias" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Cert Alias
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	    </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="keyTruststoreType">
+	    <xs:choice>
+            <xs:element name="keystore-file" type="keyTruststoreFileType">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]: x509 Token의 Keystore를 명시한다.
+						[Label]: Keystore File
+					]]></xs:documentation>
+				</xs:annotation>
+            </xs:element>
+	        <xs:element name="keystore-callbackhandler" type="xs:string">
+				<xs:annotation>
+				    <xs:documentation><![CDATA[
+						[Description]: Keystore Callback Handler 클래스를 명시한다.
+						[Label]: Keystore Callbackhandler
+					]]></xs:documentation>
+				</xs:annotation>
+	        </xs:element>
+	    </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="keyTruststoreFileType">
+        <xs:sequence>
+            <xs:element name="alias" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore에서 인증서에 대한 Alias 정보를 기록한다.
+						[Label]: Alias
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="JKS" minOccurs="0" name="key-type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore의 유형을 기록한다. 설정하지 않으면 기본값으로 JKS가 설정된다.
+						[Label]: Key Type
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="keystore-password" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore에 접근할 때 필요한 Keystore 암호를 설정한다.
+                                       암호화해서 저장할 때에는 {algorithm}ciphertext와 같은 형식으로 입력한다. ex) {DES}FQrLbQ/D8O1lDVS71L28rw==
+						[Label]: Keystore Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="keystore-filename" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore에 접근할 URL을 기록한다.
+						[Label]: Keystore Filename
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="transportBindingType">
+        <xs:sequence>
+            <xs:element name="transport-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 전송 수준 보안에서 사용되는 Token을 명시한다.
+						[Label]: Transport Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Basic128" minOccurs="0" name="algorithm-suite" type="algorithmSuiteType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 전송 수준 보안에서 사용되는 알고리즘을 명시한다.
+						[Label]: Algorithm Suite
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Lax" minOccurs="0" name="layout" type="layoutType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 전송 수준 보안에서 메시지 형태에 대한 엄격함을 명시한다.
+                        Strict, Lax로 설정할 수 있고 기본값은 Lax 이다.
+						[Label]: Layout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="timestamp" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 전송 수준 보안에서 Timestamp 설정을 할 것인지를 명시한다.
+                        기본값은 true이다.
+						[Label]: Timestamp
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="algorithmSuiteType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Basic128"/>
+            <xs:enumeration value="TripleDes"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="layoutType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Lax"/>
+            <xs:enumeration value="Strict"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="symmetricBindingType">
+        <xs:sequence>
+            <xs:element name="protection-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정의 Token을 설정한다.
+						[Label]: Protection Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Basic128" minOccurs="0" name="algorithm-suite" type="algorithmSuiteType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정에서 사용되는 알고리즘을 명시한다.
+						[Label]: Algorithm Suite
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Lax" minOccurs="0" name="layout" type="layoutType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정에서 메시지 형태에 대한 엄격함을 명시한다.
+                        Strict, Lax로 설정할 수 있고 기본값은 Lax 이다.
+						[Label]: Layout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="timestamp" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정에서 Timestamp를 설정할 것인지를 명시한다.
+                        기본값은 true 이다.
+						[Label]: Timestamp
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="encrypt-signature" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정에서 서명을 암호화할 것인지를 명시한다.
+						[Label]: Encrypt Signature
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="encrypt-before-siging" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 대칭키 바인딩 설정에서 서명 전에 암호화를 할 것인지를 명시한다.
+                        지정하지 않으면 암호화 후 서명을 하게 된다.
+						[Label]: Encrypt Before Siging
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="asymmetricBindingType">
+        <xs:sequence>
+            <xs:element name="initiator-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정의 Initiator 측에서 사용할 Token을 설정한다.
+						[Label]: Initiator Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="recipient-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정의 Recipient 측에서 사용할 Token을 설정한다.
+						[Label]: Recipient Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Basic128" minOccurs="0" name="algorithm-suite" type="algorithmSuiteType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정에서 사용되는 알고리즘을 명시한다.
+						[Label]: Algorithm Suite
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="Strict" minOccurs="0" name="layout" type="layoutType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정에서 메시지 형태에 대한 엄격함을 명시한다.
+                        Strict, Lax로 설정할 수 있고 기본값은 Strict이다.
+						[Label]: Layout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="timestamp" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정에서 Timestamp를 설정할 것인지를 명시한다.
+                        기본값은 true이다.
+						[Label]: Timestamp
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="encrypt-before-siging" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 비대칭키 바인딩 설정에서 서명 전에 암호화를 할 것인지를 명시한다.
+                        지정하지 않으면 암호화 후 서명을 한다.
+						[Label]: Encrypt Before Siging
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="supportingTokenType">
+        <xs:choice>
+            <xs:element name="supporting-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 추가적인 보안 Token을 설정한다.
+						[Label]: Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signed-supporting-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서명이 되는 추가적인 보안 Token을 설정한다.
+						[Label]: Signed Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="endorsing-supporting-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 독립적인 추가 보안 Token을 설정한다.
+						[Label]: Endorsing Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signed-endorsing-supporting-token" type="tokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서명이 되는 추가적인 보안 Token을 설정한다.
+						[Label]: Signed Endorsing Supporting Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="tokenType">
+        <xs:choice>
+            <xs:element name="username-token" type="usernameTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Username Token을 사용할 것을 명시한다.
+						[Label]: Username Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="x509-token" type="x509TokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: X509 Token을 사용할 것을 명시한다.
+						[Label]: X509 Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="secure-conversation-token" type="secureConversationTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 보안 대화 Token을 사용할 것을 명시한다.
+						[Label]: Secure Conversation Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="saml-token" type="samlTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SAML Token을 사용할 것을 명시한다.
+						[Label]: Saml Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="https-token" type="emptyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTPS Token을 사용할 것을 명시한다.
+						[Label]: Https Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="issued-token" type="issuedTokenType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Issued Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="usernameTokenType">
+    	<xs:sequence>
+	        <xs:choice>
+	        	<xs:choice>
+	                <xs:sequence>
+	                    <xs:element name="username" type="xs:string">
+	                        <xs:annotation>
+	                            <xs:documentation><![CDATA[
+				[Description]: Username을 설정한다.
+				[Label]: Username
+			]]></xs:documentation>
+	                        </xs:annotation>
+	                    </xs:element>
+	                    <xs:element name="password" type="xs:string">
+	                        <xs:annotation>
+	                            <xs:documentation><![CDATA[
+				[Description]: Password를 설정한다.
+	                                암호화해서 저장할 때에는 {algorithm}ciphertext와 같은 형식으로 입력한다. ex) {DES}FQrLbQ/D8O1lDVS71L28rw==
+				[Label]: Password
+			]]></xs:documentation>
+	                        </xs:annotation>
+	                    </xs:element>
+	                </xs:sequence>
+	                <xs:element name="username-password-handler" type="xs:string">
+	                    <xs:annotation>
+	                        <xs:documentation><![CDATA[
+				[Description]: Username 및 Password를 핸들러를 통해 등록한다.
+				[Label]: Username Password Handler
+			]]></xs:documentation>
+	                    </xs:annotation>
+	                </xs:element>
+	            </xs:choice>
+	            <xs:element name="username-password-validator" type="xs:string">
+	                <xs:annotation>
+	                    <xs:documentation><![CDATA[
+							[Description]: Username 및 Password를 인증하고자 할 때 이 핸들러를 통해 등록한다.
+							[Label]: Username Password Validator
+						]]></xs:documentation>
+	                </xs:annotation>
+	            </xs:element>
+	        </xs:choice>
+	        <xs:element default="false" minOccurs="0" name="include-token" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Token을 항상 포함하여 메시지를 전송할 것인지를 명시한다.
+                        기본값은 false이다.
+						[Label]: Include Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+	    </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="x509TokenType">
+        <xs:sequence>
+            <xs:element default="false" minOccurs="0" name="include-token" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Token을 항상 포함하여 메시지를 전송할 것인지를 명시한다.
+                        기본값은 false이다.
+						[Label]: Include Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="secureConversationTokenType">
+        <xs:sequence>
+            <xs:sequence>
+                <xs:element name="asymmetric-binding-initiator-token" type="x509TokenType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: 보안 대화에서 Initiator Token에 대해 설정한다.
+							[Label]: Asymmetric Binding Initiator Token
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="asymmetric-binding-recipient-token" type="x509TokenType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: 보안 대화에서 Recipient Token에 대해 설정한다.
+							[Label]: Asymmetric Binding Recipient Token
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:element default="36000" minOccurs="0" name="client-configuration" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 보안 대화에서 클라이언트에 대해 설정한다. 
+                        기본값은 36000 이고, 단위는 밀리세컨드이다.
+						[Label]: Client Configuration
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="include-token" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Token을 항상 포함하여 메시지를 전송할 것인지를 명시한다.
+                        기본값은 false이다.
+						[Label]: Include Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="samlTokenType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="saml-callback-handler" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SAML Framework를 핸들러를 통해 등록한다.
+						[Label]: Saml Callback Handler
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="include-token" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Token을 항상 포함하여 메시지를 전송할 것인지를 명시한다.
+                        기본값은 false이다.
+						[Label]: Include Token
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="issuedTokenType">
+        <xs:sequence>
+            <xs:element name="issuer-address" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:
+						[Label]: Issuer Address
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="protectionType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="signed-part" type="protectionPartType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서명이 될 부분을 명시한다.
+						[Label]: Signed Part
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="signed-element" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서명이 될 항목(Element)을 Xpath로 입력한다.
+						[Label]: Signed Element
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="encrypted-part" type="protectionPartType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 암호화 될 부분을 명시한다.
+						[Label]: Encrypted Part
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="encrypted-element" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 암호화 될 항목(Element)을 Xpath로 입력한다.
+						[Label]: Encrypted Element
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="required-element" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 없어서는 안 될 항목(Element)을 Xpath로 입력한다.
+						[Label]: Required Element
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="protectionPartType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="body" type="emptyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: body 부분을 서명 또는 암호화한다.
+						[Label]: Body
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="header" type="headerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: header 부분을 서명 또는 암호화한다.
+						[Label]: Header
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="headerType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SOAP 메시지 header 내에서 서명 또는 암호화될 항목(Element)의 이름을 명시한다.
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="namespace" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: SOAP 메시지 header 내에서 서명 또는 암호화될 항목(Element)의 Namespace를 명시한다.
+						[Label]: Namespace
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="txPolicyType">
+        <xs:sequence>
+            <xs:element default="notsupports" minOccurs="0" name="tx-conf" type="txConfType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB 트랜잭션 속성에 해당하는 웹 서비스 정책을 설정한다.
+                        required, requirednew, mandatory, supports, notsupports 중 하나로 설정하며
+                       기본값은 notsupports이다.
+						[Label]: Tx Conf
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="txConfType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="required"/>
+            <xs:enumeration value="requirednew"/>
+            <xs:enumeration value="mandatory"/>
+            <xs:enumeration value="supports"/>
+            <xs:enumeration value="notsupports"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

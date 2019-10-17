@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:uddi="urn:uddi-org:api_v3" xmlns:uddi_custody="urn:uddi-org:custody_v3" xmlns:uddi_repl="urn:uddi-org:repl_v3" elementFormDefault="qualified" id="uddi_repl" targetNamespace="urn:uddi-org:repl_v3" version="3.0.2">
+	<!-- 
+	Copyright (c) 2000-2002 by Accenture, Ariba, Inc., Commerce One, Inc. 
+	Fujitsu Limited, Hewlett-Packard Company, i2 Technologies, Inc., 
+	Intel Corporation, International Business Machines Corporation,  
+	Microsoft Corporation, Oracle Corporation, SAP AG, Sun Microsystems, Inc., 
+	and VeriSign, Inc.  All Rights Reserved.
+    
+	Copyright (c) OASIS Open 2002-2004. All Rights Reserved.
+	-->
+	<import namespace="urn:uddi-org:api_v3" schemaLocation="uddi_v3.xsd"/>
+	<import namespace="urn:uddi-org:custody_v3" schemaLocation="uddi_v3custody.xsd"/>
+	<!--<import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/xmldsig-core/xmldsig-core-schema.xsd"/>-->
+    <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+	<!-- Attribute type definitions -->
+	<simpleType final="restriction" name="controlledMessage_type">
+		<restriction base="uddi:validationTypeString255"/>
+	</simpleType>
+	<simpleType final="restriction" name="message_type">
+		<restriction base="uddi:validationTypeString255"/>
+	</simpleType>
+	<simpleType final="restriction" name="timeOfConfigurationUpdate_type">
+		<restriction base="uddi:validationTypeString255"/>
+	</simpleType>
+	<simpleType final="restriction" name="operatorNodeID_type">
+		<restriction base="uddi:uddiKey"/>
+	</simpleType>
+	<simpleType final="#all" name="operatorStatus_type">
+		<restriction base="string">
+			<maxLength value="16"/>
+			<enumeration value="new"/>
+			<enumeration value="normal"/>
+			<enumeration value="resigned"/>
+		</restriction>
+	</simpleType>
+	<simpleType final="#all" name="USN_type">
+		<restriction base="integer">
+			<minInclusive value="0"/>
+			<maxInclusive value="9223372036854775807"/>
+		</restriction>
+	</simpleType>
+	<!-- Type and element def's for replication stream config and content -->
+	<element name="changeRecord">
+		<complexType>
+			<sequence>
+				<element name="changeID" type="uddi_repl:changeRecordID_type"/>
+				<group ref="uddi_repl:changeRecordPayload_type"/>
+			</sequence>
+			<attribute name="acknowledgementRequested" type="boolean" use="required"/>
+		</complexType>
+	</element>
+	<element name="changeRecordAcknowledgement">
+		<complexType>
+			<sequence>
+				<element name="acknowledgedChange" type="uddi_repl:changeRecordID_type"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordNewDataConditional">
+		<complexType>
+			<sequence>
+				<element ref="uddi_repl:changeRecordNewData"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordCorrection">
+		<complexType>
+			<sequence>
+				<element ref="uddi_repl:changeRecord"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordDelete">
+		<complexType>
+			<sequence>
+				<group ref="uddi_repl:genericKey_type"/>
+				<element name="modified" type="uddi:timeInstant"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordDeleteAssertion">
+		<complexType>
+			<sequence>
+				<element ref="uddi:publisherAssertion"/>
+				<element name="fromBusinessCheck" type="boolean"/>
+				<element name="toBusinessCheck" type="boolean"/>
+				<element name="modified" type="uddi:timeInstant"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordHide">
+		<complexType>
+			<sequence>
+				<element ref="uddi:tModelKey"/>
+				<element name="modified" type="uddi:timeInstant"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordNewData">
+		<complexType>
+			<sequence>
+				<choice>
+					<element ref="uddi:businessEntity"/>
+					<element ref="uddi:businessService"/>
+					<element ref="uddi:bindingTemplate"/>
+					<element ref="uddi:tModel"/>
+				</choice>
+				<element ref="uddi:operationalInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="fromSignatures">
+		<complexType>
+			<sequence>
+				<element maxOccurs="unbounded" minOccurs="0" ref="dsig:Signature"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="toSignatures">
+		<complexType>
+			<sequence>
+				<element maxOccurs="unbounded" minOccurs="0" ref="dsig:Signature"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordPublisherAssertion">
+		<complexType>
+			<sequence>
+				<element ref="uddi:publisherAssertion"/>
+				<element name="fromBusinessCheck" type="boolean"/>
+				<element name="toBusinessCheck" type="boolean"/>
+				<element name="modified" type="uddi:timeInstant"/>
+				<element minOccurs="0" ref="uddi_repl:fromSignatures"/>
+				<element minOccurs="0" ref="uddi_repl:toSignatures"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordNull"/>
+	<complexType final="restriction" name="changeRecordID_type">
+		<sequence>
+			<element name="nodeID" type="uddi_repl:operatorNodeID_type"/>
+			<element minOccurs="0" name="originatingUSN" type="uddi_repl:USN_type"/>
+		</sequence>
+	</complexType>
+	<group name="changeRecordPayload_type">
+		<choice>
+			<element ref="uddi_repl:changeRecordNull"/>
+			<element ref="uddi_repl:changeRecordNewData"/>
+			<element ref="uddi_repl:changeRecordDelete"/>
+			<element ref="uddi_repl:changeRecordPublisherAssertion"/>
+			<element ref="uddi_repl:changeRecordHide"/>
+			<element ref="uddi_repl:changeRecordDeleteAssertion"/>
+			<element ref="uddi_repl:changeRecordAcknowledgement"/>
+			<element ref="uddi_repl:changeRecordCorrection"/>
+			<element ref="uddi_repl:changeRecordNewDataConditional"/>
+			<element ref="uddi_repl:changeRecordConditionFailed"/> 
+		</choice>
+	</group>
+	<element name="changeRecords">
+		<complexType>
+			<sequence>
+				<element maxOccurs="unbounded" minOccurs="0" ref="uddi_repl:changeRecord"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="communicationGraph">
+		<complexType>
+			<sequence>
+				<element maxOccurs="unbounded" name="node" type="uddi_repl:operatorNodeID_type"/>
+				<element maxOccurs="unbounded" name="controlledMessage" type="uddi_repl:controlledMessage_type"/>
+				<element maxOccurs="unbounded" minOccurs="0" name="edge">
+					<complexType>
+						<sequence>
+							<element maxOccurs="unbounded" name="message" type="uddi_repl:message_type"/>
+							<element name="messageSender" type="uddi_repl:operatorNodeID_type"/>
+							<element name="messageReceiver" type="uddi_repl:operatorNodeID_type"/>
+							<element maxOccurs="unbounded" minOccurs="0" name="messageReceiverAlternate" type="uddi_repl:operatorNodeID_type"/>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="do_ping">
+		<complexType>
+			<sequence/>
+		</complexType>
+	</element>
+	<group name="genericKey_type">
+		<choice>
+			<element ref="uddi:businessKey"/>
+			<element ref="uddi:tModelKey"/>
+			<element ref="uddi:serviceKey"/>
+			<element ref="uddi:bindingKey"/>
+		</choice>
+	</group>
+	<element name="get_changeRecords">
+		<complexType>
+			<sequence>
+				<element name="requestingNode" type="uddi_repl:operatorNodeID_type"/>
+				<element minOccurs="0" name="changesAlreadySeen" type="uddi_repl:highWaterMarkVector_type"/>
+				<choice minOccurs="0">
+					<element name="responseLimitCount" type="integer"/>
+					<element name="responseLimitVector" type="uddi_repl:highWaterMarkVector_type"/>
+				</choice>
+			</sequence>
+		</complexType>
+	</element>
+	<complexType final="restriction" name="highWaterMarkVector_type">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="0" name="highWaterMark" type="uddi_repl:changeRecordID_type"/>
+		</sequence>
+	</complexType>
+	<element name="notify_changeRecordsAvailable">
+		<complexType>
+			<sequence>
+				<element name="notifyingNode" type="uddi_repl:operatorNodeID_type"/>
+				<element name="changesAvailable" type="uddi_repl:highWaterMarkVector_type"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="get_highWaterMarks">
+		<complexType>
+			<sequence/>
+		</complexType>
+	</element>
+	<element name="highWaterMarks" type="uddi_repl:highWaterMarkVector_type"/>
+	<element name="operatorNodeID" type="uddi_repl:operatorNodeID_type"/>
+	<element name="operator">
+		<complexType>
+			<sequence>
+				<element ref="uddi_repl:operatorNodeID"/>
+				<element name="operatorStatus" type="uddi_repl:operatorStatus_type"/>
+				<element maxOccurs="unbounded" ref="uddi:contact"/>
+				<element name="soapReplicationURL" type="anyURI"/>
+				<element maxOccurs="unbounded" minOccurs="0" ref="dsig:KeyInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element final="restriction" name="transfer_custody" type="uddi_repl:transfer_custody"/>
+	<complexType final="restriction" name="transfer_custody">
+		<sequence>
+			<element ref="uddi_custody:transferToken"/>
+			<element ref="uddi_custody:keyBag"/>
+			<element ref="uddi_custody:transferOperationalInfo"/>
+		</sequence>
+	</complexType>
+	<element name="replicationConfiguration">
+		<complexType>
+			<sequence>
+				<element name="serialNumber" type="uddi_repl:USN_type"/>
+				<element name="timeOfConfigurationUpdate" type="uddi_repl:timeOfConfigurationUpdate_type"/>
+				<element name="registryContact">
+					<complexType>
+						<sequence>
+							<element ref="uddi:contact"/>
+						</sequence>
+					</complexType>
+				</element>
+				<element maxOccurs="unbounded" minOccurs="0" ref="uddi_repl:operator"/>
+				<element minOccurs="0" ref="uddi_repl:communicationGraph"/>
+				<element minOccurs="0" name="maximumTimeToSyncRegistry" type="integer"/>
+				<element name="maximumTimeToGetChanges" type="integer"/>
+				<element maxOccurs="unbounded" minOccurs="0" ref="dsig:Signature"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="changeRecordConditionFailed">
+		<complexType>
+			<sequence>
+				<element maxOccurs="1" minOccurs="1" name="failedChangeID" type="uddi_repl:changeRecordID_type"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

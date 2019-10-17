@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<nodes xmlns="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <node>
+        <name>@@HOSTNAME@@</name>
+        <host>localhost</host>
+        <java>
+            <port>7730</port>
+            <use-ssl>false</use-ssl>
+        </java>
+    </node>
+</nodes>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    <xs:include schemaLocation="jeus-store.xsd"/>
+
+    <xs:element name="lpq-agent" type="lpq-agentType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Lpq Agent
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+    <xs:complexType name="lpq-agentType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Name
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="time-to-live" type="timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Time To Live
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="dispatch-retry" type="dispatch-retryType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Dispatch Retry
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="reconnect" type="reconnectType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Reconnect
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="store" type="persistence-storeType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Store
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="dispatch-retryType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="dispatch-retry-limit" type="retryLimitType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Dispatch Retry Limit
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="dispatch-retry-interval" type="timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Dispatch Retry Interval
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="dispatch-retry-increment" type="timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Dispatch Retry Increment
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="reconnectType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="reconnect-retry-limit" type="retryLimitType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Reconnect Retry Limit
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="reconnect-retry-interval" type="timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Reconnect Retry Interval
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="reconnect-sleep-time" type="timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Reconnect Sleep Time
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="persistence-storeType">
+        <xs:choice minOccurs="1">
+            <xs:element minOccurs="1" name="journal-store" type="journal-storeType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Journal Store
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:simpleType name="retryLimitType">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="-1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="timestampType">
+        <xs:restriction base="xs:long">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

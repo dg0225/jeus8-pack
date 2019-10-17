@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    <xs:include schemaLocation="jeus-wssecurity-dd.xsd"/>
+    <xs:include schemaLocation="jeus-webservices-client-dd.xsd"/>
+	
+	<xs:element name="jeus-webservices-dd" type="jeus-webservices-ddType">
+	    <xs:annotation>
+	        <xs:documentation><![CDATA[
+				[Description]: JEUS 웹 서비스 설정 문서의 최상위 항목을 설정한다.
+				[Label]: Jeus Webservices Dd
+			]]></xs:documentation>
+	    </xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="jeus-webservices-ddType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="ejb-context-path" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치할 EJB 웹 서비스를 위한 Endpoint URL의 컨텍스트 경로를 표시한다.
+                            EJB Endpoint에서만 사용한다.
+						[Label]: Ejb Context Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="ejb-login-config" type="ejb-login-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB 웹 서비스 Endpoint URL에 대해 클라이언트가 인증받을 때
+                            사용되는 인증 방법과 인증 영역을 표시한다. EJB Endpoint에서만 사용한다.
+						[Label]: Ejb Login Config
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="service-info-page" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서비스가 웹 브라우저로 호출되었을 때 나타나는 화면을
+                            Customize한다. 담당할 페이지의 "/"로 시작하는 컨텍스트 상대 경로를 설정한다.
+						[Label]: Service Info Page
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element maxOccurs="unbounded" name="service" type="serviceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치되는 웹 서비스를 표시한다.
+						[Label]: Service
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+		<xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+	</xs:complexType>
+
+	<xs:complexType name="ejb-login-configType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="auth-method" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 인증 방법을 설정한다.
+                            BASIC, CLIENT-CERT, DIGEST, FORM의 4개의 값 중에 하나를 선택한다.
+						[Label]: Auth Method
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="realm-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 보안 정책이 적용되는 도메인을 설정한다.
+						[Label]: Realm Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="serviceType">
+		<xs:sequence>
+			<xs:element name="webservice-description-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL 파일에서 관련된 웹 서비스 Endpoint 이름을 설정한다.
+                            표준 배치 서술자 webservices.xml의 <webservice-description-name>에 해당하는 설정이다.
+                        [Dependency]:/webservices/webservice-description/webservice-description-name
+						[Label]: Webservice Description Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-publish" type="wsdl-publishType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WSDL를 공개할 방식을 설정한다.
+						[Label]: Wsdl Publish
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="port" type="portType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스의 포트 정보를 설정한다.
+						[Label]: Port
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="wsdl-publishType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="http-publish" type="http-publishType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: HTTP 방식으로 공개되는 WSDL를 나타낸다.
+                                공개된 WSDL에서 Import하는 schema들은 HTTP URL에 의해 참조된다.
+							[Label]: Http Publish
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+				<xs:element name="file-publish" type="file-publishType">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+							[Description]: 파일 방식으로 공개되는 WSDL를 나타낸다.
+                                공개된 WSDL에서 Import하는 schema들은 파일 상대 경로에 의해 참조된다.
+							[Label]: File Publish
+						]]></xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="http-publishType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="server-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스의 WSDL 파일를 공개하는 서버의 URL이다.
+						[Label]: Server Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="secure-server-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스의 WSDL 파일를 공개하는 서버의 SSL 보안이 가능한 URL이다.
+						[Label]: Secure Server Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="wsdl-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스의 WSDL 파일을 웹 서비스의 컨텍스트 내에서 기본적으로 설정되는 기존
+                            WSDL 공개 URL(일반적으로 '/{서비스이름}?wsdl')에 부가적으로 이 URL로도 공개할 수 있다.
+                            (컨텍스트 이후의 URL만 설정 가능하며 '/specified_url'과 같은 방식으로 설정한다.)
+						[Label]: Wsdl Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="file-publishType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="server-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스의 WSDL 파일를 공개하는 서버의 URL이다.
+						[Label]: Server Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="secure-server-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스의 WSDL 파일를 공개하는 서버의 SSL 보안이 가능한 URL이다.
+						[Label]: Secure Server Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element name="publish-path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스 WSDL이 저장되는 디렉터리를 표시한다.
+						[Label]: Publish Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="portType">
+		<xs:sequence>
+			<xs:element name="port-component-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스 Endpoint를 구별하기 위한 이름을 설정한다.
+                            표준 배치 서술자 webservices.xml의 <port-component-name>에 해당하는 설정이다.
+                        [Dependency]:/webservices/webservice-description/port-component/port-component-name
+						[Label]: Port Component Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="ejb-endpoint-url" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB Endpoint에 접근할 수 있는 Endpoint URL을 표시한다.
+                            EJB Endpoint에서만 사용한다.
+						[Label]: Ejb Endpoint Url
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="tie-class" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스 Endpoint URL과 웹 서비스 Endpoint 인터페이스를
+                            연결해 주는 클래스를 표시한다.
+                            배치할 때 자동 생성되므로 웹 서비스 배치자가 표시할 필요가 없다.
+						[Label]: Tie Class
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="service-property" type="nameValueType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 특정 서비스 Endpoint 포트에 설정하는 프로퍼티들을 표시한다.
+						[Label]: Service Property
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="ejb-transport-guarantee" type="ejb-transport-guaranteeType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB Endpoint에서 주고받는 메시지에 대한
+                            기밀성(confidentiality)과 무결성(integrity) 구성을 표시한다.
+                            설정 가능한 값은 ‘NONE’, ‘CONFIDENTIAL’ 또는 ‘INTEGRAL’이다.
+						[Label]: Ejb Transport Guarantee
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="soapver" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 배치된 웹 서비스에서 서비스하는 SOAP 메시지의 버전을 표시한다.
+						[Label]: Soapver
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="security" type="securityType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스의 보안(WS-Security)을 위한 설정이다.
+						[Label]: Security
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="rm" type="rmType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스의 Reliable 메시징(WS-ReliableMessaging)을 사용함을 나타낸다.
+						[Label]: Rm
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="transaction" type="emptyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스의 트랜잭션(WS-Transaction)을 사용함을 나타낸다.
+						[Label]: Transaction
+					]]></xs:documentation>
+                </xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ejb-transport-guaranteeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NONE"/>
+			<xs:enumeration value="INTEGRAL"/>
+			<xs:enumeration value="CONFIDENTIAL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="securityType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="request-receiver" type="security-receiverType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스 클라이언트의 보안 메시지 요청을 처리하기 위한 설정이다.
+						[Label]: Request Receiver
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			<xs:element minOccurs="0" name="response-sender" type="security-senderType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 서비스가 SOAP 메시지를 처리한 후, 응답을 내보낼 때, 보안이 적용된 메시지를 보내기 위한 설정이다.
+						[Label]: Response Sender
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+		</xs:sequence>	
+	</xs:complexType>	
+
+    <xs:complexType name="rmType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="client-provider" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: RM 웹 서비스가 클라이언트 모드로 동작함을 나타낸다. 기본값은 false이다.
+						[Label]: Client Provider
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>  
+    </xs:complexType>   
+</xs:schema>

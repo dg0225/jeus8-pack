@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xsd:schema xmlns:uddi="urn:uddi-org:api_v3" xmlns:uddi_custody="urn:uddi-org:custody_v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" id="uddi_custody" targetNamespace="urn:uddi-org:custody_v3" version="3.0.2">
+	<!-- 
+	Copyright (c) 2000-2002 by Accenture, Ariba, Inc., Commerce One, Inc. 
+	Fujitsu Limited, Hewlett-Packard Company, i2 Technologies, Inc., 
+	Intel Corporation, International Business Machines Corporation,  
+	Microsoft Corporation, Oracle Corporation, SAP AG, Sun Microsystems, Inc., 
+	and VeriSign, Inc.  All Rights Reserved.
+    
+	Copyright (c) OASIS Open 2002-2004. All Rights Reserved.
+	-->
+	<xsd:import namespace="urn:uddi-org:api_v3" schemaLocation="uddi_v3.xsd"/>
+	<xsd:element final="restriction" name="transferToken" type="uddi_custody:transferToken"/>
+	<xsd:element final="restriction" name="keyBag" type="uddi_custody:keyBag"/>
+	<xsd:element final="restriction" name="transferOperationalInfo" type="uddi_custody:transferOperationalInfo"/>
+	<xsd:complexType final="restriction" name="keyBag">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" name="key" type="uddi:uddiKey"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType final="restriction" name="transferOperationalInfo">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authorizedName"/>
+			<xsd:element minOccurs="0" ref="uddi:nodeID"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType final="restriction" name="transferToken">
+		<xsd:sequence>
+			<xsd:element ref="uddi:nodeID"/>
+			<xsd:element name="expirationTime" type="xsd:dateTime"/>
+			<xsd:element name="opaqueToken" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="get_transferToken" type="uddi_custody:get_transferToken"/>
+	<xsd:complexType final="restriction" name="get_transferToken">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element ref="uddi_custody:keyBag"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="transfer_entities" type="uddi_custody:transfer_entities"/>
+	<xsd:complexType final="restriction" name="transfer_entities">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element ref="uddi_custody:transferToken"/>
+			<xsd:element ref="uddi_custody:keyBag"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="discard_transferToken" type="uddi_custody:discard_transferToken"/>
+	<xsd:complexType final="restriction" name="discard_transferToken">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:choice>
+				<xsd:element ref="uddi_custody:transferToken"/>
+				<xsd:element ref="uddi_custody:keyBag"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

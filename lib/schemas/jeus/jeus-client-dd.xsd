@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+	<xs:include schemaLocation="jeus-webservices-client-dd.xsd"/>
+
+
+    <xs:element name="jeus-client-dd" type="jeus-client-ddType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: 단일 JEUS 클라이언트 모듈의 최상위 항목으로, 각각의 jeus-client-dd.xml
+			파일에는 이 설정 항목이 반드시 존재한다.
+				[Label]: Jeus Client Dd
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+
+    <xs:complexType name="jeus-client-ddType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="module-info" type="client-module-infoType">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션에 대한 정보를 설정한다.
+						[Label]: Module Info
+					]]></xs:documentation>
+                <xs:appinfo>
+                  <metadata>
+                      <default-element>true</default-element>
+                  </metadata>
+                </xs:appinfo>
+			  </xs:annotation>
+			</xs:element>
+
+            <xs:element minOccurs="0" name="system-logging" type="system-loggingType">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션 컨테이너가 사용하는 Logger를 설정한다.
+						[Label]: System Logging
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+            <xs:element minOccurs="0" name="security-info" type="security-infoType">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션이 실행될 때 Security 인증을 위한 여러 가지 정보를 설정한다.
+						[Label]: Security Info
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+            <xs:element minOccurs="0" name="scheduler" type="schedulerType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클라이언트 컨테이너에서 사용할 Scheduler의 설정이다.
+						[Label]: Scheduler
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:group ref="jndiEnvironmentMappingGroup"/>
+            <xs:element minOccurs="0" name="java-security-permission" type="securityPermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS가 J2SE Security를 사용할 때 해당 애플리케이션에게 허용할 J2SE Permission을
+                        지정할 수 있다.
+						[Label]: Java Security Permission
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+  	<xs:complexType name="client-module-infoType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="module-name" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션에 지정되는 모듈 이름을 설정한다.
+                                   @Deprecated. 이 속성은 Java EE 6부터 Application Client Standard Deployment Descriptor(application-client.xml)에서 지원하므로,
+                         해당 설정을 이용하도록 한다.
+						[Label]: Module Name
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+			<xs:element minOccurs="0" name="app-main-class" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션의 메인 클래스의 Fully Qualified Class Name을 설정한다.
+						[Label]: App Main Class
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+
+			<xs:element minOccurs="0" name="app-argument" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션이 실행될 때 사용되는 애플리케이션 Argument를 지정한다.
+						[Label]: App Argument
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="security-infoType">
+	    <xs:sequence>
+	        <xs:element name="provider-node-name" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션이 실행될 때 Security 인증을 수행할 서버를 지정한다.
+						[Label]: Provider Node Name
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+	        <xs:element name="user" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션이 실행될 때 사용하는 Security Context의 Username을 지정한다.
+						[Label]: User
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+	        <xs:element name="passwd" type="xs:token">
+			  <xs:annotation>
+				<xs:documentation><![CDATA[
+						[Description]: 클라이언트 애플리케이션이 실행될 때 사용하는 Security Context의 Password를 지정한다.
+				               Password를 암호화해서 저장할 때에는 {algorithm}ciphertext와 같은 형식으로 입력한다. ex) {DES}FQrLbQ/D8O1lDVS71L28rw==
+						[Label]: Passwd
+					]]></xs:documentation>
+			  </xs:annotation>
+			</xs:element>
+
+	    </xs:sequence>
+	</xs:complexType>
+</xs:schema>

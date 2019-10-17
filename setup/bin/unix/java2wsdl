@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set boot parameter
+BOOT_PARAMETER=$*
+
+# set java2wsdl options
+JAVA2WSDL_OPTS=
+
+# execute java2wsdl
+"${JAVA_HOME}/bin/java" -classpath "${BOOTSTRAP_CLASSPATH}" ${TOOL_OPTION} \
+    -Djeus.home="${JEUS_HOME}"                                             \
+    -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                       \
+    ${JAVA2WSDL_OPTS}                                                      \
+    ${JAVA_ARGS}                                                           \
+    ${BOOTSTRAPPER}                                                        \
+    jeus.webservices.jaxrpc.tools.wscompile.Java2Wsdl ${BOOT_PARAMETER}

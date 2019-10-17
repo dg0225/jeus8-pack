@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set boot parameter
+BOOT_PARAMETER=$*
+
+# set class path
+CLASS_PATH="${JEUS_HOME}/lib/system/jaxb-osgi.jar"
+CLASS_PATH="${CLASS_PATH}:${JEUS_HOME}/lib/system/javaee.jar"
+CLASS_PATH="${CLASS_PATH}:${JEUS_HOME}/lib/system/activation.jar"
+
+# set chemagen options
+SCEMAGEN_OPTS=
+
+# execute schemagen
+"${JAVA_HOME}/bin/java" -classpath "${CLASS_PATH}" ${TOOL_OPTION}     \
+    -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                  \
+    ${SCHEMAGEN_OPTS}                                                 \
+    ${JAVA_ARGS}                                                      \
+    com.sun.tools.jxc.SchemaGeneratorFacade ${BOOT_PARAMETER}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    <xs:include schemaLocation="jeus-lpq.xsd"/>
+
+    <xs:element name="jms-client" type="jms-clientType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: JMS Client의 동작을 설정한다.
+				[Label]: Jms Client
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="jms-clientType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="jms-lpq" type="jms-lpqType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JMS Client에서 사용할 local-persistent-queue를 설정한다.
+						[Label]: Jms Lpq
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-lpqType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="lpq-agent" type="lpq-agentType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JMS Client에서 사용할 local-persistent-queue의 동작에 대한 설정을 한다.
+						[Label]: Lpq Agent
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="connection-factory" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정된 local-persistent-queue를 사용할 connection-factory를 설정한다.
+						[Label]: Connection Factory
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

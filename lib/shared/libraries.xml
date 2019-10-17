@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<libraries xmlns="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <!-- DO NOT MODIFY OUR SYSTEM libraries!!! -->
+    <library>
+        <library-name>jsf</library-name>
+        <specification-version>1.2</specification-version>
+        <implementation-version>1.2.15</implementation-version>
+        <files dir="jsf_ri_1.2"/>
+    </library>
+    <library>
+        <library-name>jsf</library-name>
+        <specification-version>2.2</specification-version>
+        <implementation-version>2.2.13</implementation-version>
+        <files dir="jsf_ri_2.2"/>
+    </library>
+    <library>
+        <library-name>jsf-jeusport</library-name>
+        <files dir=".">
+            <include name="jsf-injection-provider.jar"/>
+        </files>
+    </library>
+    <library>
+        <library-name>jsf-weld-integration</library-name>
+        <files dir=".">
+            <include name="jsf-weld-integration.jar"/>
+        </files>
+    </library>
+    <library>
+        <library-name>jstl</library-name>
+        <specification-version>1.2</specification-version>
+        <implementation-version>1.2</implementation-version>
+        <files dir="jstl_1.2"/>
+    </library>
+    <library>
+        <library-name>wsit</library-name>
+        <specification-version>2.3</specification-version>
+        <implementation-version>2.3.1</implementation-version>
+        <files dir="wsit-2.3">
+            <include name="webservices-rt-2.3.1.jar"/>
+            <include name="webservices-tools-2.3.1.jar"/>
+        </files>
+    </library>
+    <library>
+        <library-name>jax-rs</library-name>
+        <specification-version>2.0.1</specification-version>
+        <implementation-version>2.22.2</implementation-version>
+        <files dir="jaxrs-ri-2.22.2"/>
+        <files dir="jaxrs-ri-2.22.2/lib"/>
+        <files dir="jaxrs-ri-2.22.2/ext"/>
+    </library>
+    <library>
+        <library-name>hibernate-validator</library-name>
+        <specification-version>1.1</specification-version>
+        <implementation-version>5.4.2.Final</implementation-version>
+        <files dir="hibernate-validator-5.4.2.Final"/>
+    </library>
+    <library>
+        <library-name>spring-support</library-name>
+        <specification-version>4.2.0.RELEASE</specification-version>
+        <implementation-version>4.2.0.RELEASE</implementation-version>
+        <files dir="spring-support/4.2.0.RELEASE"/>
+    </library>
+    <library>
+        <library-name>spring-support</library-name>
+        <specification-version>4.0.0.RELEASE</specification-version>
+        <implementation-version>4.0.0.RELEASE</implementation-version>
+        <files dir="spring-support/4.0.0.RELEASE"/>
+    </library>
+    <!-- END OF SYSTEM libraries -->
+    <!-- Add user libraries from here -->
+
+
+</libraries>

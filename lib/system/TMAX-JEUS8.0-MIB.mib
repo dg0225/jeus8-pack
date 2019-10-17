@@ -1,0 +1,4684 @@
+TMAX-JEUS-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+
+	enterprises, Counter
+		FROM RFC1155-SMI
+	OBJECT-TYPE
+		FROM RFC-1212
+	DisplayString
+		FROM RFC1213-MIB
+	TRAP-TYPE
+		FROM RFC-1215;
+tmax	OBJECT IDENTIFIER  ::=  {  enterprises  14586  }
+
+jeus	OBJECT IDENTIFIER  ::=  {  tmax  100  }
+
+----------------------------------------------------------
+-- SNMP moniroting objects in each MBeans
+----------------------------------------------------------
+
+
+----------------
+-- j2EEDomain
+----------------
+
+j2EEDomain OBJECT IDENTIFIER
+    ::=  { jeus  2 }
+
+j2EEDomainobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  j2EEDomain 1  }
+j2EEDomainservers	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the J2EE Servers that this domain includes"
+    ::=  {  j2EEDomain 2  }
+
+----------------
+-- j2EEServer
+----------------
+
+j2EEServer OBJECT IDENTIFIER
+    ::=  { jeus  3 }
+
+j2EEServerobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  j2EEServer 1  }
+j2EEServerserverVersion	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the version of JEUS that is being used"
+    ::=  {  j2EEServer 2  }
+j2EEServerserverVendor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the J2EE platform vendor of this J2EE Server"
+    ::=  {  j2EEServer 3  }
+j2EEServerjavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the JVMs on which J2EE Server is running"
+    ::=  {  j2EEServer 4  }
+j2EEServerdeployedObjects	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the J2EE Modules that are deployed on this J2EE Server"
+    ::=  {  j2EEServer 5  }
+j2EEServerresources	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the J2EE Resources that can be used in this J2EE Server"
+    ::=  {  j2EEServer 6  }
+j2EEServerjeusServices	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 8  }
+j2EEServerengines	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 9  }
+j2EEServerenginesFromDescriptor	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 10  }
+j2EEServerdistributedModules	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 15  }
+j2EEServernodeName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 17  }
+j2EEServerappPaths	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEServer 18  }
+
+----------------
+-- jVM
+----------------
+
+jVM OBJECT IDENTIFIER
+    ::=  { jeus  4 }
+
+jVMobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jVM 1  }
+jVMjavaVersion	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the system property value of java.version"
+    ::=  {  jVM 2  }
+jVMjavaVendor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the system property value of java.vendor"
+    ::=  {  jVM 3  }
+jVMnode	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the host name and ip address of the machine on which this JVM is running"
+    ::=  {  jVM 4  }
+jVMoSName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the system property value of os.name"
+    ::=  {  jVM 6  }
+jVMoSVersion	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the system property value of os.version"
+    ::=  {  jVM 7  }
+jVMallProperties	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the all system property values"
+    ::=  {  jVM 8  }
+jVMheapSize-upperBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 101  }
+jVMheapSize-lowerBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 102  }
+jVMheapSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 103  }
+jVMheapSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 104  }
+jVMheapSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 105  }
+jVMupTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 111  }
+jVMtotalSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 121  }
+jVMtotalSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 122  }
+jVMtotalSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jVM 123  }
+
+----------------
+-- j2EEApplication
+----------------
+
+j2EEApplication OBJECT IDENTIFIER
+    ::=  { jeus  6 }
+
+j2EEApplicationobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 1  }
+j2EEApplicationdeploymentDescriptor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 2  }
+j2EEApplicationserver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 3  }
+j2EEApplicationmodules	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 4  }
+j2EEApplicationmoduleType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 5  }
+j2EEApplicationapplicationType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 6  }
+j2EEApplicationjeusDeploymentPlan	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 7  }
+j2EEApplicationtargetModuleID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  j2EEApplication 8  }
+
+----------------
+-- appClientModule
+----------------
+
+appClientModule OBJECT IDENTIFIER
+    ::=  { jeus  8 }
+
+appClientModuleobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 1  }
+appClientModuledeploymentDescriptor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 2  }
+appClientModuleserver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 3  }
+appClientModulejavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 4  }
+appClientModuleapplicationType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 5  }
+appClientModulemoduleType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 6  }
+appClientModulejeusDeploymentPlan	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 7  }
+appClientModuletargetModuleID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  appClientModule 8  }
+
+----------------
+-- eJBModule
+----------------
+
+eJBModule OBJECT IDENTIFIER
+    ::=  { jeus  9 }
+
+eJBModuleobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  eJBModule 1  }
+eJBModuledeploymentDescriptor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "XML deployment descriptor of this module"
+    ::=  {  eJBModule 2  }
+eJBModuleserver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the name of the J2EE Server(JEUS container) on which this module is deployed"
+    ::=  {  eJBModule 3  }
+eJBModulejavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the JVMs on which this module is running"
+    ::=  {  eJBModule 4  }
+eJBModuleejbs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the ejb components(EntityBean, StatefullSessionBean, or StatelessSessionBean) that this EJB Module includes"
+    ::=  {  eJBModule 5  }
+eJBModuleejbCount	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 6  }
+eJBModuleclientViewPath	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 7  }
+eJBModulejeusDeploymentPlan	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 8  }
+eJBModuletargetModuleID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 9  }
+eJBModulemoduleType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 10  }
+eJBModuleapplicationType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBModule 11  }
+
+----------------
+-- messageDrivenBean
+----------------
+
+messageDrivenBean OBJECT IDENTIFIER
+    ::=  { jeus  11 }
+
+messageDrivenBeanobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  messageDrivenBean 1  }
+messageDrivenBeancreateCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 101  }
+messageDrivenBeanremoveCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 111  }
+messageDrivenBeanrequestCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 121  }
+messageDrivenBeancommittedCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 131  }
+messageDrivenBeanrolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 141  }
+messageDrivenBeantimeoutRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 151  }
+messageDrivenBeanmessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 161  }
+messageDrivenBeanactiveEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 171  }
+messageDrivenBeanactiveEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 172  }
+messageDrivenBeanactiveEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 173  }
+messageDrivenBeantotalEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 181  }
+messageDrivenBeantotalEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 182  }
+messageDrivenBeantotalEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  messageDrivenBean 183  }
+
+----------------
+-- entityBean
+----------------
+
+entityBean OBJECT IDENTIFIER
+    ::=  { jeus  12 }
+
+entityBeanobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  entityBean 1  }
+entityBeancreateCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is created by create() method"
+    ::=  {  entityBean 101  }
+entityBeanremoveCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is removed by remove() method"
+    ::=  {  entityBean 111  }
+entityBeanrequestCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the requests on this bean"
+    ::=  {  entityBean 121  }
+entityBeancommittedCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is committed"
+    ::=  {  entityBean 131  }
+entityBeanrolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked"
+    ::=  {  entityBean 141  }
+entityBeantimeoutRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked by timeout"
+    ::=  {  entityBean 151  }
+entityBeanreadyCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are READY state"
+    ::=  {  entityBean 161  }
+entityBeanreadyCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are READY state"
+    ::=  {  entityBean 162  }
+entityBeanreadyCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are READY state"
+    ::=  {  entityBean 163  }
+entityBeanpooledCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are POOLED state"
+    ::=  {  entityBean 171  }
+entityBeanpooledCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are POOLED state"
+    ::=  {  entityBean 172  }
+entityBeanpooledCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are POOLED state"
+    ::=  {  entityBean 173  }
+entityBeanautoRemovedEJBObjectCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the bean instances that are removed automatically when they are passivated"
+    ::=  {  entityBean 181  }
+entityBeantotalEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  entityBean 191  }
+entityBeantotalEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  entityBean 192  }
+entityBeantotalEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are in the bean pool of this bean"
+    ::=  {  entityBean 193  }
+entityBeanactiveEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are ACTIVE state"
+    ::=  {  entityBean 201  }
+entityBeanactiveEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are ACTIVE state"
+    ::=  {  entityBean 202  }
+entityBeanactiveEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are ACTIVE state"
+    ::=  {  entityBean 203  }
+entityBeantotalThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are in thread pool of this bean"
+    ::=  {  entityBean 211  }
+entityBeantotalThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are in thread pool of this bean"
+    ::=  {  entityBean 212  }
+entityBeantotalThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are in thread pool of this bean"
+    ::=  {  entityBean 213  }
+entityBeanactiveThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are being used in thread pool of this bean"
+    ::=  {  entityBean 221  }
+entityBeanactiveThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are being used in thread pool of this bean"
+    ::=  {  entityBean 222  }
+entityBeanactiveThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are being used in thread pool of this bean"
+    ::=  {  entityBean 223  }
+entityBeantotalEJBObjectCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the objects that are in connection pool of this bean"
+    ::=  {  entityBean 231  }
+entityBeantotalEJBObjectCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the objects that are in connection pool of this bean"
+    ::=  {  entityBean 232  }
+entityBeantotalEJBObjectCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the objects that are in connection pool of this bean"
+    ::=  {  entityBean 233  }
+entityBeanactiveEJBObjectCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the objects that are being useed in connection pool of this bean"
+    ::=  {  entityBean 241  }
+entityBeanactiveEJBObjectCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the objects that are being useed in connection pool of this bean"
+    ::=  {  entityBean 242  }
+entityBeanactiveEJBObjectCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the objects that are being useed in connection pool of this bean"
+    ::=  {  entityBean 243  }
+entityBeanpassiveCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are passivated"
+    ::=  {  entityBean 251  }
+entityBeanpassiveCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are passivated"
+    ::=  {  entityBean 252  }
+entityBeanpassiveCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are passivated"
+    ::=  {  entityBean 253  }
+
+----------------
+-- statefulSessionBean
+----------------
+
+statefulSessionBean OBJECT IDENTIFIER
+    ::=  { jeus  14 }
+
+statefulSessionBeanobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  statefulSessionBean 1  }
+statefulSessionBeancreateCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is created by create() method"
+    ::=  {  statefulSessionBean 101  }
+statefulSessionBeanremoveCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is removed by remove() method"
+    ::=  {  statefulSessionBean 111  }
+statefulSessionBeanrequestCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the requests on this bean"
+    ::=  {  statefulSessionBean 121  }
+statefulSessionBeancommittedCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is committed"
+    ::=  {  statefulSessionBean 131  }
+statefulSessionBeanrolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked"
+    ::=  {  statefulSessionBean 141  }
+statefulSessionBeantimeoutRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked by timeout"
+    ::=  {  statefulSessionBean 151  }
+statefulSessionBeanmethodReadyCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the higest number of the beans that are METHOD-READY state"
+    ::=  {  statefulSessionBean 161  }
+statefulSessionBeanmethodReadyCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the beans that are METHOD-READY state"
+    ::=  {  statefulSessionBean 162  }
+statefulSessionBeanmethodReadyCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the beans that are METHOD-READY state"
+    ::=  {  statefulSessionBean 163  }
+statefulSessionBeanpassiveCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are passivated"
+    ::=  {  statefulSessionBean 171  }
+statefulSessionBeanpassiveCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are passivated"
+    ::=  {  statefulSessionBean 172  }
+statefulSessionBeanpassiveCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are passivated"
+    ::=  {  statefulSessionBean 173  }
+statefulSessionBeanautoRemovedEJBObjectCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the bean instances that are removed automatically when they are passivated"
+    ::=  {  statefulSessionBean 181  }
+statefulSessionBeantotalEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statefulSessionBean 191  }
+statefulSessionBeantotalEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statefulSessionBean 192  }
+statefulSessionBeantotalEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statefulSessionBean 193  }
+statefulSessionBeanactiveEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are ACTIVE state"
+    ::=  {  statefulSessionBean 201  }
+statefulSessionBeanactiveEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are ACTIVE state"
+    ::=  {  statefulSessionBean 202  }
+statefulSessionBeanactiveEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are ACTIVE state"
+    ::=  {  statefulSessionBean 203  }
+statefulSessionBeantotalThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are in thread pool of this bean"
+    ::=  {  statefulSessionBean 211  }
+statefulSessionBeantotalThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are in thread pool of this bean"
+    ::=  {  statefulSessionBean 212  }
+statefulSessionBeantotalThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are in thread pool of this bean"
+    ::=  {  statefulSessionBean 213  }
+statefulSessionBeanactiveThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are being used in thread pool of this bean"
+    ::=  {  statefulSessionBean 221  }
+statefulSessionBeanactiveThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are being used in thread pool of this bean"
+    ::=  {  statefulSessionBean 222  }
+statefulSessionBeanactiveThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are being used in thread pool of this bean"
+    ::=  {  statefulSessionBean 223  }
+statefulSessionBeantotalEJBObjectCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the objects that are in connection pool of this bean"
+    ::=  {  statefulSessionBean 231  }
+statefulSessionBeantotalEJBObjectCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the objects that are in connection pool of this bean"
+    ::=  {  statefulSessionBean 232  }
+statefulSessionBeantotalEJBObjectCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the objects that are in connection pool of this bean"
+    ::=  {  statefulSessionBean 233  }
+statefulSessionBeanactiveEJBObjectCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the objects that are being useed in connection pool of this bean"
+    ::=  {  statefulSessionBean 241  }
+statefulSessionBeanactiveEJBObjectCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the objects that are being useed in connection pool of this bean"
+    ::=  {  statefulSessionBean 242  }
+statefulSessionBeanactiveEJBObjectCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the objects that are being useed in connection pool of this bean"
+    ::=  {  statefulSessionBean 243  }
+statefulSessionBeanfileDBSizeCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the biggest size of the file that contains the beans that is passivated"
+    ::=  {  statefulSessionBean 251  }
+statefulSessionBeanfileDBSizeCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the smallest size of the file that contains the beans that is passivated"
+    ::=  {  statefulSessionBean 252  }
+statefulSessionBeanfileDBSizeCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current size of the file that contains the beans that is passivated"
+    ::=  {  statefulSessionBean 253  }
+
+----------------
+-- statelessSessionBean
+----------------
+
+statelessSessionBean OBJECT IDENTIFIER
+    ::=  { jeus  15 }
+
+statelessSessionBeanobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  statelessSessionBean 1  }
+statelessSessionBeancreateCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is created by create() method"
+    ::=  {  statelessSessionBean 101  }
+statelessSessionBeanremoveCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the beans that is removed by remove() method"
+    ::=  {  statelessSessionBean 111  }
+statelessSessionBeanrequestCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the requests on this bean"
+    ::=  {  statelessSessionBean 121  }
+statelessSessionBeancommittedCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is committed"
+    ::=  {  statelessSessionBean 131  }
+statelessSessionBeanrolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked"
+    ::=  {  statelessSessionBean 141  }
+statelessSessionBeantimeoutRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked by timeout"
+    ::=  {  statelessSessionBean 151  }
+statelessSessionBeanmethodReadyCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the higest number of the beans that are METHOD-READY state"
+    ::=  {  statelessSessionBean 161  }
+statelessSessionBeanmethodReadyCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the beans that are METHOD-READY state"
+    ::=  {  statelessSessionBean 162  }
+statelessSessionBeanmethodReadyCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the beans that are METHOD-READY state"
+    ::=  {  statelessSessionBean 163  }
+statelessSessionBeantotalEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statelessSessionBean 171  }
+statelessSessionBeantotalEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statelessSessionBean 172  }
+statelessSessionBeantotalEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are in the bean pool of this bean"
+    ::=  {  statelessSessionBean 173  }
+statelessSessionBeanactiveEJBBeanCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the bean instances that are ACTIVE state"
+    ::=  {  statelessSessionBean 181  }
+statelessSessionBeanactiveEJBBeanCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the bean instances that are ACTIVE state"
+    ::=  {  statelessSessionBean 182  }
+statelessSessionBeanactiveEJBBeanCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the bean instances that are ACTIVE state"
+    ::=  {  statelessSessionBean 183  }
+statelessSessionBeantotalThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are in thread pool of this bean"
+    ::=  {  statelessSessionBean 191  }
+statelessSessionBeantotalThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are in thread pool of this bean"
+    ::=  {  statelessSessionBean 192  }
+statelessSessionBeantotalThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are in thread pool of this bean"
+    ::=  {  statelessSessionBean 193  }
+statelessSessionBeanactiveThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads that are being used in thread pool of this bean"
+    ::=  {  statelessSessionBean 201  }
+statelessSessionBeanactiveThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads that are being used in thread pool of this bean"
+    ::=  {  statelessSessionBean 202  }
+statelessSessionBeanactiveThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads that are being used in thread pool of this bean"
+    ::=  {  statelessSessionBean 203  }
+
+----------------
+-- webModule
+----------------
+
+webModule OBJECT IDENTIFIER
+    ::=  { jeus  16 }
+
+webModuleobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  webModule 1  }
+webModuledeploymentDescriptor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "XML deployment descriptor of this module"
+    ::=  {  webModule 2  }
+webModuleserver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the name of the J2EE Server(JEUS container) on which this module is deployed"
+    ::=  {  webModule 3  }
+webModulejavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the JVMs on which this module is running"
+    ::=  {  webModule 4  }
+webModuleservlets	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the Servlets that this Web Module includes"
+    ::=  {  webModule 5  }
+webModulecontextGroupObjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the context group on which this Web Module is deployed"
+    ::=  {  webModule 6  }
+webModulecontextGroup	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the names of the context group on which this Web Module is deployed"
+    ::=  {  webModule 7  }
+webModulerealDocBase	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 8  }
+webModulejeusDeploymentPlan	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 9  }
+webModuletargetModuleID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 10  }
+webModulemoduleType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 11  }
+webModuleapplicationType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 12  }
+webModuleautoReload	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 13  }
+webModulerequestCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the requests on this web module"
+    ::=  {  webModule 101  }
+webModuleallSessionsSize-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the all sessions that is registered on the session server that this Web Module is using"
+    ::=  {  webModule 111  }
+webModuleactiveSessionsSize-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the active sessions that is registered on the session server that this Web Module is using"
+    ::=  {  webModule 121  }
+webModulepassivateSessionsSize-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the passivated sessions that is registered on the session server that this Web Module is using"
+    ::=  {  webModule 131  }
+webModulelocalSessionsSize-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the local sessions that is not related to the session server that this Web Module is using"
+    ::=  {  webModule 141  }
+webModuleprocessingTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webModule 151  }
+
+----------------
+-- servlet
+----------------
+
+servlet OBJECT IDENTIFIER
+    ::=  { jeus  17 }
+
+servletobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  servlet 1  }
+servletservletInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the general information of the servlets that is deployed"
+    ::=  {  servlet 2  }
+servletaverageExecutionTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the average execution time of the servlets that is deplyed in milliseconds"
+    ::=  {  servlet 3  }
+servletserviceTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of times that Servelt serves"
+    ::=  {  servlet 101  }
+servletserviceTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the longest time that Servlet serves"
+    ::=  {  servlet 102  }
+servletserviceTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the shortest time that Servlet serves"
+    ::=  {  servlet 103  }
+servletserviceTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total time that Servlet serves"
+    ::=  {  servlet 104  }
+
+----------------
+-- resourceAdapterModule
+----------------
+
+resourceAdapterModule OBJECT IDENTIFIER
+    ::=  { jeus  18 }
+
+resourceAdapterModuleobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 1  }
+resourceAdapterModuledeploymentDescriptor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 2  }
+resourceAdapterModuleserver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 3  }
+resourceAdapterModulejavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 4  }
+resourceAdapterModulemoduleType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 6  }
+resourceAdapterModuleapplicationType	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 7  }
+resourceAdapterModulejeusDeploymentPlan	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 8  }
+resourceAdapterModuletargetModuleID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 9  }
+resourceAdapterModulemin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 10  }
+resourceAdapterModulemax	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 11  }
+resourceAdapterModulestep	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 12  }
+resourceAdapterModulekeepAliveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 13  }
+resourceAdapterModulereleaseTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 14  }
+resourceAdapterModulerejectTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapterModule 15  }
+
+----------------
+-- resourceAdapter
+----------------
+
+resourceAdapter OBJECT IDENTIFIER
+    ::=  { jeus  19 }
+
+resourceAdapterobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  resourceAdapter 1  }
+
+----------------
+-- javaMailResource
+----------------
+
+javaMailResource OBJECT IDENTIFIER
+    ::=  { jeus  21 }
+
+javaMailResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  javaMailResource 1  }
+javaMailResourceproperty	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  javaMailResource 2  }
+
+----------------
+-- jCAResource
+----------------
+
+jCAResource OBJECT IDENTIFIER
+    ::=  { jeus  22 }
+
+jCAResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAResource 1  }
+jCAResourcecMInfo	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAResource 4  }
+
+----------------
+-- jCAConnectionFactory
+----------------
+
+jCAConnectionFactory OBJECT IDENTIFIER
+    ::=  { jeus  23 }
+
+jCAConnectionFactoryobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 1  }
+jCAConnectionFactorycMInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 2  }
+jCAConnectionFactorymin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 3  }
+jCAConnectionFactorymax	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 4  }
+jCAConnectionFactorymaxWaiter	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 5  }
+jCAConnectionFactorymaxDisposableCount	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 6  }
+jCAConnectionFactorywaitTrial	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 7  }
+jCAConnectionFactorywaitingTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 8  }
+jCAConnectionFactorypooledTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 9  }
+jCAConnectionFactorydissociationtimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 10  }
+jCAConnectionFactoryinvalidationtimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 11  }
+jCAConnectionFactoryskipMatching	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 13  }
+jCAConnectionFactoryuseWrapper	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAConnectionFactory 14  }
+
+----------------
+-- jCAManagedConnectionFactory
+----------------
+
+jCAManagedConnectionFactory OBJECT IDENTIFIER
+    ::=  { jeus  24 }
+
+jCAManagedConnectionFactoryobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jCAManagedConnectionFactory 1  }
+
+----------------
+-- jDBCResource
+----------------
+
+jDBCResource OBJECT IDENTIFIER
+    ::=  { jeus  25 }
+
+jDBCResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jDBCResource 1  }
+jDBCResourcejdbcDataSources	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 2  }
+jDBCResourcecPInfo	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jDBCResource 3  }
+jDBCResourceconnectionPools-createCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the connected connections in the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 101  }
+jDBCResourceconnectionPools-closeCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the disconnected connections in the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 111  }
+jDBCResourceconnectionPools-poolSize-upperBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the max value that is configured to be upper bound of the pool size of the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 121  }
+jDBCResourceconnectionPools-poolSize-lowerBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the min value that is configured to be lower bound of the pool size of the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 122  }
+jDBCResourceconnectionPools-poolSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest value of the pool size of the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 123  }
+jDBCResourceconnectionPools-poolSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest value of the pool size of the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 124  }
+jDBCResourceconnectionPools-poolSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current value of the pool size of the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 125  }
+jDBCResourceconnectionPools-freePoolSize-upperBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the upper bound of the free connections in the connection pool of each JDBC Data Sources that is related to this JDBC Resource (It is equal to the connectionPools-PoolSize-UpperBound)"
+    ::=  {  jDBCResource 131  }
+jDBCResourceconnectionPools-freePoolSize-lowerBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lower bound of the free connections in the connection pool of each JDBC Data Sources that is related to this JDBC Resource (It is set to be 0)"
+    ::=  {  jDBCResource 132  }
+jDBCResourceconnectionPools-freePoolSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the free connections in the connection pool of each JDBC Data Source that is related to this JDBC Resource"
+    ::=  {  jDBCResource 133  }
+jDBCResourceconnectionPools-freePoolSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the free connections in the connection pool of each JDBC Data Source that is related to this JDBC Resource"
+    ::=  {  jDBCResource 134  }
+jDBCResourceconnectionPools-freePoolSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the free connections in the connection pool of each JDBC Data Source that is related to this JDBC Resource"
+    ::=  {  jDBCResource 135  }
+jDBCResourceconnectionPools-waitingThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads, which are waiting to get connections from the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 141  }
+jDBCResourceconnectionPools-waitingThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads, which are waiting to get connections from the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 142  }
+jDBCResourceconnectionPools-waitingThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads, which are waiting to get connections from the connection pool of each JDBC Data Sources that is related to this JDBC Resource"
+    ::=  {  jDBCResource 143  }
+jDBCResourceconnectionPools-waitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the waiting time to get connection available in connection pool"
+    ::=  {  jDBCResource 161  }
+jDBCResourceconnectionPools-waitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum waiting time to get connection available in connection pool"
+    ::=  {  jDBCResource 162  }
+jDBCResourceconnectionPools-waitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum waiting time to get connection available in connection pool"
+    ::=  {  jDBCResource 163  }
+jDBCResourceconnectionPools-waitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total waiting time to get connection available in connection pool"
+    ::=  {  jDBCResource 164  }
+jDBCResourceconnectionPools-useTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the time to use connection"
+    ::=  {  jDBCResource 171  }
+jDBCResourceconnectionPools-useTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum time to use connection"
+    ::=  {  jDBCResource 172  }
+jDBCResourceconnectionPools-useTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum time to use connection"
+    ::=  {  jDBCResource 173  }
+jDBCResourceconnectionPools-useTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total time to use connection"
+    ::=  {  jDBCResource 174  }
+jDBCResourceconnectionPools-jdbcDataSource	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object name of JDBC datasource of each connectios in this connection pool"
+    ::=  {  jDBCResource 181  }
+
+----------------
+-- jDBCDataSource
+----------------
+
+jDBCDataSource OBJECT IDENTIFIER
+    ::=  { jeus  26 }
+
+jDBCDataSourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jDBCDataSource 1  }
+jDBCDataSourcejdbcDriver	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object name of the JDBC Driver that is related to this JDBC Data Source"
+    ::=  {  jDBCDataSource 2  }
+jDBCDataSourceconfig	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the config information about this JDBC Data Source"
+    ::=  {  jDBCDataSource 3  }
+jDBCDataSourcecPInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jDBCDataSource 4  }
+jDBCDataSourcecreateCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the connected connections to this JDBC Data Source"
+    ::=  {  jDBCDataSource 101  }
+jDBCDataSourcecloseCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the disconnected connections to this JDBC Data Source"
+    ::=  {  jDBCDataSource 111  }
+jDBCDataSourcepoolSize-upperBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the max value that is configured to be upper bound of the pool size of the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 121  }
+jDBCDataSourcepoolSize-lowerBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the min value that is configured to be lower bound of the pool size of the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 122  }
+jDBCDataSourcepoolSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest value of the pool size of the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 123  }
+jDBCDataSourcepoolSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest value of the pool size of the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 124  }
+jDBCDataSourcepoolSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current value of the pool size of the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 125  }
+jDBCDataSourcefreePoolSize-upperBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the upper bound of the free connections in the connection pool of this JDBC Data Source (It is equal to the poolSize-UpperBound)"
+    ::=  {  jDBCDataSource 131  }
+jDBCDataSourcefreePoolSize-lowerBound	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lower bound of the free connections in the connection pool of this JDBC Data Source (It is set to be 0)"
+    ::=  {  jDBCDataSource 132  }
+jDBCDataSourcefreePoolSize-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the free connections in the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 133  }
+jDBCDataSourcefreePoolSize-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the free connections in the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 134  }
+jDBCDataSourcefreePoolSize-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the free connections in the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 135  }
+jDBCDataSourcewaitingThreadCount-highWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the highest number of the threads, which are waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 141  }
+jDBCDataSourcewaitingThreadCount-lowWaterMark	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the lowest number of the threads, which are waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 142  }
+jDBCDataSourcewaitingThreadCount-current	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the current number of the threads, which are waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 143  }
+jDBCDataSourcereConnectCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the reconnections to this JDBC Data Source"
+    ::=  {  jDBCDataSource 151  }
+jDBCDataSourcewaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total number of requests that are waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 161  }
+jDBCDataSourcewaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the longest time for waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 162  }
+jDBCDataSourcewaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the shortest time for waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 163  }
+jDBCDataSourcewaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total time for waiting to get connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 164  }
+jDBCDataSourceuseTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total number of requests that use connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 171  }
+jDBCDataSourceuseTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the longest time for using connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 172  }
+jDBCDataSourceuseTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the shortest time for using connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 173  }
+jDBCDataSourceuseTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total time for using connections from the connection pool of this JDBC Data Source"
+    ::=  {  jDBCDataSource 174  }
+jDBCDataSourcejdbcDataSource	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jDBCDataSource 181  }
+
+----------------
+-- jDBCDriver
+----------------
+
+jDBCDriver OBJECT IDENTIFIER
+    ::=  { jeus  27 }
+
+jDBCDriverobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jDBCDriver 1  }
+
+----------------
+-- jMSResource
+----------------
+
+jMSResource OBJECT IDENTIFIER
+    ::=  { jeus  28 }
+
+jMSResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSResource 1  }
+jMSResourceclusterInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the information about the cluster of JMS server"
+    ::=  {  jMSResource 3  }
+jMSResourcejMSConnectionFactoryResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the list of the names of JMS connection factory resources that are belong to this JMS Resource"
+    ::=  {  jMSResource 5  }
+jMSResourcejMSDestinationResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the list of the names of JMS destination resources that are belong to this JMS Resource"
+    ::=  {  jMSResource 6  }
+jMSResourcejMSClientResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the list of the names of JMS client resources that are belong to this JMS Resource"
+    ::=  {  jMSResource 7  }
+jMSResourcefreeMemory	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSResource 9  }
+jMSResourcetotalMemory	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSResource 10  }
+jMSResourceconnections-sessions-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each sessions"
+    ::=  {  jMSResource 101  }
+jMSResourceconnections-sessions-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each sessions without acknoledgement"
+    ::=  {  jMSResource 111  }
+jMSResourceconnections-sessions-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each sessions"
+    ::=  {  jMSResource 121  }
+jMSResourceconnections-sessions-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 131  }
+jMSResourceconnections-sessions-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 132  }
+jMSResourceconnections-sessions-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 133  }
+jMSResourceconnections-sessions-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 134  }
+jMSResourceconnections-sessions-durableSubscriptionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the durable subscribers that are created in each sessions"
+    ::=  {  jMSResource 141  }
+jMSResourceconnections-sessions-producers-destination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination to which each producers send messages"
+    ::=  {  jMSResource 151  }
+jMSResourceconnections-sessions-producers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each producers"
+    ::=  {  jMSResource 161  }
+jMSResourceconnections-sessions-producers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each producers without acknoledgement"
+    ::=  {  jMSResource 171  }
+jMSResourceconnections-sessions-producers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each producers"
+    ::=  {  jMSResource 181  }
+jMSResourceconnections-sessions-producers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 191  }
+jMSResourceconnections-sessions-producers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 192  }
+jMSResourceconnections-sessions-producers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 193  }
+jMSResourceconnections-sessions-producers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 194  }
+jMSResourceconnections-sessions-consumers-origin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination that each consumers connect to"
+    ::=  {  jMSResource 201  }
+jMSResourceconnections-sessions-consumers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each consumers"
+    ::=  {  jMSResource 211  }
+jMSResourceconnections-sessions-consumers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each consumers without acknoledgement"
+    ::=  {  jMSResource 221  }
+jMSResourceconnections-sessions-consumers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each consumers"
+    ::=  {  jMSResource 231  }
+jMSResourceconnections-sessions-consumers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 241  }
+jMSResourceconnections-sessions-consumers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 242  }
+jMSResourceconnections-sessions-consumers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 243  }
+jMSResourceconnections-sessions-consumers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSResource 244  }
+
+----------------
+-- jNDIResource
+----------------
+
+jNDIResource OBJECT IDENTIFIER
+    ::=  { jeus  29 }
+
+jNDIResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jNDIResource 1  }
+
+----------------
+-- jTAResource
+----------------
+
+jTAResource OBJECT IDENTIFIER
+    ::=  { jeus  30 }
+
+jTAResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jTAResource 1  }
+jTAResourceaverageExecutionTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "average processing time of the transactions that are processed on J2EE Server"
+    ::=  {  jTAResource 2  }
+jTAResourceactiveTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 3  }
+jTAResourceprepareTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 4  }
+jTAResourcepreparedTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 5  }
+jTAResourcecommitTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 6  }
+jTAResourcerecoveryTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 7  }
+jTAResourceincompleteTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 8  }
+jTAResourceheuristicRollback	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	write-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 9  }
+jTAResourceresolution	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 10  }
+jTAResourcethreadPool	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jTAResource 11  }
+jTAResourceactiveCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that are active"
+    ::=  {  jTAResource 101  }
+jTAResourcecommittedCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that are committed"
+    ::=  {  jTAResource 111  }
+jTAResourcerolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that are rollbacked"
+    ::=  {  jTAResource 121  }
+jTAResourcetimeoutCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause time-out"
+    ::=  {  jTAResource 131  }
+jTAResourcetimeoutRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that is rollbacked by timeout"
+    ::=  {  jTAResource 141  }
+jTAResourceactiveTimeoutCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause active time-out"
+    ::=  {  jTAResource 151  }
+jTAResourceprepareTimeoutCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause time-out for prepare message"
+    ::=  {  jTAResource 161  }
+jTAResourcepreparedTimeoutCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause time-out for the global desion message originated from the root coordinator"
+    ::=  {  jTAResource 171  }
+jTAResourcecommitTimeoutCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause time-out for the root coordinator to receive the response from the sub-coordinator"
+    ::=  {  jTAResource 181  }
+jTAResourceheuristicRolledbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the transactions that cause huristic rolled-back"
+    ::=  {  jTAResource 191  }
+jTAResourceexecutionTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the requests that execute transactions"
+    ::=  {  jTAResource 201  }
+jTAResourceexecutionTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the longest execution time for all transactions"
+    ::=  {  jTAResource 202  }
+jTAResourceexecutionTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the shortest execution time for all transactions"
+    ::=  {  jTAResource 203  }
+jTAResourceexecutionTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total execution time for all transactions"
+    ::=  {  jTAResource 204  }
+
+----------------
+-- uRLResource
+----------------
+
+uRLResource OBJECT IDENTIFIER
+    ::=  { jeus  32 }
+
+uRLResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  uRLResource 1  }
+uRLResourceuRLInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  uRLResource 2  }
+
+----------------
+-- jMSConnectionResource
+----------------
+
+jMSConnectionResource OBJECT IDENTIFIER
+    ::=  { jeus  33 }
+
+jMSConnectionResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSConnectionResource 1  }
+jMSConnectionResourcejMSSessionResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the session resource that is created by this connection"
+    ::=  {  jMSConnectionResource 2  }
+jMSConnectionResourcesessions-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each sessions"
+    ::=  {  jMSConnectionResource 101  }
+jMSConnectionResourcesessions-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in this session without acknoledgement"
+    ::=  {  jMSConnectionResource 111  }
+jMSConnectionResourcesessions-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each sessions"
+    ::=  {  jMSConnectionResource 121  }
+jMSConnectionResourcesessions-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 131  }
+jMSConnectionResourcesessions-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 132  }
+jMSConnectionResourcesessions-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 133  }
+jMSConnectionResourcesessions-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 134  }
+jMSConnectionResourcesessions-durableSubscriptionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the durable subscribers that are created in each sessions"
+    ::=  {  jMSConnectionResource 141  }
+jMSConnectionResourcesessions-producers-destination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination to which each producers send messages"
+    ::=  {  jMSConnectionResource 151  }
+jMSConnectionResourcesessions-producers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each producers"
+    ::=  {  jMSConnectionResource 161  }
+jMSConnectionResourcesessions-producers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each producers without acknoledgement"
+    ::=  {  jMSConnectionResource 171  }
+jMSConnectionResourcesessions-producers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each producers"
+    ::=  {  jMSConnectionResource 181  }
+jMSConnectionResourcesessions-producers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 191  }
+jMSConnectionResourcesessions-producers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 192  }
+jMSConnectionResourcesessions-producers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 193  }
+jMSConnectionResourcesessions-producers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 194  }
+jMSConnectionResourcesessions-consumers-origin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination that each consumers connect to"
+    ::=  {  jMSConnectionResource 201  }
+jMSConnectionResourcesessions-consumers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each consumers"
+    ::=  {  jMSConnectionResource 211  }
+jMSConnectionResourcesessions-consumers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each consumers without acknoledgement"
+    ::=  {  jMSConnectionResource 221  }
+jMSConnectionResourcesessions-consumers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each consumers"
+    ::=  {  jMSConnectionResource 231  }
+jMSConnectionResourcesessions-consumers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 241  }
+jMSConnectionResourcesessions-consumers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 242  }
+jMSConnectionResourcesessions-consumers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 243  }
+jMSConnectionResourcesessions-consumers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConnectionResource 244  }
+jMSConnectionResourcesessionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the sessions that are created by this connection"
+    ::=  {  jMSConnectionResource 251  }
+jMSConnectionResourceconnectionConsumerCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 261  }
+jMSConnectionResourceconnectionConsumers-origin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 271  }
+jMSConnectionResourceconnectionConsumers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 281  }
+jMSConnectionResourceconnectionConsumers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 291  }
+jMSConnectionResourceconnectionConsumers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 301  }
+jMSConnectionResourceconnectionConsumers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 401  }
+jMSConnectionResourceconnectionConsumers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 402  }
+jMSConnectionResourceconnectionConsumers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 403  }
+jMSConnectionResourceconnectionConsumers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSConnectionResource 404  }
+
+----------------
+-- jMSConsumerResource
+----------------
+
+jMSConsumerResource OBJECT IDENTIFIER
+    ::=  { jeus  34 }
+
+jMSConsumerResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSConsumerResource 1  }
+jMSConsumerResourceorigin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination that consumer connects to"
+    ::=  {  jMSConsumerResource 101  }
+jMSConsumerResourcemessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in this consumer"
+    ::=  {  jMSConsumerResource 111  }
+jMSConsumerResourcependingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in this consumer without acknoledgement"
+    ::=  {  jMSConsumerResource 121  }
+jMSConsumerResourceexpiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in this consumer"
+    ::=  {  jMSConsumerResource 131  }
+jMSConsumerResourcemessageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConsumerResource 141  }
+jMSConsumerResourcemessageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConsumerResource 142  }
+jMSConsumerResourcemessageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConsumerResource 143  }
+jMSConsumerResourcemessageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSConsumerResource 144  }
+jMSConsumerResourcesendTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time to delivers messages"
+    ::=  {  jMSConsumerResource 151  }
+jMSConsumerResourcesendTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time to delivers messages"
+    ::=  {  jMSConsumerResource 152  }
+jMSConsumerResourcesendTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time to delivers messages"
+    ::=  {  jMSConsumerResource 153  }
+jMSConsumerResourcesendTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time to delivers messages"
+    ::=  {  jMSConsumerResource 154  }
+
+----------------
+-- jMSProducerResource
+----------------
+
+jMSProducerResource OBJECT IDENTIFIER
+    ::=  { jeus  35 }
+
+jMSProducerResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSProducerResource 1  }
+jMSProducerResourcedestination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination to which this producer sends messages"
+    ::=  {  jMSProducerResource 6  }
+jMSProducerResourcemessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in this producer"
+    ::=  {  jMSProducerResource 111  }
+jMSProducerResourcependingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in this producer without acknoledgement"
+    ::=  {  jMSProducerResource 121  }
+jMSProducerResourceexpiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in this producer"
+    ::=  {  jMSProducerResource 131  }
+jMSProducerResourcemessageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSProducerResource 141  }
+jMSProducerResourcemessageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSProducerResource 142  }
+jMSProducerResourcemessageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSProducerResource 143  }
+jMSProducerResourcemessageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSProducerResource 144  }
+jMSProducerResourcesendTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time to delivers messages"
+    ::=  {  jMSProducerResource 151  }
+jMSProducerResourcesendTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time to delivers messages"
+    ::=  {  jMSProducerResource 152  }
+jMSProducerResourcesendTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time to delivers messages"
+    ::=  {  jMSProducerResource 153  }
+jMSProducerResourcesendTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time to delivers messages"
+    ::=  {  jMSProducerResource 154  }
+
+----------------
+-- jMSSessionResource
+----------------
+
+jMSSessionResource OBJECT IDENTIFIER
+    ::=  { jeus  36 }
+
+jMSSessionResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSSessionResource 1  }
+jMSSessionResourcejMSEndPointConsumerNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of comsumers that are created by this session"
+    ::=  {  jMSSessionResource 2  }
+jMSSessionResourcemessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in this session"
+    ::=  {  jMSSessionResource 101  }
+jMSSessionResourcependingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that resides in this session without acknoledgement"
+    ::=  {  jMSSessionResource 111  }
+jMSSessionResourceexpiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in this session"
+    ::=  {  jMSSessionResource 121  }
+jMSSessionResourcemessageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 131  }
+jMSSessionResourcemessageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 132  }
+jMSSessionResourcemessageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 133  }
+jMSSessionResourcemessageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 134  }
+jMSSessionResourcedurableSubscriptionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the durable subscribers that are created in this sessions"
+    ::=  {  jMSSessionResource 141  }
+jMSSessionResourceproducers-destination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination to which each producers send messages"
+    ::=  {  jMSSessionResource 151  }
+jMSSessionResourceproducers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in this producer"
+    ::=  {  jMSSessionResource 161  }
+jMSSessionResourceproducers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each producers without acknoledgement"
+    ::=  {  jMSSessionResource 171  }
+jMSSessionResourceproducers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each producers"
+    ::=  {  jMSSessionResource 181  }
+jMSSessionResourceproducers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 191  }
+jMSSessionResourceproducers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 192  }
+jMSSessionResourceproducers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 193  }
+jMSSessionResourceproducers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 194  }
+jMSSessionResourceconsumers-origin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "name of the destination that each consumers connect to"
+    ::=  {  jMSSessionResource 201  }
+jMSSessionResourceconsumers-messageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are processed in each consumer"
+    ::=  {  jMSSessionResource 211  }
+jMSSessionResourceconsumers-pendingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that reside in each consumers without acknoledgement"
+    ::=  {  jMSSessionResource 221  }
+jMSSessionResourceconsumers-expiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages that are expired in each consumers"
+    ::=  {  jMSSessionResource 231  }
+jMSSessionResourceconsumers-messageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 241  }
+jMSSessionResourceconsumers-messageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 242  }
+jMSSessionResourceconsumers-messageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 243  }
+jMSSessionResourceconsumers-messageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time between when it creates message and when it delivers message"
+    ::=  {  jMSSessionResource 244  }
+jMSSessionResourcesendTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the period of time to delivers messages"
+    ::=  {  jMSSessionResource 251  }
+jMSSessionResourcesendTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the maximum period of time to delivers messages"
+    ::=  {  jMSSessionResource 252  }
+jMSSessionResourcesendTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the minimum period of time to delivers messages"
+    ::=  {  jMSSessionResource 253  }
+jMSSessionResourcesendTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the total period of time to delivers messages"
+    ::=  {  jMSSessionResource 254  }
+jMSSessionResourcecommitCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSSessionResource 261  }
+jMSSessionResourcerollbackCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSSessionResource 271  }
+jMSSessionResourcetransactionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSSessionResource 281  }
+
+----------------
+-- eJBEngineMo
+----------------
+
+eJBEngineMo OBJECT IDENTIFIER
+    ::=  { jeus  41 }
+
+eJBEngineMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  eJBEngineMo 1  }
+eJBEngineMoblockThreadCount	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the blocked threads of this EJB Engine"
+    ::=  {  eJBEngineMo 2  }
+eJBEngineMostats	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  eJBEngineMo 3  }
+
+----------------
+-- contextGroupMo
+----------------
+
+contextGroupMo OBJECT IDENTIFIER
+    ::=  { jeus  51 }
+
+contextGroupMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  contextGroupMo 1  }
+contextGroupMowebModules	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the Web Modules that is deployed on this Context Group"
+    ::=  {  contextGroupMo 2  }
+contextGroupMowebListeners	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the Listeners that is registered on this Context Group"
+    ::=  {  contextGroupMo 3  }
+contextGroupMosessionContainer	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  contextGroupMo 4  }
+contextGroupMosessionTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  contextGroupMo 5  }
+contextGroupModeployObjects	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  contextGroupMo 8  }
+
+----------------
+-- dBConnectionPoolMo
+----------------
+
+dBConnectionPoolMo OBJECT IDENTIFIER
+    ::=  { jeus  52 }
+
+dBConnectionPoolMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  dBConnectionPoolMo 1  }
+dBConnectionPoolMoblockDuration	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        "the value of the interval which Web Engine considers as BLOCK when the db connection of this DB Connection Pool executes a SQL query"
+    ::=  {  dBConnectionPoolMo 2  }
+dBConnectionPoolModBConnectionPoolInfo-dBConnectionInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 3  }
+dBConnectionPoolModBConnectionPoolInfo-currentPoolSize	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 4  }
+dBConnectionPoolModBConnectionPoolInfo-freeConnectionNum	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 5  }
+dBConnectionPoolModBConnectionPoolInfo-activeConnectionNum	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 6  }
+dBConnectionPoolModBConnectionPoolInfo-connectionPoolID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 7  }
+dBConnectionPoolModBConnectionPoolInfo-connectionPoolingRule	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 8  }
+dBConnectionPoolModBConnectionPoolInfo-connectionUrl	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 9  }
+dBConnectionPoolModBConnectionPoolInfo-driverClassName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 10  }
+dBConnectionPoolModBConnectionPoolInfo-connectionArgs	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 11  }
+dBConnectionPoolModBConnectionPoolInfo-initCapacity	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 12  }
+dBConnectionPoolModBConnectionPoolInfo-maxCapacity	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 13  }
+dBConnectionPoolModBConnectionPoolInfo-incrementRate	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 14  }
+dBConnectionPoolModBConnectionPoolInfo-maxIdleTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 15  }
+dBConnectionPoolModBConnectionPoolInfo-dynamicIncrement	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 17  }
+dBConnectionPoolModBConnectionPoolInfo-connectionTimeOut	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 18  }
+dBConnectionPoolModBConnectionPoolInfo-loginDelay	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 19  }
+dBConnectionPoolModBConnectionPoolInfo-closeDelay	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 20  }
+dBConnectionPoolModBConnectionPoolInfo-closeLongActiveConnection	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 21  }
+dBConnectionPoolModBConnectionPoolInfo-maxActiveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 22  }
+dBConnectionPoolModBConnectionPoolInfo-maxUseCount	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 23  }
+dBConnectionPoolModBConnectionPoolInfo-checkQuery	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 24  }
+dBConnectionPoolMomin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 26  }
+dBConnectionPoolMomax	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 28  }
+dBConnectionPoolMostep	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 30  }
+dBConnectionPoolModBConnectionPoolInfo-maxAliveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 31  }
+dBConnectionPoolMomaxIdleTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 33  }
+dBConnectionPoolMomaxAliveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 35  }
+dBConnectionPoolModynamicIncrement	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 37  }
+dBConnectionPoolMogetConnectionTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 38  }
+dBConnectionPoolMocloseLongActiveConnection	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 39  }
+dBConnectionPoolMomaxActiveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 40  }
+dBConnectionPoolMomaxUseCount	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  dBConnectionPoolMo 42  }
+dBConnectionPoolMoactiveThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the threads that are being used in thread pool of this DB Connection Pool"
+    ::=  {  dBConnectionPoolMo 101  }
+dBConnectionPoolMoblockThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the threads that are blocked in thread pool of this DB Connection Pool"
+    ::=  {  dBConnectionPoolMo 111  }
+dBConnectionPoolMoallThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of all threads that are in thread pool of this DB Connection Pool"
+    ::=  {  dBConnectionPoolMo 121  }
+
+----------------
+-- threadPoolMo
+----------------
+
+threadPoolMo OBJECT IDENTIFIER
+    ::=  { jeus  53 }
+
+threadPoolMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  threadPoolMo 1  }
+threadPoolMomin	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 3  }
+threadPoolMomax	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 5  }
+threadPoolMostep	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 7  }
+threadPoolMomaxIdleTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 9  }
+threadPoolMomaxQueue	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 11  }
+threadPoolMomaxWaitQueue	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 13  }
+threadPoolMomaxThreadActiveTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 14  }
+threadPoolMonotifyThreshold	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 15  }
+threadPoolMorestartThreshold	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 16  }
+threadPoolMoactiveThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the threads that are being used in thread pool of this Thread Pool"
+    ::=  {  threadPoolMo 101  }
+threadPoolMoblockThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the threads that are blocked in thread pool of this Thread Pool"
+    ::=  {  threadPoolMo 111  }
+threadPoolMoallThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of all threads that are in thread pool of this Thread Pool"
+    ::=  {  threadPoolMo 121  }
+threadPoolMomaxThreadCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 131  }
+threadPoolMowaitQueueCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPoolMo 141  }
+
+----------------
+-- webEngineMo
+----------------
+
+webEngineMo OBJECT IDENTIFIER
+    ::=  { jeus  54 }
+
+webEngineMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  webEngineMo 1  }
+webEngineMocontextGroups	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of Context Groups that are deployed on this Web Engine"
+    ::=  {  webEngineMo 2  }
+webEngineMoconfigInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the contents of the configuration file(WEBMain.xml) of this Web Engine"
+    ::=  {  webEngineMo 3  }
+webEngineMoserverStatus	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the status of the session server that is configured in this Web Engine"
+    ::=  {  webEngineMo 4  }
+webEngineModBConnectionPool	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of db connection pools in this Web Engine"
+    ::=  {  webEngineMo 5  }
+webEngineMocontextGroupNames	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 6  }
+webEngineMosessionContainer	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 7  }
+webEngineMowebtConnectionGroup	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 8  }
+webEngineMoconfiguration	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 9  }
+webEngineMocheckThreadPool	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 11  }
+webEngineMocheckClassReload	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 13  }
+webEngineMocheckSession	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 15  }
+webEngineMocheckDbConnectionPool	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 17  }
+webEngineMofreeMemory-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 101  }
+webEngineMototalMemory-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webEngineMo 111  }
+
+----------------
+-- webListenerMo
+----------------
+
+webListenerMo OBJECT IDENTIFIER
+    ::=  { jeus  55 }
+
+webListenerMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  webListenerMo 1  }
+webListenerMothreadPools	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the Thread Pools that is registered on this Web Listener"
+    ::=  {  webListenerMo 2  }
+webListenerMotype	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the type of this Web Listener"
+    ::=  {  webListenerMo 3  }
+webListenerMoport	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webListenerMo 4  }
+webListenerMoreadTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webListenerMo 6  }
+webListenerMoreconnectTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webListenerMo 8  }
+webListenerMopostdataReadTimeout	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webListenerMo 10  }
+
+----------------
+-- webtConnectionGroupMo
+----------------
+
+webtConnectionGroupMo OBJECT IDENTIFIER
+    ::=  { jeus  56 }
+
+webtConnectionGroupMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webtConnectionGroupMo 1  }
+webtConnectionGroupMototalConnectionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webtConnectionGroupMo 101  }
+webtConnectionGroupMofreeConnectionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webtConnectionGroupMo 111  }
+webtConnectionGroupMousedConnectionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webtConnectionGroupMo 121  }
+
+----------------
+-- jMSClientResource
+----------------
+
+jMSClientResource OBJECT IDENTIFIER
+    ::=  { jeus  61 }
+
+jMSClientResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSClientResource 1  }
+jMSClientResourcehostAddress	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "remote address of the socket to which clients are connected"
+    ::=  {  jMSClientResource 2  }
+jMSClientResourceport	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "remote port of the socket to which clients are connected"
+    ::=  {  jMSClientResource 3  }
+jMSClientResourcejMSConnectionResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the connections that are created by JMS clients"
+    ::=  {  jMSClientResource 4  }
+jMSClientResourcenamePartString	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSClientResource 6  }
+jMSClientResourceconnectionCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the connections that are created by JMS clients"
+    ::=  {  jMSClientResource 101  }
+
+----------------
+-- jMSQueueConnectionFactoryResource
+----------------
+
+jMSQueueConnectionFactoryResource OBJECT IDENTIFIER
+    ::=  { jeus  62 }
+
+jMSQueueConnectionFactoryResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSQueueConnectionFactoryResource 1  }
+jMSQueueConnectionFactoryResourcename	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueConnectionFactoryResource 3  }
+
+----------------
+-- jMSQueueDestinationResource
+----------------
+
+jMSQueueDestinationResource OBJECT IDENTIFIER
+    ::=  { jeus  63 }
+
+jMSQueueDestinationResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSQueueDestinationResource 1  }
+jMSQueueDestinationResourcename	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the name of this JMS Destination"
+    ::=  {  jMSQueueDestinationResource 2  }
+jMSQueueDestinationResourceexportName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the JNDI export name of this JMS Destination"
+    ::=  {  jMSQueueDestinationResource 3  }
+jMSQueueDestinationResourcetype	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the type of this JMS Destination"
+    ::=  {  jMSQueueDestinationResource 4  }
+jMSQueueDestinationResourcedestination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the reference of the DestinationImpl object, which has destination information"
+    ::=  {  jMSQueueDestinationResource 8  }
+jMSQueueDestinationResourcejMSConsumerResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "names of JMS clients that belong to JMS Destination"
+    ::=  {  jMSQueueDestinationResource 9  }
+jMSQueueDestinationResourceremainingMessages	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 10  }
+jMSQueueDestinationResourcemessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 101  }
+jMSQueueDestinationResourcependingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 111  }
+jMSQueueDestinationResourceexpiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 121  }
+jMSQueueDestinationResourcemessageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 122  }
+jMSQueueDestinationResourcemessageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 123  }
+jMSQueueDestinationResourcemessageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 124  }
+jMSQueueDestinationResourcemessageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 125  }
+jMSQueueDestinationResourcesendTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 131  }
+jMSQueueDestinationResourcesendTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 132  }
+jMSQueueDestinationResourcesendTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 133  }
+jMSQueueDestinationResourcesendTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSQueueDestinationResource 134  }
+
+----------------
+-- jMSDurableSubscriberResource
+----------------
+
+jMSDurableSubscriberResource OBJECT IDENTIFIER
+    ::=  { jeus  64 }
+
+jMSDurableSubscriberResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSDurableSubscriberResource 1  }
+jMSDurableSubscriberResourcename	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the name of JMS Durable Subscriber"
+    ::=  {  jMSDurableSubscriberResource 2  }
+jMSDurableSubscriberResourceclientID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the client ID of JMS Durable Subscriber"
+    ::=  {  jMSDurableSubscriberResource 3  }
+jMSDurableSubscriberResourceremainingMessages	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the number of the messages which are alive in durable subscriber"
+    ::=  {  jMSDurableSubscriberResource 5  }
+jMSDurableSubscriberResourceselector	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "selector value which is configured in durable subscriber"
+    ::=  {  jMSDurableSubscriberResource 6  }
+
+----------------
+-- jMSTopicConnectionFactoryResource
+----------------
+
+jMSTopicConnectionFactoryResource OBJECT IDENTIFIER
+    ::=  { jeus  65 }
+
+jMSTopicConnectionFactoryResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSTopicConnectionFactoryResource 1  }
+jMSTopicConnectionFactoryResourcename	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicConnectionFactoryResource 3  }
+
+----------------
+-- jMSTopicDestinationResource
+----------------
+
+jMSTopicDestinationResource OBJECT IDENTIFIER
+    ::=  { jeus  66 }
+
+jMSTopicDestinationResourceobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jMSTopicDestinationResource 1  }
+jMSTopicDestinationResourcename	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the name of this JMS Destination"
+    ::=  {  jMSTopicDestinationResource 2  }
+jMSTopicDestinationResourceexportName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the JNDI export name of this JMS Destination"
+    ::=  {  jMSTopicDestinationResource 3  }
+jMSTopicDestinationResourcetype	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the type of this JMS Destination"
+    ::=  {  jMSTopicDestinationResource 4  }
+jMSTopicDestinationResourcejMSDurableSubscriberResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the names of JMS Durable Subscribers that belong to JMS Destination"
+    ::=  {  jMSTopicDestinationResource 6  }
+jMSTopicDestinationResourcedestination	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the reference of the DestinationImpl object, which has destination information"
+    ::=  {  jMSTopicDestinationResource 8  }
+jMSTopicDestinationResourcejMSConsumerResourceNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "names of JMS clients that belong to JMS Destination"
+    ::=  {  jMSTopicDestinationResource 9  }
+jMSTopicDestinationResourcemessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 101  }
+jMSTopicDestinationResourcependingMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 111  }
+jMSTopicDestinationResourceexpiredMessageCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 121  }
+jMSTopicDestinationResourcemessageWaitTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 122  }
+jMSTopicDestinationResourcemessageWaitTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 123  }
+jMSTopicDestinationResourcemessageWaitTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 124  }
+jMSTopicDestinationResourcemessageWaitTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 125  }
+jMSTopicDestinationResourcesendTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 131  }
+jMSTopicDestinationResourcesendTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 132  }
+jMSTopicDestinationResourcesendTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 133  }
+jMSTopicDestinationResourcesendTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSTopicDestinationResource 134  }
+
+----------------
+-- threadPool
+----------------
+
+threadPool OBJECT IDENTIFIER
+    ::=  { jeus  71 }
+
+threadPoolobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPool 1  }
+threadPoolthreadOperationInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPool 2  }
+threadPoolmax	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPool 4  }
+threadPoolperiod	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-write
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  threadPool 6  }
+
+----------------
+-- jEUSManager
+----------------
+
+jEUSManager OBJECT IDENTIFIER
+    ::=  { jeus  77 }
+
+jEUSManagerobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard MBean object name"
+    ::=  {  jEUSManager 1  }
+jEUSManagerserverVersion	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the version of JEUS that is being used"
+    ::=  {  jEUSManager 2  }
+jEUSManagerserverVendor	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "the J2EE platform vendor of this JEUS Manager"
+    ::=  {  jEUSManager 3  }
+jEUSManagerjavaVMs	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        "JMX-standard object names of the JVMs on which JEUS Manager is running"
+    ::=  {  jEUSManager 4  }
+jEUSManagerjeusServices	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 5  }
+jEUSManagerj2eeServers	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 6  }
+jEUSManagernodesFromDescriptor	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 9  }
+jEUSManageraliveNodeNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 10  }
+jEUSManagerjeusHome	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 11  }
+jEUSManagerpID	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 12  }
+jEUSManagerj2eeServerNames	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jEUSManager 15  }
+
+----------------
+-- webServerInfo
+----------------
+
+webServerInfo OBJECT IDENTIFIER
+    ::=  { jeus  81 }
+
+webServerInfoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 1  }
+webServerInfonodeInfo	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 2  }
+webServerInfosvrAllInfo	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 3  }
+webServerInfosvrCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 101  }
+webServerInfoexecCount-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 111  }
+webServerInfoavgTime-count	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 121  }
+webServerInfoavgTime-maxTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 122  }
+webServerInfoavgTime-minTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 123  }
+webServerInfoavgTime-totalTime	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  webServerInfo 124  }
+
+----------------
+-- subjectMo
+----------------
+
+subjectMo OBJECT IDENTIFIER
+    ::=  { jeus  101 }
+
+subjectMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  subjectMo 1  }
+subjectMosubjectNames	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  subjectMo 2  }
+
+----------------
+-- securityDomainMo
+----------------
+
+securityDomainMo OBJECT IDENTIFIER
+    ::=  { jeus  102 }
+
+securityDomainMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityDomainMo 1  }
+securityDomainModomainName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityDomainMo 2  }
+securityDomainMopolicys	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityDomainMo 3  }
+securityDomainMosubjects	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityDomainMo 4  }
+
+----------------
+-- policyMo
+----------------
+
+policyMo OBJECT IDENTIFIER
+    ::=  { jeus  103 }
+
+policyMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  policyMo 1  }
+policyMopolicyIds	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  policyMo 2  }
+
+----------------
+-- securityMo
+----------------
+
+securityMo OBJECT IDENTIFIER
+    ::=  { jeus  104 }
+
+securityMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityMo 1  }
+securityMocurrentDomain	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityMo 2  }
+securityMosecurityDomains	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  securityMo 3  }
+
+----------------
+-- jMSEngineMo
+----------------
+
+jMSEngineMo OBJECT IDENTIFIER
+    ::=  { jeus  105 }
+
+jMSEngineMojMSResource	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSEngineMo 1  }
+jMSEngineMoengineName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSEngineMo 2  }
+jMSEngineMoobjectName	OBJECT-TYPE
+    SYNTAX	DisplayString
+    ACCESS	read-only
+    STATUS	mandatory
+    DESCRIPTION
+        ""
+    ::=  {  jMSEngineMo 3  }
+
+END

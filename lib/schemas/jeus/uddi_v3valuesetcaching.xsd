@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xsd:schema xmlns:uddi="urn:uddi-org:api_v3" xmlns:uddi_vscache="urn:uddi-org:vscache_v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="uddi_vscache" targetNamespace="urn:uddi-org:vscache_v3" version="3.0.1">
+	<!-- 
+	Copyright (c) 2000-2002 by Accenture, Ariba, Inc., Commerce One, Inc. 
+	Fujitsu Limited, Hewlett-Packard Company, i2 Technologies, Inc., 
+	Intel Corporation, International Business Machines Corporation,  
+	Microsoft Corporation, Oracle Corporation, SAP AG, Sun Microsystems, Inc., 
+	and VeriSign, Inc.  All Rights Reserved.
+    
+	Copyright (c) OASIS Open 2002-2003. All Rights Reserved.
+	-->
+	<xsd:import namespace="urn:uddi-org:api_v3" schemaLocation="uddi_v3.xsd"/>
+	<xsd:element final="restriction" name="keyValue" type="uddi:keyValue"/>
+	<xsd:element final="restriction" name="chunkToken" type="uddi_vscache:chunkToken"/>
+	<xsd:simpleType name="chunkToken">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element final="restriction" name="get_allValidValues" type="uddi_vscache:get_allValidValues"/>
+	<xsd:complexType final="restriction" name="get_allValidValues">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi:authInfo"/>
+			<xsd:element ref="uddi:tModelKey"/>
+			<xsd:element minOccurs="0" ref="uddi_vscache:chunkToken"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- extraneous complexType here to support extensibility -->
+	<xsd:element final="restriction" name="validValue" type="uddi_vscache:validValue"/>
+	<xsd:complexType final="restriction" name="validValue">
+		<xsd:sequence>
+			<xsd:element ref="uddi_vscache:keyValue"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element final="restriction" name="validValuesList" type="uddi_vscache:validValuesList"/>
+	<xsd:complexType final="restriction" name="validValuesList">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" ref="uddi_vscache:chunkToken"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" ref="uddi_vscache:validValue"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

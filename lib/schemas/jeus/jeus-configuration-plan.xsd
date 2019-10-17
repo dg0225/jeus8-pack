@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <xs:include schemaLocation="jeus-plan-common.xsd"/>
+
+    <xs:element name="jeus-configuration-plan" type="jeus-configuration-planType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: JEUS configuration plan 설정을 정의한다.
+				[Label]: Jeus Configuration Plan
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="jeus-configuration-planType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="configurations" type="configurationsType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 복수의 configuration 설정을 정의한다.
+						[Label]: Configurations
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

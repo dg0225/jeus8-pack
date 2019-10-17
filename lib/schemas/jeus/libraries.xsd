@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="libraries" type="librariesType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: 애플리케이션에서 사용할 공유 라이브러리를 정의한다.
+				[Label]: Libraries
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="librariesType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="library" type="libraryType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 공유 라이브러리에 대한 정보를 설정한다.
+						[Label]: Library
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="libraryType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="description" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리에 대한 설명을 입력한다.
+						[Label]: Description
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="1" name="library-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리의 논리적인 이름을 설정한다.
+						[Label]: Library Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="specification-version" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리의 스펙(specification) 버전을 설정한다.
+						[Label]: Specification Version
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="implementation-version" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리의 구현(implementation) 버전을 설정한다.
+						[Label]: Implementation Version
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="files" type="libraryFilesType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리를 이루는 클래스패스를 정의한다.
+						[Label]: Files
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="libraryFilesType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="include" type="libraryFilesIncludeType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 라이브러리에 포함될 JAR 파일의 이름을 설정한다.
+						[Label]: Include
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="dir" type="xs:token" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+				[Description]: 라이브러리에 포함될 JAR 파일이 위치한 디렉터리 경로 또는 Class 파일들이 위치한 디렉토리의 경로를 입력한다.
+				[Label]: Dir
+			]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="mode" type="libraryFilesModeType">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+				[Description]: 해당 디렉터리가 Classes 디렉터리인지 JAR 파일 디렉터리인지 설정한다.
+                    [Defined Value]: 
+                        [jar] (해당 디렉터리의 JAR 파일이 라이브러리에 추가된다.)
+                        [classes] (해당 Classes 디렉터리가 라이브러리에 추가된다.)
+				[Label]: Mode
+			]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+                    
+    </xs:complexType>
+    
+    <xs:complexType name="libraryFilesIncludeType">
+        <xs:attribute name="name" type="xs:token" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+				[Description]: 포함될 JAR 파일의 상대 경로를 입력한다.
+				[Label]: Name
+			]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    
+    <xs:simpleType name="libraryFilesModeType">
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="jar"/>
+        <xs:enumeration value="classes"/>
+      </xs:restriction>
+    </xs:simpleType>
+    
+</xs:schema>

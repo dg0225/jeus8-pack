@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" jaxb:version="2.0" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:complexType name="journal-storeType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="base-dir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Store를 생성할 디렉터리 이름을 설정한다. 이 디렉터리 이름은 각 Store별로 유일해야 한다.
+						[Label]: Base Dir
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="2" minOccurs="0" name="initial-log-file-count" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Journal Store를 생성할 때 초기에 생성할 로그 파일들의 개수를 설정한다.
+						[Label]: Initial Log File Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="20" minOccurs="0" name="max-log-file-count" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 최대로 생성할 로그 파일들의 개수를 설정한다.
+						[Label]: Max Log File Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="128m" minOccurs="0" name="log-file-size" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 로그 파일의 크기를 지정한다. Integer 타입의 값이나 숫자 뒤에 'K'(KiloBytes), 'M'(MegaBytes), 'G'(GigaBytes)를 붙여 설정할 수 있다.
+						[Label]: Log File Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="property" type="propertyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Store를 생성할 때 추가적인 설정이 필요할 경우 이 설정을 한다.
+						[Label]: Property
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

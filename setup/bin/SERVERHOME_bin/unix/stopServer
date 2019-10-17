@@ -1,0 +1,133 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+echo "****************************************************************************"
+echo "  - Usage : stopServer -host host:port -u username -p password "
+echo "****************************************************************************"
+
+# set parameters
+DELEMETER="|+|"
+URL=""
+HOST=""
+PORT=""
+USER_NAME=""
+USERPASSWORD=""
+DEBUG=""
+VERBOSE=""
+CACHELOGIN=""
+DOMAIN=""
+FILENAME=""
+
+# argument parsing
+until [ $# -eq 0 ]
+do
+    if [ "$1" = "-host" ]
+    then
+        URL="$2"
+    fi
+    if [ "$1" = "-u" ]
+    then
+        USER_NAME="$2"
+    fi
+    if [ "$1" = "-p" ]
+    then
+        USERPASSWORD="$2"
+    fi
+    if [ "$1" = "-debug" ]
+    then
+        DEBUG="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-verbose" ]
+    then
+        VERBOSE="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-cachelogin" ]
+    then
+        CACHELOGIN="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-domain" ]
+    then
+        DOMAIN="${DELEMETER}$1${DELEMETER}$2"
+    fi
+    if [ "$1" = "-f" ]
+    then
+            FILENAME="${DELEMETER}$1${DELEMETER}$2"
+    fi
+    shift
+done
+
+# set boot parameter
+BOOT_PARAMETER=""
+
+if [ -z "${USER_NAME}" ]
+then
+    USER_NAME=""
+else
+    USER_NAME="${DELEMETER}-u${DELEMETER}${USER_NAME}"
+fi
+
+if [ -z "${USERPASSWORD}" ]
+then
+    USERPASSWORD=""
+else
+    USERPASSWORD="${DELEMETER}-p${DELEMETER}${USERPASSWORD}"
+fi
+
+if [ -z "${USERNAME}" ]
+then
+    BOOT_PARAMETER="${USER_NAME}${USERPASSWORD}"
+else
+    BOOT_PARAMETER="${DELEMETER}-u${DELEMETER}${USERNAME}${DELEMETER}-p${DELEMETER}${PASSWORD}"
+fi
+
+HOST="${DELEMETER}-host${DELEMETER}${URL}"
+
+if [ -z "${URL}" ]
+then
+    HOST=""
+fi
+
+# execute jeusadmin
+"${JAVA_HOME}/bin/java" -classpath "${BOOTSTRAP_CLASSPATH}" ${TOOL_OPTION}        \
+     -Djava.library.path="${JEUS_LIBPATH}"                                        \
+     -Djeus.home="${JEUS_HOME}"                                                   \
+     -Djeus.baseport=${JEUS_BASEPORT}                                             \
+     -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                             \
+     -Djava.naming.factory.initial=jeus.jndi.JNSContextFactory                   \
+     -Djava.naming.factory.url.pkgs=jeus.jndi.jns.url                             \
+     -Djava.util.logging.config.file="${JEUS_HOME}/bin/logging.properties"        \
+     ${JAVA_ARGS}                                                                 \
+     ${BOOTSTRAPPER}                                                              \
+     jeus.tool.console.console.ConsoleMain ${DELEMETER}local-shutdown${HOST}${BOOT_PARAMETER}${VERBOSE}${DEBUG}${DOMAIN}${FILENAME}${CACHELOGIN}

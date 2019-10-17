@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jeus-system xmlns="http://www.tmaxsoft.com/xml/ns/jeus"
+    xmlns:ns2="http://java.sun.com/xml/ns/javaee"
+    xmlns:ns3="http://java.sun.com/xml/ns/persistence">
+    <resource>
+        <data-source>
+			<database>
+				<vendor>oracle</vendor>
+				<export-name>UDDIDB</export-name>
+				<data-source-class-name>oracle.jdbc.pool.OracleConnectionPoolDataSource</data-source-class-name>
+				<data-source-type>ConnectionPoolDataSource</data-source-type>
+				<database-name>ORCL</database-name>
+				<data-source-name>oracle.jdbc.pool.OracleConnectionPoolDataSource</data-source-name>
+				<description>Customer DB</description>
+				<password>tiger</password>
+				<port-number>1521</port-number>
+				<server-name>localhost</server-name>
+				<user>scott</user>
+				<driver-type>thin</driver-type>
+				<connection-pool>
+					<pooling>
+						<min>2</min>
+						<max>5</max>
+						<step>1</step>
+						<period>600000</period>
+					</pooling>
+					<wait-free-connection>
+						<enable-wait>true</enable-wait>
+						<wait-time>10000</wait-time>
+					</wait-free-connection>
+				</connection-pool>
+			</database>
+        </data-source>
+    </resource>
+</jeus-system>

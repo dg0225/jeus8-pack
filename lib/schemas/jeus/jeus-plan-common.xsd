@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <xs:complexType name="configurationsType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="configuration" type="configurationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS plan을 통하여 적용할 하나의 설정 단위를 정의한다.
+						[Label]: Configuration
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="configurationType">
+        <xs:sequence>
+            <xs:element name="action" type="actionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 적용할 설정의 action type을 지정한다.
+						[Label]: Action
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="xpath" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정을 적용할 XML 문서 상의 target element의 xpath를 명시한다.
+						[Label]: Xpath
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="value" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: REPLACE, APPEND_CHILD, INSERT_BEFORE action 수행시 필요한 입력값을 정의한다. CDATA section으로 입력할 XML fragment를 적는다.
+						[Label]: Value
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="actionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="DELETE">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: target element를 삭제한다.
+						[Label]: DELETE
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="REPLACE">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: target element를 입력한 element로 대체한다.
+						[Label]: REPLACE
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="APPEND_CHILD">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: target element의 child로 입력한 element를 append한다.
+						[Label]: APPEND_CHILD
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="INSERT_BEFORE">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: target element의 앞에 입력한 element를 삽입한다.
+						[Label]: INSERT_BEFORE
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

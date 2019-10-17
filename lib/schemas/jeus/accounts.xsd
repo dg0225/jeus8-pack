@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="accounts" type="accountsType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: 계정에 대한 설정을 정의한다. 이 안에서 User들과 Group들을 정의할 수 있다.
+				[Label]: Accounts
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="accountsType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="users" type="usersType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: User들을 정의한다.
+						[Label]: Users
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="groups" type="groupsType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Group들을 정의한다.
+						[Label]: Groups
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+    
+
+
+    <xs:complexType name="usersType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="userType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: User를 정의한다.
+						[Label]: User
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="userType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 User에 대한 Username을 정의한다. "Primary" Identify로서 유일해야 한다.
+                        [ID]: ID
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="password" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 User의 Password를 설정한다.
+                        [Example]: {AES}FQrLbQ/D8O1lDVS71L28rw==
+						[Label]: Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="group" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 User가 속한 Group의 Identify를 정의한다. 
+                        이때의 Group은 <groups><group><name></name></group></groups>에 정의되어 있어야 한다.
+						[Label]: Group
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="description" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: User에 대한 설명을 입력한다.
+                        [Value Description]: 임의의 설명문
+                        [Example]: A really nice guy!
+						[Label]: Description
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>   
+
+    <xs:complexType name="groupsType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="group" type="groupType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Group을 정의한다.
+						[Label]: Group
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="groupType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Group에 대한 Group Name을 정의한다. Group의 "Primary" Identify로서 유일해야 한다.
+                        [ID]: ID
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="subgroup" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 자신의 하위 Group을 정의한다. 
+                        이때의 Group은 <groups><group><name></name></group></groups>에 정의되어 있어야 한다.
+						[Label]: Subgroup
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="description" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Group에 대한 설명을 입력한다.
+                        [Value Description]: 임의의 설명문
+						[Label]: Description
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

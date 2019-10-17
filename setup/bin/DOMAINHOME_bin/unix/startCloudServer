@@ -1,0 +1,187 @@
+#!/bin/sh
+
+#Define a printUsage function
+printUsage() {
+    echo -e "Usage : \n"
+    echo "        startCloudServer -u username -p password [-domain domainname] [-server servername]"
+    echo "            -domain : possible omit for single domain exist under domains directory"
+    echo "            -server : possible omit if single domain exist under domains directory or domain option is set"
+}
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+
+fi
+
+# get the domain and server name
+arguments=$*
+DOMAIN_NAME=""
+SERVER_NAME=""
+SECURITY_POLICY=""
+NO_LOGGING="false"
+
+until [ $# -eq 0 ];
+do
+    case "$1" in
+        -domain )
+            DOMAIN_NAME=$2
+            shift;
+            ;;
+
+        -server )
+            SERVER_NAME=$2
+            shift;
+            ;;
+
+        -Djeus.server.nologging.jvmlog=true )
+            NO_LOGGING="true"
+            shift;
+            ;;
+        *)
+            shift;
+            ;;
+    esac
+done
+
+DOMAIN_NAME=@domain_name@
+
+SECURITY_POLICY=${JEUS_HOME}/domains/@domain_name@/config/security/policy
+LOG_DIR=
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set JEUS Standalone properties
+. "${JEUS_HOME}/bin/cloudserver.properties"
+
+# set server-specific JEUS properties
+if [ -f ${JEUS_HOME}/bin/$SERVER_NAME.properties ]
+then
+   . "${JEUS_HOME}/bin/$SERVER_NAME.properties"
+fi
+
+ADDED_OPTION=
+# validate Server name
+if [ -z $SERVER_NAME ] ; then
+    SERVER_NAME=`awk -F'[<>]' '/<admin-server-name>/{print $3}' $JEUS_HOME/domains/$DOMAIN_NAME/config/domain.xml`
+    ADDED_OPTION="-domain $DOMAIN_NAME -server $SERVER_NAME"
+else
+    ADDED_OPTION="-domain $DOMAIN_NAME"
+fi
+
+# calculate timestamp
+timestamp=$(date +${DATE_FORMAT})
+
+if [ ${VM_TYPE} = "hotspot" ]
+then
+    case $NO_LOGGING in
+        true )
+            ;;
+        false )
+            if [ -z ${JVM_LOG_DIR} ]; then
+                LOG_DIR="${JEUS_HOME}/domains/@domain_name@/servers/${SERVER_NAME}/logs"
+            else
+                LOG_DIR="${JVM_LOG_DIR}/${SERVER_NAME}"
+            fi
+
+            JAVA_VM_OPTION="${JAVA_VM_OPTION} -XX:+UnlockDiagnosticVMOptions -XX:+LogVMOutput -XX:LogFile=${LOG_DIR}/jvm_${timestamp}.log"
+
+            # create log dir
+            if [ ! -d "${LOG_DIR}" ];
+            then
+                mkdir -p ${LOG_DIR};
+            fi
+            ;;
+    esac
+fi
+
+JAVA_VENDOR=`echo ${JAVA_VENDOR} | tr '[a-z]' '[A-Z]'`
+if [ $JAVA_VENDOR = "SUN" -o $JAVA_VENDOR = "HP" ]; then
+    TEMP=`echo ${JAVA_ARGS##*Xloggc:} | awk '{print $1}'`
+elif [ $JAVA_VENDOR = "IBM" ]; then
+    TEMP=`echo ${JAVA_ARGS##*Xverbosegclog:} | awk '{print $1}'`
+fi
+
+DELIM=${TEMP##*/}
+DELIM=${DELIM%%.*}
+GC_LOG_DIR=${TEMP%%$DELIM*}
+
+if [ x$GC_LOG_DIR != "x" ]; then
+    if [ ! -d "${GC_LOG_DIR}" ]; then
+        echo ${GC_LOG_DIR}
+        mkdir -p ${GC_LOG_DIR}
+    fi
+fi
+
+# replace local variable to current server setting
+JAVA_ARGS=`echo $JAVA_ARGS | sed -e "s/@@TIMESTAMP@@/${timestamp}/g"`
+JAVA_ARGS=`echo $JAVA_ARGS | sed -e "s/@@SERVER_NAME@@/$SERVER_NAME/g"`
+JAVA_VM_OPTION=`echo $JAVA_VM_OPTION | sed -e "s/@@TIMESTAMP@@/${timestamp}/g"`
+JAVA_VM_OPTION=`echo $JAVA_VM_OPTION | sed -e "s/@@SERVER_NAME@@/$SERVER_NAME/g"`
+JAVA_VM_PROPERTIES=`echo $JAVA_VM_PROPERTIES| sed -e "s/@@TIMESTAMP@@/${timestamp}/g"`
+JAVA_VM_PROPERTIES=`echo $JAVA_VM_PROPERTIES| sed -e "s/@@SERVER_NAME@@/$SERVER_NAME/g"`
+
+echo "***************************************************************"
+echo "  - JEUS Home         : ${JEUS_HOME}                           "
+echo "  - JEUS Base Port    : ${JEUS_BASEPORT}                       "
+echo "  - Java Vendor       : ${JAVA_VENDOR}                         "
+echo "  - Added Java Option : ${JAVA_ARGS}                           "
+echo "***************************************************************"
+
+# set boot parameter
+BOOT_PARAMETER="$arguments $ADDED_OPTION"
+
+if [ ! -z "${USERNAME}" ]
+then
+    BOOT_PARAMETER="-u ${USERNAME} -p ${PASSWORD} $arguments"
+fi
+
+# execute jeus with echo
+set -x
+"${JAVA_HOME}/bin/java" $JAVA_VM_OPTION $JAVA_HEAP_MEM $JAVA_VM_PROPERTIES  \
+    -D${SERVER_NAME}                                                        \
+    -Xbootclasspath/p:"${JEUS_HOME}/lib/system/extension.jar"               \
+    -classpath "${BOOTSTRAP_CLASSPATH}"                                     \
+    -Dsun.rmi.dgc.client.gcInterval=3600000                                 \
+    -Dsun.rmi.dgc.server.gcInterval=3600000                                 \
+    -Djava.library.path="${JEUS_LIBPATH}"                                   \
+    -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                        \
+    -Djava.naming.factory.initial=jeus.jndi.JNSContextFactory               \
+    -Djava.naming.factory.url.pkgs=jeus.jndi.jns.url                        \
+    -Djava.net.preferIPv4Stack=true                                         \
+    -Djava.util.logging.manager=jeus.util.logging.JeusLogManager            \
+    -Djava.util.logging.config.file="${JEUS_HOME}/bin/logging.properties"   \
+    -Djeus.home="${JEUS_HOME}"                                              \
+    -Djeus.jvm.version=${VM_TYPE}                                           \
+    -Djeus.tm.checkReg=true                                                 \
+    -Djeus.properties.replicate=jeus,sun.rmi,java.util,java.net             \
+    -Djeus.server.mode.cloud=true                                           \
+    -Djeus.server.protectmode=false                                         \
+    -Djeus.domain.name="@domain_name@"                                      \
+    -Djava.security.policy=${SECURITY_POLICY}                               \
+    ${JAVA_ARGS}                                                            \
+    jeus.server.admin.DomainAdminServerBootstrapper ${BOOT_PARAMETER}

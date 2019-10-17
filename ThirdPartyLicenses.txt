@@ -1,0 +1,3 @@
+TmaxSoft Application Server JEUS Third-party License Readme
+
+See lib/licenses directory for third-party licenses.

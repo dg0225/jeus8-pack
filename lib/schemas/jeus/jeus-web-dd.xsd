@@ -1,0 +1,991 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    <xs:include schemaLocation="jeus-session-server.xsd"/>
+    <xs:include schemaLocation="jeus-webservices-client-dd.xsd"/>
+
+    <xs:element name="jeus-web-dd" type="contextType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: JEUS 애플리케이션(서블릿 애플리케이션) Deployment Descriptor
+                                        <context>의 하위에는 Deployment와
+                                        컨텍스트의 등록(웹 애플리케이션)에 적합한 정보를 포함하고 있다.
+				[Label]: Jeus Web Dd
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="contextType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="context-path" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Context Root이다.
+                                       만약, "webapp"라는 웹 애플리케이션의 컨텍스트 경로가 "/examples"이라면 "http://www.foo.com/examples/index.html" URL은
+                                       "webapp"에 포함된 index.html 파일을 클라이언트로 전송한다.
+                        [Value Description]: "/"로 시작해야 한다. 해당 경로는 가상 호스트 내에서 유일해야 한다.
+						[Label]: Context Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="user-log" type="web-common-logType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션이 서블릿 컨텍스트의 로그 메소드를 통해서 남기는 User 로그에 대해 설정한다.
+						[Label]: User Log
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="enable-jsp" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JSP 엔진의 사용 여부를 설정한다.
+                        false로 설정하면 JSP 파일에 대한 서비스를 하지 않으며, 일반 resource로 취급한다.
+                        즉, false인 경우에는 jsp 소스 파일을 웹 애플리케이션 상에 포함하면 안 된다.
+						[Label]: Enable Jsp
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="jsp-engine" type="jsp-engineType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션의 모든 JSP 페이지들에 적용된다.
+						[Label]: Jsp Engine
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="auto-reload" type="auto-reloadType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 만일 클래스가 변경되면 서블릿 클래스와 Custom 태그 클래스를 자동으로 Reload 할지를 결정한다.
+                                       이 설정은 변경 여부의 점검과 Reload를 수행함에 있어 여분의 자원을 요구하기에 개발 환경에서만 활성화하길 권장한다.
+						[Label]: Auto Reload
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-instance-pool-size" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 만일 Single Thread Model이 사용되면(이와 같이 SingleThreadedModel 인터페이스를 상속하는 서블릿에 대해서만) 서블릿 인스턴스의 최대 개수를 설정한다.
+                        만일 Single Threaded 서블릿에 대한 요청이 여기 설정한 값을 초과하면 요청은 Single Threaded 서블릿 인스턴스가 사용 가능할 때까지 대기한다.
+                        이것은 Servlet API 2.4부터 deprecated되었으므로 더 이상 사용하지 않기 바란다.
+						[Label]: Max Instance Pool Size
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="added-classpath" type="added-classpathType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서블릿이 컴파일되거나 실행될 때 클래스 패스에 더하여 추가적인 클래스들을 지정한다.
+                        기본값으로 "\WEB-INF\classes" 디렉터리 하위에 클래스와 패키지뿐만 아니라 "\WEB-INF\lib" 하위에 JAR 파일도 클래스 패스에 포함된다.
+                        "\WEB-INF\" 디렉터리는 컨텍스트의 Document Base 디렉터리 아래에 위치한다.
+						[Label]: Added Classpath
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="allow-indexing" type="allow-indexingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 이 항목의 하위 항목은 URL 경로에 문서들을 찾을 수 있게 설정한다.
+                        Indexing은 URL 경로 아래 디렉터리의 콘텐츠가 웹 브라우저 창에 나열되는 것을 의미한다. 만일 3가지 조건이 충족되면 Indexing 서비스를 제공한다.
+                        1. 사용자가 명백한 파일이나 리소스 이름을 URL 경로에 포함하지 않는다(예를 들어 index.html 지정하지 않는다). 
+                        2. 웹 애플리케이션의 web.xml Discriptor 파일에 default welcome 파일이 지정되지 않는다. 
+                        3. Indexing은 요청한 디렉터리를 허용한다(허용한 디렉터리는 이 항목의 하위 항목을 나열한다).
+                        만일 이 모든 조건이 충족되면 디렉터리 리스트를 클라이언트로 보낸다.
+						[Label]: Allow Indexing
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="deny-download" type="deny-downloadType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 다운로드를 방지하려는 파일을 설정한다.
+                        예를 들어, secret.dat이라는 파일이 www.foo.com 도메인의 /customers context 경로에 data란 디렉터리에 존재하고,
+                        클라이언트가 "URL www.foo.com/customers/data/secret.dat"을 요청하면 secret.dat 파일이 다운로드된다.
+                        이를 방지하기 위해 사용할 수 있다. 응답은 404 를 보낸다.
+						[Label]: Deny Download
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="aliasing" type="aliasingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청 URL의 경로 중 일부 정보를 애플리케이션 외부의 경로로 매핑하는 데 사용한다.
+						[Label]: Aliasing
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="file-caching" type="file-cachingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 이미지 파일과 HTML 파일과 같은 정적 자원에 대한 Cache를 구성한다.
+                        이 기능은 사용을 권장하지 않으며, WebtoB Cache 사용을 권장한다.
+						[Label]: File Caching
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="resource-servlet" type="resource-servletType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS에서 제공하는 Default Servlet에 관한 설정이다.
+                        servlet-mapping으로 매핑되지 않은 요청에 대해서 이 Servlet이 호출되며, 주로 Static 파일 서비스를 담당한다.
+                        <allow-indexing>, <deny-download>, <file-caching>은 Default Servlet에 관한 설정이다.
+						[Label]: Resource Servlet
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="role-mapping" type="role-mappingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 실제 시스템 사용자 이름들을 해당 컨텍스트의 web.xml의 <security-role>에 사용하는 J2EE Role 이름과 매핑한다.
+                                                web.xml 파일은 해당 컨텍스트의 Document Base 디렉터리의 "\WEB-INF\" 아래에 위치한다.
+                        [Dependency]:
+                                    role : /web-app/security-role/role-name
+						[Label]: Role Mapping
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element default="false" minOccurs="0" name="node-java-context" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: node Java Service로 사용할 application을 등록할 때 사용한다.
+						설정한 경우 selector에서 즉각적으로 서비스가 되므로 매우 간단하고 신뢰할 수 있는 경우에만 사용한다.
+						node-java-context는 http listener로 요청이 들어올 때만 selector에서 서비스가 되므로 http listener를 통해서 서비스하도록 한다.
+						[Label]: Node JAVA Context
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:group ref="jndiEnvironmentMappingGroup"/>
+
+            <xs:element minOccurs="0" name="keep-generated" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[DEPRECATED]
+                        [Description]: 웹 애플리케이션 내에서 생성되는 Java 소스 파일, SMAP 파일 등을 남겨둘지 결정하는 옵션이다.
+						[Label]: Keep Generated
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="fast-deploy" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[DEPRECATED]
+                        [Description]: 해당 웹 컴포넌트가 웹 서비스이거나 웹 서비스 클라이언트를 포함하고 있을 때
+                        웹 서비스의 Tie 및 웹 서비스 클라이언트의 Stub을 새로 생성하여 컴파일하지 않고 기존에 생성되어
+                        웹 컴포넌트와 같이 설치된 클래스 파일을 사용할지 여부를 지정한다.
+						[Label]: Fast Deploy
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="servlet" type="servletType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션에 정의된 서블릿 중 JEUS에서 제공하는 정보에 대해 설정할 수 있다.
+						[Label]: Servlet
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="webinf-first" type="webinfFirstType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클래스를 로딩할 때 웹 애플리케이션에 지정된 클래스 패스 내에서 먼저 찾을 것인지 여부를 설정한다.
+                        true로 설정할 경우 중복된 클래스로 인한 ClassCastException을 주의해야 하며 
+                        <excluded-pacakge>로 예외 패키지, 클래스를 지정할 수 있다.
+						[Label]: Webinf First
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="jsp-resource" type="jsp-resourceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[DEPRECATED]
+                        [Description]: Repository에 저장된 JSP 리소스를 JSP 엔진에 제공하기 위해 provider-class를 지정한다.
+                        JEUS 7부터는 더 이상 사용하지 않는다.
+						[Label]: Jsp Resource
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="properties" type="propertiesType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 컨텍스트에 적용될 속성을 지정한다.
+						[Label]: Properties
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="session-config" type="session-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 컨텍스트에서 사용할 세션에 대해 설정한다.
+						[Label]: Session Config
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="target-session-cluster" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Context가 참여할 Cluster를 설정한다.
+						[Label]: Target Session Cluster
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-jeus-login-manager" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS 중복 로그인 방지 기능의 사용 여부를 설정한다.
+						[Label]: Use Jeus Login Manager
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="encoding" type="webAppEncodingType">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="cookie-policy" type="httpCookiePolicyType">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="attach-stacktrace-on-error" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS에서 보내주는 에러 페이지에 Stacktrace를 첨부할지를 설정한다.
+                        [Value Description]: Boolean 타입으로, 이 설정을 활성화 또는 비활성화 한다.
+                        [Defined Value]: [true] (Stacktrace 를 첨부한다.)
+                                         [false] (Stacktrace 를 첨부하지 않는다.)
+						[Label]: Attach Stacktrace On Error
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="404" minOccurs="0" name="keep-alive-error-response-codes" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 에러 응답 코드 중에서 Connection: keep-alive 헤더로 응답하길 원하는 값을 설정한다.
+                        웹 애플리케이션이 직접 에러 응답을 내보낼 때 적용되며, 엔진 내부적으로 반드시 커넥션을 끊어야 할 필요가 있다고 판단한 경우에는 적용되지 않는다.
+                        예를 들어, 서블릿이 response.sendError(503) 을 수행한 경우에는 적용되지만 서블릿에서 exception이 발생해서 엔진이 503 에러를 보내는 경우에는 적용되지 않는다.
+                        HTTP 클라이언트가 HTTP 1.0 이하이거나 요청시 명시적으로 Connection: close를 보낸 경우에도 이 설정이 적용되지 않는다.
+                        AJP13 의 경우 Apache 웹 서버 자체적으로 상황을 판단하므로 이 설정이 적용되지 않는다.
+                        [Value Description]: 문자열이며, 여러 개를 설정하고 싶은 경우에는 "404,503" 와 같이 반드시 ',' 로 구분한다.
+						[Label]: Keep Alive Error Response Codes
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:group ref="library-ref-group"/>
+
+            <xs:element minOccurs="0" name="java-security-permission" type="securityPermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS가 J2SE Security를 사용할 때 해당 애플리케이션에게 허용할 J2SE Permission을 지정할 수 있다.
+						[Label]: Java Security Permission
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="async-config" type="async-configType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Servlet 3.0 Asynchronous Processing에 관련된 설정이다.
+						[Label]: Async Config
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="web-security" type="webSecurityType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션에 국한된 보안 설정을 할 수 있다.
+						[Label]: Web Security
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="websocket" type="webSocketType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 웹 애플리케이션의 WebSocket Container 사용 여부 및 설정을 나타낸다.
+                        특별히 설정을 추가하지 않을 경우 <websocket/>라고 지정하면 된다.
+						[Label]: Websocket
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="batch-thread-pool" type="dedicated-poolType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: JBatch(JSR-352) 애플리케이션이 작동하기 위한 환경을 제공한다.
+                        값이 설정되지 않을 경우, 컨테이너 내부적으로 JBatch 서비스를 실행가능한 최소한의 스레드풀 사이즈를 가진다.
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="web-common-logType">
+        <xs:sequence>
+            <xs:group ref="loggingGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="auto-reloadType">
+        <xs:sequence>
+            <xs:element default="false" minOccurs="0" name="enable-reload" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Servlet Auto-Reload의 사용 여부를 결정한다.
+                        [Value Description]: Boolean 타입으로, 이 설정을 활성화 또는 비활성화한다.
+                        [Defined Value]: [true] (Servlet Auto-Reload 설정을 활성화한다.)
+                                         [false] (Servlet Auto-Reload 설정을 비활성화한다.)
+						[Label]: Enable Reload
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-jvm-hotswap" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JVM에서 제공하는 Hot Swap 기능을 사용할 것인지 여부를 결정한다.
+                        이 설정을 사용할 경우 먼저 Java Instrumentation 기능을 이용해서 클래스 파일을 로딩한다.
+                        실패할 경우에는 기존 방식대로 컨텍스트 전체를 Reload한다.
+						[Label]: Use Jvm Hotswap
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="check-on-demand" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서블릿 클래스 Reload를 각 요청이 도달할 때마다 점검할지 여부를 지정한다.
+                        [Value Description]: Boolean 타입으로, 이 설정을 활성화 또는 비활성화 한다.
+                        [Defined Value]: [true] (설정을 활성화한다.)
+                                         [false] (설정을 비활성화한다.)
+						[Label]: Check On Demand
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="30000" minOccurs="0" name="reload-timeout" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Servlet Auto-Reload를 시도할 때 Timeout까지 대기할 시간을 지정한다. 단위는 밀리세컨드이다.
+                        [Value Description]: 밀리세컨드 단위로 설정한다.
+						[Label]: Reload Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="added-classpathType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="class-path" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 서블릿을 컴파일하고 실행할 때 추가하기 위한 하나의 사용자 정의 클래스 패스를 선언한다.
+                        [Value Description]: 디렉터리 혹은 JAR 파일 등이 지정될 수 있다.
+                                             디렉터리로 지정할 때는 디렉터리 분리자로 끝나야 한다(Windows는 "\" , UNIX는 "/").
+                        [Example]: /jeus/mylib/subdir
+						[Label]: Class Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="allow-indexingType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="directory" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 지정한 URL 경로에 디렉터리 Indexing을 활성화한다.
+                        [Value Description]: URL 경로의 시작과 끝은 "/"로 설정한다.
+						[Label]: Directory
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="deny-downloadType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="file" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 다운로드가 되지 않기를 원하는 파일을 설정한다. 이 설정은 exact match 이다.
+                        컨텍스트를 기준으로 파일의 위치를 명확하게 기술해야 하며, 반드시 "/" 로 시작해야 한다.
+                        [Value Description]: 파일 이름이 포함된 URL 컨텍스트 경로를 설정한다.
+                        [Example]: /data/secret.dat
+						[Label]: File
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="extension" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정한 확장자를 갖는 컨텍스트 내의 모든 파일에 대한 다운로드를 거부한다.
+                        [Value Description]:다운로드 거부를 원하는 파일 확장자를 설정한다.
+                        [Example]: .dat
+						[Label]: Extension
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="directory" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정한 디렉터리의 모든 파일에 대해 다운로드를 거부한다(컨텍스트의 URL 경로와 관계가 있다).
+                        이 설정은 exact match 이다. 컨텍스트를 기준으로 디렉토리의 위치를 명확하게 기술해야 한다.
+                        [Value Description]: 디렉터리의 시작과 끝을 "/"로 설정한다(컨텍스트의 URL 경로와 관계 있는 디렉터리).
+                        [Example]: /data/
+						[Label]: Directory
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="aliasingType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="alias" type="aliasType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 요청 URL이 가리키는 리소스에 대해서 별도의 경로 매핑을 정의한다.
+                        예를 들어, 요청 URL이 http://www.foo.com/examples/images/hello.gif일 때,
+                        "hello.gif" 파일이 "/home/images/web" 디렉터리에 위치한다면 "alias-name"은 "/images/",
+                        "alias-path"는 "/home/images/web"으로 설정한다.
+						[Label]: Alias
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="aliasType">
+        <xs:sequence>
+            <xs:element name="alias-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: URL의 경로 정보를 입력한다.
+                        [Value Description]: 디렉터리 이름은 시작과 끝을 "/"로 설정한다.
+                        [Example]: /images/
+						[Label]: Alias Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="real-path" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: URL 경로에 매핑되어야 할 실제 디렉터리를 정의한다.
+                        [Value Description]: 디렉터리 경로는 OS의 파일 분리자로 끝나도록 설정한다(디렉터리의 절대 경로).
+                        [Example]: /home/images/web/
+						[Label]: Real Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="file-cachingType">
+        <xs:sequence>
+            <xs:element default="-1" minOccurs="0" name="max-idle-time" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Caching된 정적 자원이 일정시간 동안 사용되지 않은 경우 해당 자원을 Caching에서 제외하는데, 이때 기준이 되는 시간을 설정한다.
+                        [Value Description]: 밀리세컨드
+                        [Example]: 1800
+						[Label]: Max Idle Time
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="max-cache-memory" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 정적인 자원을 저장하는 것에 대해 할당하는 최대 메모리를 설정한다.
+                        [Value Description]: Mbytes 단위의 값을 설정한다.
+                        [Defined Value]: [-1] (Cache 크기에 제한을 두지 않는다.)
+						[Label]: Max Cache Memory
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="directory" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 정적 콘텐츠들이 Cache될 하나의 디렉터리 경로를 설정한다.
+                                                여러 개의 Cache 디렉터리를 지정하기 위해 항목을 여러 개 추가하여 설정한다.
+                        [Value Description]: 콘텐츠가 cache되어야 할 URL 디렉터리 경로를 설정한다.
+						[Label]: Directory
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="resource-servletType">
+        <xs:sequence>
+            <xs:element default="32000" minOccurs="0" name="sendfile-size-threshold" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Java NIO에서 제공하는 sendfile 매커니즘인 java.nio.channels.FileChannel.transferTo() 사용 여부를 결정한다.
+                        여기에 설정된 사이즈를 초과하는 파일에 대해서 HTTPS가 아니고 Java NIO를 사용하는 리스너인 경우 FileChannel.transferTo()를 사용한다.
+                        그렇지 않은 경우 이 설정이 있다고 하더라도 일반적인 파일 전송 방식을 사용한다.
+                        sendfile은 비교적 사이즈가 큰 파일에 대해 효과가 있다고 알려져 있으므로 1MB(1048576) 이상으로 설정할 것을 권장한다.
+                        참고로 JVM에 따라 FileChannel.transferTo()에서 OS의 sendfile 매커니즘을 구현하지 않았을 수도 있다.
+						[Label]: Sendfile Size Threshold
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="role-mappingType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="role-permission" type="rolePermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Pricipal에 부여할 Role과 Action들을 설정한다.
+						[Label]: Role Permission
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="servletType">
+        <xs:sequence>
+            <xs:element name="servlet-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: web.xml에 지정된 <servlet-name>을 가리킨다.
+						[Label]: Servlet Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="run-as-identity" type="run-as-identityType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: web.xml에 정의된 <run-as-specified-identity>의 Role 이름을 실제
+                    사용자 이름(principal)으로 매핑을 정의한다.
+						[Label]: Run As Identity
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jsp-resourceType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="provider-class" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JSP 리소스를 InputStream으로 제공하기 위해서 JspResourceProvider 
+                    인터페이스를 구현한 클래스를 지정한다.
+						[Label]: Provider Class
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="web-container-managed-thread-poolType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 해당 Thread Pool에 사용할 이름을 지정한다.
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:group ref="thread-pool-group"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="async-configType">
+        <xs:sequence>
+            <xs:element default="30000" minOccurs="0" name="async-timeout-millis" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Asynchronous 작업을 수행할 때 웹 컨테이너가 Timeout을 처리하는 데 기준이 되는 시간을 설정한다.
+                        애플리케이션이 AsyncContext#setTimeout을 호출하지 않았을 경우 AsyncContext#getTimeout일 때 설정된 값을 리턴한다.
+                        기본값은 30초이다.
+						[Label]: Async Timeout Millis
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="background-thread-pool" type="web-container-managed-thread-poolType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: AsyncContext#start를 호출할 때 사용할 Thread Pool을 설정한다.
+						[Label]: Background Thread Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="dispatch-thread-pool" type="web-container-managed-thread-poolType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: AsyncContext#dispatch를 호출할 때 사용할 Thread Pool을 설정한다.
+						[Label]: Dispatch Thread Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webSecurityType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="redirect-strategy-ref" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: javax.servlet.http.HttpServletResponse.sendRedirect(String)를 수행할 때 사용할 Strategy를 설정한다.
+                        설정하는 클래스 이름은 jeus.servlet.security.RedirectStrategy 인터페이스를 구현해야 한다.
+                        redirect의 경우 CRLF injection을 막고 싶을 때는 jeus.servlet.security.RejectCrlfRedirectStrategy를 설정하고,
+                        CR 또는 LF를 빈 문자열로 치환하고 싶을 때는 jeus.servlet.security.RemoveCrlfRedirectStrategy를 설정한다.
+						[Label]: Redirect Strategy Ref
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webSocketType">
+        <xs:sequence>
+            <xs:element default="8192" minOccurs="0" name="max-incoming-binary-message-buffer-size" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클라이언트로부터 전달되는 바이너리 메시지를 버퍼링할 때 사용하는 버퍼의 최대값을 의미한다.
+                        여기에 설정된 값은 javax.websocket.WebSocketContainer.getDefaultMaxBinaryMessageBufferSize()에서 리턴된다.
+                        여기에 설정된 값보다 큰 메시지가 전달되는 경우 1009 에러를 내고 WebSocket Session을 닫는다.
+                        만약 0일 경우에는 메시지를 그냥 버린다.
+						[Label]: Max Incoming Binary Message Buffer Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="8192" minOccurs="0" name="max-incoming-text-message-buffer-size" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클라이언트로부터 전달되는 텍스트 메시지를 버퍼링할 때 사용하는 버퍼의 최대값을 의미한다.
+                        여기에 설정된 값은 javax.websocket.WebSocketContainer.getDefaultMaxTextMessageBufferSize()에서 리턴된다.
+                        여기에 설정된 값보다 큰 메시지가 전달되는 경우 1009 에러를 내고 WebSocket Session을 닫는다.
+                        만약 0일 경우에는 메시지를 그냥 버린다.
+						[Label]: Max Incoming Text Message Buffer Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1800000" minOccurs="0" name="max-session-idle-timeout-in-millis" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 유휴 상태의 WebSocket 세션을 언제 닫을 것인지 결정하는 값이다.
+                        기본값은 HTTP 세션 타임아웃과 마찬가지로 30분이다.
+                        여기에 설정된 값은 javax.websocket.WebSocketContainer.getDefaultMaxSessionIdleTimeout()에서 리턴된다.
+                        만약 0보다 크고 1000보다 작을 경우에는 무조건 1000으로 취급한다.
+                        [Value Description]: 밀리세컨드 단위
+						[Label]: Max Session Idle Timeout In Millis
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="300000" minOccurs="0" name="monitoring-period-in-millis" type="positiveLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebSocket 세션 타임아웃 여부 등을 체크하기 위한 주기를 설정한다. 기본값은 5분이다.
+                        만약 1000보다 작을 경우에는 무조건 1000으로 취급한다.
+                        [Value Description]: 밀리세컨드 단위
+						[Label]: Monitoring Period In Millis
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="10000" minOccurs="0" name="blocking-send-timeout-in-millis" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Synchronous Send을 사용하는 경우 얼마만큼 기다릴지 결정하는 값이다.
+                        타임아웃이 발생하는 경우 관련 에러를 담아서 IOException으로 처리한다.
+                        기본값은 10초이다.
+                        [Value Description]: 밀리세컨드 단위
+						[Label]: Blocking Send Timeout In Millis
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="async-send-timeout-in-millis" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Asynchronous Send을 사용하는 경우 서버 상에서 보내지 못하고 있는 메시지에 대한 타임아웃을 나타낸다.
+                        javax.websocket.WebSocketContainer.getDefaultAsyncSendTimeout()에서 리턴된다.
+                        [Value Description]: 밀리세컨드 단위
+						[Label]: Async Send Timeout In Millis
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="websocket-executor" type="webSocketExecutorType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebSocket Container 내부적으로 사용하는 스레드 풀 관련 설정이다.
+                        주로 asynchronous send시 SendHandler를 처리하기 위해서 사용한다.
+						[Label]: Websocket Executor
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="distributed-userProperties" type="distributedWebSocketUserPropertiesType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: javax.websocket.Session.getUserProperties()에 정의된 내용에 따라 제공하는 WebSocket UserProperties Failover 관련 설정이다.
+						[Label]: Distributed UserProperties
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webSocketExecutorType">
+        <xs:sequence>
+            <xs:element default="0" minOccurs="0" name="min" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Thread Pool에서 관리하는 스레드 수의 최솟값이다.
+						[Label]: Min
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="30" minOccurs="0" name="max" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Thread Pool에서 관리하는 스레드 수의 최댓값이다.
+						[Label]: Max
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="60000" minOccurs="0" name="keep-alive-time" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Min을 초과하는 스레드에 대해서 설정된 시간 동안 사용되지 않는다면 자동적으로 Thread Pool에서 제거된다. 0이면 제거하지 않는다.
+                    [Value Description]: 밀리세컨드 단위로 설정하며, 기본값은 1분이다.
+						[Label]: Keep Alive Time
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="4096" minOccurs="0" name="queue-size" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Thread Pool이 처리하는 Task를 저장하는 Queue의 크기를 지정한다.
+						[Label]: Queue Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="distributedWebSocketUserPropertiesType">
+        <xs:sequence>
+            <xs:element default="false" name="enabled" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                    [Description]: WebSocket Session Failover 사용 여부를 결정한다. HTTP Session과 연동해야 하기 때문에 기본적으로는 사용하지 않는다.
+                    [Label]: Enabled
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-write-through-policy" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                    [Description]: WebSocket Session의 UserProperties에 put/remove할 때 백업 서버로의 동기화가 끝날 때까지 기다릴 것인지 그 여부를 선택한다.
+                    기본적으로는 기다리지 않고 백그라운드에서 동기화가 일어나도록 한다.
+                    [Label]: Use Write Through Policy
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="initParameterType">
+        <xs:sequence>
+            <xs:element name="name" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebSocket Container 환경 변수의 이름을 설정한다.
+						[Label]: Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="value" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: WebSocket Container 환경 변수에 사용되는 값을 설정한다.
+						[Label]: Value
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="requestURLMappingEncodingType">
+        <xs:sequence>
+            <xs:element name="servlet-path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Servlet path를 지정한다. 형식은 servlet 표준에 따른 mapping을 따른다.
+						[Label]: Servlet Path
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="encoding" type="valuableToken">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 지정된 Servlet path에 적용할 Encoding을 지정한다. 지정된 encoding은 request parameter encoding에 사용된다.
+						[Label]: Encoding
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webAppRequestEncodingType">
+        <xs:complexContent>
+            <xs:extension base="requestEncodingType">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="url-mapping" type="requestURLMappingEncodingType">
+                        <xs:annotation>
+                            <xs:documentation><![CDATA[
+				[Description]: Request URL에 따른 Request Parameter Encoding을 설정한다. <forced> 또는 <client-override> 설정이 지정되어 있다면
+                                이 설정은 무시된다. 여기에 지정되지 않은 servlet-path에 대한 Encoding은 <default>를 따르거나 <default> 설정이 없는 경우 ISO-8859-1이다.
+				[Label]: Url Mapping
+			]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="webAppEncodingType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="request-encoding" type="webAppRequestEncodingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTP 요청을 읽을 때 적용할 Encoding을 지정한다.
+                                       Socket에서 읽은 byte array(query strings, application/x-www-form-urlencoded 형식의 body 등)를 파싱해서 String 객체로 만들 때 적용한다.
+						[Label]: Request Encoding
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="response-encoding" type="encodingSubType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: HTTP Response header에 "Content-type: text/html; charset=XXX"의 "XXX" 부분을 설정할 때 사용한다.
+                                       JSP Page Encoding에도 적용한다.
+                                       컨테이너 내부적으로는 Servlet이 만든 String 객체를 버퍼에 저장하기 위해 byte array로 변환할 때 사용한다.
+						[Label]: Response Encoding
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="webinfFirstType">
+        <xs:sequence>
+            <xs:element default="false" name="enabled" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: webinf-first를 사용할지 결정한다.
+                        [Label]: Enabled
+                    ]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="excluded-package" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 클래스를 로딩할 때 동일한 클래스가 웹 애플리케이션 외에도 존재하여 충돌이 발생할 경우
+                        웹 애플리케이션에 지정된 클래스 패스 내에서 먼저 찾지 않도록 하기 위하여 패키지, 클래스를 설정한다.
+                        이 때, 동일한 클래스의 메소드 인자, 리턴 타입이 달라질 경우 deploy시나 실행시 정상동작을 하지 않을 수 있다.
+                        이러한 경우에는 웹 애플리케이션에 지정된 클래스 패스 내의 라이브러리를 직접 수정하여야 한다.
+						[Label]: Excluded Package
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

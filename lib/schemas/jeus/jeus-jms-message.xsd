@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:j2ee="http://java.sun.com/xml/ns/j2ee" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="jms-message-export" type="jms-message-exportType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Message Export
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+    <xs:complexType name="jms-message-exportType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="jms-message" type="jms-messageType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Message"
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-messageType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="header" type="jms-message-headerType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Header
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="body" type="jms-message-bodyType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Body
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-message-headerType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="jms-message-id" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Message Id"
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-destination" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Destination
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element default="1" minOccurs="0" name="jms-delivery-mode" type="jms-delivery-modeType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Delivery Mode"
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="1" name="jms-type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Type
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-correlation-id" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Correlation Id
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-timestamp" type="jms-timestampType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Timestamp
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-expiration" type="jms-expirationType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Expiration
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element default="4" minOccurs="0" name="jms-priority" type="jms-priorityType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Priority
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element default="false" minOccurs="0" name="jms-redelivered" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Redelivered
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element default="3" minOccurs="0" name="redelivery-limit" type="redeliveryLimitType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Redelivery Limit
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-reply-to" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Reply To
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="jms-properties" type="jms-propertiesType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Jms Properties
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="jms-delivery-modeType">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="jms-expirationType">
+        <xs:restriction base="xs:long">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="jms-priorityType">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="9"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="jms-timestampType">
+        <xs:restriction base="xs:long">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="redeliveryLimitType">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="jms-message-bodyType">
+        <xs:choice>
+            <xs:element name="text-message-body" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Text Message Body
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="bytes-message-body" type="xs:base64Binary">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Bytes Message Body
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="object-message-body" type="xs:base64Binary">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Object Message Body"
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="stream-message-body" type="jms-stream-bodyType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Stream Message Body
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="map-message-body" type="jms-map-bodyType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Map Message Body
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="jms-propertiesType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="property" type="jms-entryType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Property
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-map-bodyType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="entry" type="jms-entryType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Entry
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-stream-bodyType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="entry" type="jms-entryType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Entry
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jms-entryType">
+        <xs:choice minOccurs="0">
+            <xs:element minOccurs="0" name="string" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: String
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="long" type="xs:long">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Long
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="short" type="xs:short">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Short
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="int" type="xs:int">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Int
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="float" type="xs:float">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Float
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="double" type="xs:double">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Double
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="byte" type="xs:byte">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Byte
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="boolean" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Boolean
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="bytes" type="xs:base64Binary">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Bytes
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element minOccurs="0" name="char" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Char
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

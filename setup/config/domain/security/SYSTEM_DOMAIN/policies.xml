@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<policies xmlns="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <policy>
+        <role-permissions>
+            <role-permission>
+                <principal>@@USERNAME@@</principal>
+                <role>AdministratorsRole</role>
+            </role-permission>
+            <role-permission>
+                <principal>anonymous</principal>
+                <role>jndiUser</role>
+            </role-permission>
+        </role-permissions>
+        <resource-permissions>
+            <context-id>default</context-id>
+            <resource-permission>
+                <role>AdministratorsRole</role>
+                <resource>jeus.*</resource>
+                <actions>*</actions>
+            </resource-permission>
+            <resource-permission>
+                <role>jndiUser</role>
+                <resource>jeus.jndi.*</resource>
+                <actions>lookup</actions>
+            </resource-permission>
+        </resource-permissions>
+    </policy>
+</policies>

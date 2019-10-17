@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="ejb-engine" type="ejb-engineType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                [Description]: Server에서 EJB 엔진 설정 부분을 위한 항목이다.
+                    이 항목과 그 하위 항목은 정확히 하나의 EJB 엔진에 대응한다.
+                [Label]: Ejb Engine
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="ejb-engineType">
+        <xs:sequence>
+            <xs:element default="300000" minOccurs="0" name="resolution" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: EJB 엔진의 상태를 체크하는 주기이다.
+                            Active Management를 설정했을 경우, Block된 스레드의 수를 체크하여 설정된 동작을 실행한다.
+                            각 Bean이 <bean-pool>과 <connect-pool>을 사용하는 경우, Pool의 idle 개수를 줄이는 작업을 Resizing이라고 하는데
+                            <resizing-period>가 지났는지 체크를 하고 Resizing을 수행한다.
+                            또한 Stateful Session Bean이 클라이언트로부터 <passivation-timeout> 이상으로 요청이 없었는지 체크하고 필요하면 Passivation을 실행한다.
+                        [Value Description]: 밀리세컨드
+                        [Example]: 100000
+                        [Dynamic]: ActiveManager, PassivationTask를 고려하여 반영한다.
+                        [Label]: Resolution
+                        [Advanced]: 고급선택사항
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element default="false" minOccurs="0" name="enable-user-notify" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 특성이 활성화되면 EJB Exception은 서버의 User Logging에 정의된 User Log에 기록된다.
+                        [Example]: true
+                        [Non-Dynamic]: 사용하는 곳이 별로 없고 User Log의 향후 모습에 따라 사라질 수 있다.
+                        [Advanced]: 고급선택사항
+                        [Label]: Enable User Notify
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="active-management" type="active-managementType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB 엔진을 모니터링하고 오류를 처리하며 그 결과를 e-mail을 통해 관리자에게 통지한다.
+                        [Performace Recommendation]: 일반적으로 사용자는 EJB 엔진의 Active Management 보다는 서블릿 엔진에 포함된
+                            Web Connections 사용을 권장한다.
+                        [Advanced]: 고급선택사항
+						[Label]: Active Management
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="invoke-http" type="invoke-httpType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 이 기능을 설정하면 클라이언트 측의 EJB Stub과 원격지의 RMI 실행 환경은
+		                    HTTP-RMI 요청(Request)으로 통신한다. 이것은 방화벽을 사이에 두고 EJB에 접근할 때
+		                    사용된다. HTTP 호출 모드를 사용할 때 클라이언트가 EJB Stub에서 메소드를
+		                    호출하면 HTTP-RMI 요청(Request)은 이것을 웹 컨테이너로 보낼 웹 서버로 발송된다.
+		                    그리고 이것은 RMI 핸들러 서블릿(jeus.rmi.http.ServletHandler)으로 보내지고 여기서
+		                    핸들러 서블릿은 요청(Request)으로부터 HTTP 헤더를 제거한 뒤 이것을 RMI 실행 환경으로
+		                    전송한다. 이 설정은 jeus.rmi.http.ServletHandler 서블릿이 사전에
+		                    JEUS 웹 컨테이너에 반드시 Deploy되어 있어야만 한다("JEUS Web Engine 안내서" 참고).
+		                [Performance Recommendation]: HTTP 호출 모드를 사용함으로써 약간의 성능 향상을 기대할 수 있다.
+		                [Non-Dynamic]: Stub이 다르게 생성되므로 동적으로 변경이 불가능하다.
+		                [Advanced]: 고급선택사항
+                        [Label]: Invoke Http
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="timer-service" type="timer-serviceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB Timer Service에 대해 설정한다.
+                        [Advanced]: 고급선택사항
+						[Label]: Timer Service
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            
+            <xs:element minOccurs="0" name="async-service" type="async-serviceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Asynchronous Invocation Service를 위한 설정이다.
+                        [Advanced]: 고급선택사항
+						[Label]: Async Service
+					]]></xs:documentation>
+                    <xs:appinfo>
+                        <metadata>
+                            <element-level>ADVANCED</element-level>
+                        </metadata>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element default="true" minOccurs="0" name="use-dynamic-proxy-for-ejb2" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: (Since JEUS 6 Fix#7) JEUS 6 Fix#6 이후 버전부터는 EJB 2.x 스타일의 Bean에서
+                            기존 RMI Stub 방식 대신 Dynamic Proxy 방식을 사용할 수 있다.
+                            Dynamic Proxy 방식이란, 클라이언트별로 직접 RMI Stub 클래스를 로딩해서 사용하는 대신에,
+                            미리 생성되어 있는 RMI Stub에 대한 Dynamic Proxy(java.lang.reflect.Proxy)를 이용해서 메소드를 호출하는 방식이다.
+                            이러한 Dynamic Proxy 방식을 이용해야만 Local Call Optimization
+                            (같은 JVM에서 호출되는 EJB Remote Call을 RMI를 통하지 않고 Local Call로 호출되도록 하여 성능을 향상 시켜주는 기능)을 사용할 수 있다.
+                            만약, 이 EJB를 원격에서 호출하는 클라이언트가 있고, 그 클라이언트가 사용하는 JEUS 라이브러리 버전이
+                            JEUS 6 Fix#6 보다 낮은 경우에는 호환성 문제가 발생하므로 이 옵션을 false로 설정한다.
+                            이 옵션은 EJB 모듈별로 jeus-ejb-dd.xml의 <module-info><use-dynamic-proxy-for-ejb2>에 설정할 수 있으나,
+                            현재 EJB 엔진의 모든 EJB 모듈에 대해서 EJB 2.x에 대해 Dynamic Proxy 방식을 사용하지 않고 원격 클라이언트와의 호환성을 유지하기 위해서,
+                            Use Dynamic Proxy For Ejb2를 false로 설정하여 EJB 모듈별 설정을 무시하도록 할 수 있다.
+                            기본값 true로 EJB 2.x 스타일의 Bean에 대해서 Dynamic Proxy 방식을 사용하도록 한다.
+                        [Non-Dynamic]: Stub이 다르게 생성되므로 동적 변경이 불가능하다.
+                        [Example]: true
+                        [Advanced]: 고급선택사항
+						[Label]: Use Dynamic Proxy For Ejb2
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="active-managementType">
+        <xs:sequence>
+            <xs:element default="-1" minOccurs="0" name="max-blocked-thread" type="off-intType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                        [Description]: Block된 스레드의 최대 개수를 설정한다. 이 설정값보다 EJB에 Block된 스레드 개수가
+                            많을 경우에 서버재시작을 권고한다. 이 값이 작게 설정되어 있다면 서버재시작 권고 메세지가 너무 자주 출력되므로 주의가 필요하다.
+                        [Value Description]: 스레드 개수
+                        [Defined Value]:
+                            [-1] (이 값은 Block된 스레드 개수에 대한 제한이 없음을 의미한다. 즉 이렇게 설정하면 EJB 엔진은 Block된
+                            스레드때문에 절대로 재시작권고 되지는 않는다.)
+                        [Example]: 200
+                        [Dynamic]: 동적 변경이 가능하다.
+						[Label]: Max Blocked Thread
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element default="300000" minOccurs="0" name="max-idle-time" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB 스레드가 Block되었다고 간주되는 상태를 정의한다. 이 설정값은 시간을 의미하며
+                            만약, 어떤 스레드가 이 시간을 초과하여 Idle 상태를 유지한다면 이 스레드는 Block되었다고 간주된다.
+                        [Value Description]: 밀리세컨드
+                        [Example]: 180000
+                        [Dynamic]: 동적 변경이 가능하다.
+						[Label]: Max Idle Time
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="email-notify" type="smtp-senderType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Active Management나 혹은 다른 비정상적인 상태에 의해서 서버가 재시작되어야한다면 여기에 설정된 곳으로 e-mail을 보내서 상황을 알린다.
+                        [Non-Dynamic]: Logger 측에서는 동적 변경을 제공하지 않을 예정이다.
+                        [Advanced]: 고급선택사항
+						[Label]: Email Notify
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="timer-serviceType">
+        <xs:sequence>
+            <xs:element default="true" minOccurs="0" name="support-persistence" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: EJB Timer의 지속성(persistence)를 지원할 것인지를 결정한다. EJB Timer는 기본적으로 지속적(persistent)이지만
+                            지속적인 Timer를 사용하고 싶지 않는 경우에는 편의상 false로 설정해서 일괄적으로 Non Persistent로 지정할 수 있다.
+                        [Example]: true
+                        [Non-Dynamic]: Persistence의 지원 여부를 동적으로 변경하는 것은 불가능하다.
+						[Label]: Support Persistence
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>            
+            <xs:element default="1" minOccurs="0" name="max-retrial-count" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Timeout Callback Method에서 오류가 발생하거나 해당 메소드에 연관된 트랜잭션이 Rollback되었을 경우
+                            최대 재시도 횟수를 나타낸다.
+                        [Value Description]: 최대 재시도 횟수
+                        [Example]: 3
+                        [Non-Dynamic]:
+						[Label]: Max Retrial Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="5000" minOccurs="0" name="retrial-interval" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 재시도 사이의 간격을 의미한다.
+                        [Value Description]: 밀리세컨드
+                        [Example]: 5000
+                        [Non-Dynamic]:
+						[Label]: Retrial Interval
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="thread-pool" type="poolingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Timer Service가 Timeout Callback Method를 수행하는 Thread Pool에 대한 설정이다.
+                        [Advanced]: 고급선택사항
+						[Label]: Thread Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="database-setting" type="database-settingType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Timer Service가 Persistent하게 관리하는 Timer Handle을 외부 DB에 저장하고 싶을 경우에 설정한다.
+                        [Non-Dynamic]: Persistence에 관한 설정을 동적으로 변경하는 것은 불가능하다.
+                        [Advanced]: 고급선택사항
+						[Label]: Database Setting
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="database-settingType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="db-vendor" type="db-vendorType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Timer Handle을 저장하기 위한 DB의 벤더를 나타낸다.
+                            자동으로 벤더를 확인하지만 필요한 경우에 설정하도록 한다.
+                        [Example]: Oracle
+                        [Non-Dynamic]:
+						[Label]: Db Vendor
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="data-source-id" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Timer Service가 Timer의 Persistence를 제공하기 위해 사용하는 DB의 Connection Pool 이름이다.
+                            반드시 Resources 항목의 DataSource 메뉴에 DB 리소스로 설정되어 있어야 하며, 되도록 XA 연동이 가능한 타입의 Connection Pool을 설정한다.
+						[Label]: Data Source Id
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="async-serviceType">
+        <xs:sequence>
+            <xs:element default="0" minOccurs="0" name="thread-min" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 유지할 스레드 개수의 최솟값을 설정한다.
+                        [Value Description]: 스레드 개수
+                        [Example]: 10
+                        [Non-Dynamic]:
+						[Label]: Thread Min
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="30" minOccurs="0" name="thread-max" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 유지할 스레드 개수의 최댓값을 설정한다.
+                        [Value Description]: 스레드 개수
+                        [Example]: 100
+                        [Non-Dynamic]:
+						[Label]: Thread Max
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="300000" minOccurs="0" name="access-timeout" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Async Method가 수행이 완료된 후 일정시간이 지나도 클라이언트에서 Get하지 않으면 Future 객체를 삭제한다.
+                            이는 클라이언트의 실수로 Get하지 않는 경우 Memory Leak의 발생을 방지하고자 함이다.
+                            Retrun 타입을 Future로 가지는 Async Method에 한해 적용된다.
+                        [Value Description]: 밀리세컨드
+                        [Example]: 180000
+                        [Non-Dynamic]:
+						[Label]: Access Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+   JEUS_HOME=${JEUS_HOME%/*}
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# set server-specific JEUS properties
+if [ -f ${JEUS_HOME}/bin/@server_name@.properties ]
+then
+   . "${JEUS_HOME}/bin/@server_name@.properties"
+fi
+
+
+echo "***************************************************************"
+echo "  - JEUS Home         : ${JEUS_HOME}                           "
+echo "  - JEUS Base Port    : ${JEUS_BASEPORT}                       "
+echo "  - Java Vendor       : ${JAVA_VENDOR}                         "
+echo "  - Added Java Option : ${JAVA_ARGS}                           "
+echo "***************************************************************"
+
+# set boot parameter
+BOOT_PARAMETER=$arguments
+
+if [ ! -z "${USERNAME}" ]
+then
+    BOOT_PARAMETER="-u ${USERNAME} -p ${PASSWORD} $*"
+fi
+
+# execute jeus with echo
+set -x
+"${JAVA_HOME}/bin/java" $VM_OPTION  $LAUNCHER_MEM                           \
+    -Xbootclasspath/p:"${JEUS_HOME}/lib/system/extension.jar"               \
+    -classpath "${BOOTSTRAP_CLASSPATH}"                      \
+    -Dsun.rmi.dgc.client.gcInterval=3600000                                 \
+    -Dsun.rmi.dgc.server.gcInterval=3600000                                 \
+    -Djava.library.path="${JEUS_LIBPATH}"                                   \
+    -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                        \
+    -Djava.naming.factory.initial=jeus.jndi.JNSContextFactory               \
+    -Djava.naming.factory.url.pkgs=jeus.jndi.jns.url                        \
+    -Djava.net.preferIPv4Stack=true                                         \
+    -Djava.util.logging.manager=jeus.util.logging.JeusLogManager            \
+    -Djava.util.logging.config.file="${JEUS_HOME}/bin/logging.properties"   \
+    -Djeus.home="${JEUS_HOME}"                                              \
+    -Djeus.jvm.version=${VM_TYPE}                                           \
+    -Djeus.tm.checkReg=true                                                 \
+    -Djeus.properties.replicate=jeus,sun.rmi,java.util,java.net             \
+    ${JAVA_ARGS}                                                            \
+    jeus.server.LauncherBootstrapper ${BOOT_PARAMETER} -domain @domain_name@ -server @server_name@

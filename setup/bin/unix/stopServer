@@ -1,0 +1,187 @@
+#!/bin/sh
+
+# set up JEUS_HOME.
+if [ -z "$JEUS_HOME" ] ; then
+   PRG="$0"
+   progname=`basename "$0"`
+   saveddir=`pwd`
+
+   dirname_prg=`dirname "$PRG"`
+   cd "$dirname_prg"
+
+   while [ -h "$PRG" ] ; do
+      ls=`ls -ld "$PRG"`
+      link=`expr "$ls" : '.*-> \(.*\)$'`
+      if expr "$link" : '/.*' > /dev/null; then
+      PRG="$link"
+      else
+        PRG=`dirname "$PRG"`"/$link"
+      fi
+   done
+
+   JEUS_HOME=`dirname "$PRG"`/..
+
+   cd "$saveddir"
+
+   JEUS_HOME=`cd "$JEUS_HOME" && pwd`
+
+fi
+
+# set JEUS properties
+. "${JEUS_HOME}/bin/jeus.properties"
+
+# show usage
+if [ "$#" -lt 1 ]
+then
+echo "****************************************************************************"
+echo "  - Usage : stopServer <-host host:port> <-u username> <-p password>
+              <-cachelogin> <-domain domain> <-f cachelogin_file>
+              <-g> <-to wait_time>
+          options :
+            -host: Specify the host and port information
+                  for the server you want to shut down.
+                  [Default: localhost:9736]
+            -u: Specify the user identity with authority to shut down the server.
+            -p: Specify the password corresponding to -u option.
+            -cachelogin: Attempts to authenticate with the information
+                        stored in the cache login file.
+                        You must give -u, -domain option as key
+                        to find corresponding user information.
+                        You can store new cache login information
+                        by giving -u, -p, -domain option with -cachelogin.
+                        If you have single domain, you don't have to
+                        specify -d option.
+            -domain: Specify the domain to use cachelogin.
+            -f: Set the file path to be used in cachelogin.
+              If -f option is omitted, default file path will be used.
+              [Default cachelogin file path: ~/.jeusadmin/.jeuspasswd]
+            -g: Wait for the server to finish works and then shut down.
+            -to: Even if the server is working,
+              it waits for the given time and then shut down.
+          examples :
+            stopServer -host localhost:9736 -u user -p passwd
+              -> Basic usage of stopServer script.
+            stopServer -u user -p passwd
+              -> You can omit -host option.
+                Default host(localhost:9736) will shut down.
+            stopServer -host localhost:9736 -u user -p passwd
+                     -domain domain1 -cachelogin
+              -> Stores user information with domain to the default cachelogin file.
+            stopServer -host localhost:9736 -u user -domain domain1
+                     -cachelogin
+              -> Attempts authentication using cachelogin information
+                instead of using -u, -p option.
+            stopServer -host localhost:9736 -u user -domain domain1
+                     -cachelogin -f /home/jeus/jeusCachePW
+              -> You can specify cachelogin file you want use.                    "
+echo "****************************************************************************"
+exit 1
+fi
+
+# set parameters
+DELEMETER="|+|"
+URL=""
+HOST=""
+PORT=""
+USER_NAME=""
+USERPASSWORD=""
+DEBUG=""
+VERBOSE=""
+GRACEFUL=""
+SHUTDOWNTIMEOUT=""
+
+# argument parsing
+until [ $# -eq 0 ]
+do
+    if [ "$1" = "-host" ]
+    then
+        URL="$2"
+    fi
+    if [ "$1" = "-u" ]
+    then
+        USER_NAME="$2"
+    fi
+    if [ "$1" = "-p" ]
+    then
+        USERPASSWORD="$2"
+    fi
+    if [ "$1" = "-debug" ]
+    then
+        DEBUG="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-verbose" ]
+    then
+        VERBOSE="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-cachelogin" ]
+    then
+        CACHELOGIN="${DELEMETER}$1"
+    fi
+    if [ "$1" = "-domain" ]
+    then
+        DOMAIN="${DELEMETER}$1${DELEMETER}$2"
+    fi
+    if [ "$1" = "-f" ]
+    then
+            FILENAME="${DELEMETER}$1${DELEMETER}$2"
+    fi
+    if [ "$1" = "-g" ]
+    then
+        GRACEFUL="$1"
+    fi
+    if [ "$1" = "-to" ]
+    then
+        SHUTDOWNTIMEOUT="$2"
+    fi
+    shift
+done
+
+# set boot parameter
+BOOT_PARAMETER=""
+
+if [ -z "${USER_NAME}" ]
+then
+    USER_NAME=""
+else
+    USER_NAME="${DELEMETER}-u${DELEMETER}${USER_NAME}"
+fi
+
+if [ -z "${USERPASSWORD}" ]
+then
+    USERPASSWORD=""
+else
+    USERPASSWORD="${DELEMETER}-p${DELEMETER}${USERPASSWORD}"
+fi	
+
+if [ -z "${USERNAME}" ]
+then
+    BOOT_PARAMETER="${USER_NAME}${USERPASSWORD}"
+else
+    BOOT_PARAMETER="${DELEMETER}-u${DELEMETER}${USERNAME}${DELEMETER}-p${DELEMETER}${PASSWORD}"
+fi
+
+HOST="${DELEMETER}-host${DELEMETER}${URL}"
+
+if [ -z "${URL}" ]
+then
+    HOST=""
+fi
+
+# set target
+TARGET="local-shutdown ${GRACEFUL}"
+
+if [ -n "${SHUTDOWNTIMEOUT}" ]
+then
+    TARGET="${TARGET} -to ${SHUTDOWNTIMEOUT}"
+fi
+
+# execute jeusadmin
+"${JAVA_HOME}/bin/java" -classpath "${BOOTSTRAP_CLASSPATH}" ${TOOL_OPTION}        \
+     -Djeus.home="${JEUS_HOME}"                                                   \
+     -Djava.endorsed.dirs="${JEUS_HOME}/lib/endorsed"                             \
+     -Djava.naming.factory.initial=jeus.jndi.JNSContextFactory                    \
+     -Djava.naming.factory.url.pkgs=jeus.jndi.jns.url                             \
+     -Djava.util.logging.config.file="${JEUS_HOME}/bin/logging.properties"        \
+     ${JAVA_ARGS}                                                                 \
+     ${BOOTSTRAPPER}                                                              \
+     jeus.tool.console.console.ConsoleMain ${DELEMETER}\"${TARGET}\"${HOST}${BOOT_PARAMETER}${VERBOSE}${DEBUG}

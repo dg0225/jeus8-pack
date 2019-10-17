@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <!--
+    This schema defines metadata element which is required for JAXB Enhancer.
+    -->
+    
+    <xs:element name="metadata" type="metadataType">
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				[Label]: Metadata
+			]]></xs:documentation>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:complexType name="metadataType">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="default-element" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Default Element
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="mbean-attribute" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Mbean Attribute
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element default="BASIC" minOccurs="0" name="element-level" type="element-levelType">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Element Level
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="origin-name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Origin Name
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element default="false" minOccurs="0" name="section" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Section
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="enable" type="xs:string">
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						[Label]: Enable
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="element-levelType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BASIC"/>
+			<xs:enumeration value="ADVANCED"/>				
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

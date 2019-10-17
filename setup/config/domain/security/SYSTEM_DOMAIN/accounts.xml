@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<accounts xmlns="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+    <users>
+        <user>
+            <name>@@USERNAME@@</name>
+            <password>@@PASSWORD@@</password>
+            <group>Administrators</group>
+        </user>
+    </users>
+    <groups>
+        <group>
+            <description>A group for administrators</description>
+            <name>Administrators</name>
+        </group>
+    </groups>
+</accounts>

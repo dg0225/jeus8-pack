@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+    
+    <xs:element name="user-cert-map" type="UserCertMapType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: User와 매핑되는 Keystore에 포함된 Certificate를 얻기 위한 정보들을 정의한다.
+				[Label]: User Cert Map
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="UserCertMapType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="user-cert" type="UserCertType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: User와 Certificate 간의 매핑을 설정한다.
+						[Label]: User Cert
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="UserCertType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="username" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore 내의 Certificate에 대한 Username을 정의한다. "Primary" identify로서 유일해야 한다.
+						[Label]: Username
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="alias" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]:  Keystore 내의 Certificate에 대한 Alias를 정의한다.
+						[Label]: Alias
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="keypassword" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Keystore 내의 Certificate에 대한 Private Key를 얻기 위한 keypassword를 정의한다.
+                                           암호화해서 저장할 때에는 {algorithm}ciphertext와 같은 형식으로 입력한다. ex) {DES}FQrLbQ/D8O1lDVS71L28rw==
+						[Label]: Keypassword
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="secretkey" type="SecretKeyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Private Key를 정의한다.
+						[Label]: Secretkey
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SecretKeyType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="keyname" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Private Key의 이름을 정의한다.
+						[Label]: Keyname
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="keyalgorithm" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Private Key의 알고리즘을 나타낸다.
+						[Label]: Keyalgorithm
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="keyvalue" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Private Key의 값을 base64 형태로 나타낸다.
+						[Label]: Keyvalue
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

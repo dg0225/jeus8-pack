@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright, TmaxSoft Co., Ltd. All Rights Reserved.
+
+  JEUS Setup Script base on Ant
+-->
+<project name="setup" default="usage" basedir=".">
+    <property environment="env"/>
+    <dirname property="this.basedir" file="${ant.file.setup}" />
+
+    <property name="jeus.home" location="${this.basedir}/.."/>
+
+    <property name="overwrite" value="true"/>
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${jeus.home}/setup/helper/ant-contrib-1.0b3.jar"/>
+
+    <property file="${jeus.home}/setup/domain-config-template.properties" prefix="config-template"/>
+
+    <if>
+        <isset property="jvm.config"/>
+        <then>
+            <property name="jvm.config" value="${jvm.config}"/>
+        </then>
+        <else>
+            <property name="jvm.config" value="${config-template.domain.admin.server.jvm.config}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jeus.port"/>
+        <then>
+            <property name="jeus.port" value="${jeus.port}"/>
+        </then>
+        <else>
+            <property name="jeus.port" value="${config-template.domain.admin.server.jeus.port}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jms.port"/>
+        <then>
+            <property name="jms.port" value="${jms.port}"/>
+        </then>
+        <else>
+            <property name="jms.port" value="${config-template.domain.admin.server.jms.port}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="http.port"/>
+        <then>
+            <property name="http.port" value="${http.port}"/>
+        </then>
+        <else>
+            <property name="http.port" value="${config-template.domain.admin.server.http.port}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jeus.password"/>
+        <then>
+            <property name="jeus.password" value="${jeus.password}"/>
+        </then>
+        <else>
+            <property name="jeus.password" value="${config-template.jeus.password}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jeus.username"/>
+        <then>
+            <property name="jeus.username" value="${jeus.username}"/>
+        </then>
+        <else>
+            <property name="jeus.username" value="${config-template.jeus.username}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jeus.lang"/>
+        <then>
+            <property name="jeus.lang" value="${jeus.lang}"/>
+        </then>
+        <else>
+            <property name="jeus.lang" value="${config-template.jeus.lang}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="jvm.vendor"/>
+        <then>
+            <property name="jvm.vendor" value="${jvm.vendor}"/>
+        </then>
+        <else>
+            <property name="jvm.vendor" value="${config-template.jvm.vendor}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="domain"/>
+        <then>
+            <property name="domain" value="${domain}"/>
+        </then>
+        <else>
+            <property name="domain" value="${config-template.domain}"/>
+        </else>
+    </if>
+    <if>
+        <isset property="productionmode"/>
+        <then>
+            <property name="productionmode" value="${productionmode}"/>
+        </then>
+        <else>
+            <property name="productionmode" value="${config-template.productionmode}"/>
+        </else>
+    </if>
+
+    <target name="usage" description="">
+        <echo>You can set argument options in ${jeus.home}/setup/domain-config-template.properties </echo>
+        <echo>Main targets:</echo>
+        <echo>  install       - Install initial configurations</echo>
+        <echo>                  Use -Dproductionmode=true/false option for setup environment.</echo>
+        <echo>                   -Dproductionmode=false for development mode.</echo>
+        <echo>                   -Dproductionmode=true for product runtime mode.</echo>
+        <echo>  install_cs    - Install initial cloud server configurations</echo>
+        <echo>                  Use -Dproductionmode=true/false option for setup environment.</echo>
+        <echo>                   -Dproductionmode=false for development mode.</echo>
+        <echo>                   -Dproductionmode=true for product runtime mode.</echo>
+        <echo>  create-domain - Create a domain configuration.</echo>
+        <echo>                  Use -Ddomain=XXX for domain name (default is domain1),</echo>
+        <echo>                  -Dservername=XXX for das name (default is adminServer),</echo>
+        <echo>                  -Djeus.address=XXX for das listen address,</echo>
+        <echo>                  -Djeus.port=XXX for das listen port,</echo>
+        <echo>                  -Dusevirtualmulticast=true|false for virtual multicast,</echo>
+        <echo>                  -Dheartbeataddress=233.XXX.XXX.XXX for heart-beat address,</echo>
+        <echo>                  -Dheatbeatport=XXX for heart-beat port.</echo>
+        <echo>                  For more details of other options, please see domain-config-template.properties.</echo>
+        <echo>  delete-domain - Delete a domain configuration.</echo>
+        <echo>                  Use -Ddomain=XXX to specify domain name(Default is domain1).</echo>
+        <echo>  migrate       - Migrate legacy node config to domain config</echo>
+        <echo>                  Use directly -Dservername=XXX to specify the migration node.</echo>
+        <echo>  clean-all     - Clean installed initial configurations</echo>
+        <echo></echo>
+        <echo>To see possible sub targets, do "ant -p"</echo>
+    </target>
+
+    <target name="install" depends="install-bin, install-nativelib, create-domain, create-nodesxml" description="Install configurations(productionmode or not), bundles"/>
+
+    <target name="install_cs" depends="install-bin, install-nativelib, create-cloudserver, create-nodesxml" description="Install cloudserver configurations(productionmode or not), bundles"/>
+
+    <target name="showOS">
+        <echo>os.name=${os.name}, os.version=${os.version}, os.arch=${os.arch}</echo>
+    </target>
+
+    <target name="getjavahome">
+        <condition property="suffix" value="/..">
+            <and>
+                <os family="unix"/>
+                <not>
+                    <os name="Mac OS X"/>
+                </not>
+            </and>
+        </condition>
+        <condition property="suffix" value="">
+            <os name="Mac OS X"/>
+        </condition>
+        <condition property="suffix" value="\..">
+            <os family="windows"/>
+        </condition>
+        <!-- setup the local.java.home -->
+        <property name="local.java.home" value="${java.home}${suffix}"/>
+        <echo>local.java.home=${local.java.home}</echo>
+    </target>
+
+    <target name="install-bin" depends="getjavahome" description="install OS-dependent scripts">
+        <mkdir dir="${jeus.home}/bin"/>
+        <if>
+            <os family="windows" />
+            <then>
+                <copy todir="${jeus.home}/bin">
+                    <fileset dir="${jeus.home}/setup/bin/win"/>
+                </copy>
+
+                <!-- replace @tokens@ -->
+                <replace file="${jeus.home}/bin/jeus.properties.cmd">
+                    <replacefilter token="@JEUSDir@" value="${jeus.home}"/>
+                    <replacefilter token="@JEUS_BASEPORT@" value="${jeus.port}"/>
+                    <replacefilter token="@SW_LANG@" value="${jeus.lang}"/>
+                    <replacefilter token="@JDKDir@" value="${local.java.home}"/>
+                </replace>
+            </then>
+            <elseif>
+                <os family="unix"/>
+                <then>
+                    <copy todir="${jeus.home}/bin">
+                        <fileset dir="${jeus.home}/setup/bin/unix"/>
+                    </copy>
+                    <chmod dir="${jeus.home}/bin" includes="*" perm="a+x"/>
+
+                    <!-- replace @tokens@ -->
+                    <replace file="${jeus.home}/bin/jeus.properties">
+                        <replacefilter token="@JEUSDir@" value="${jeus.home}"/>
+                        <replacefilter token="@JEUS_BASEPORT@" value="${jeus.port}"/>
+                        <replacefilter token="@SW_LANG@" value="${jeus.lang}"/>
+                        <replacefilter token="@JDKDir@" value="${local.java.home}"/>
+                        <replacefilter token="@@BITZ@@" value=""/>
+                        <replacefilter token="@VM_VENDOR@" value="${jvm.vendor}"/>
+                        <replacefilter token="@@LIBRARYPATH@@" value="LD_LIBRARY_PATH"/>
+                    </replace>
+
+                </then>
+            </elseif>
+            <else>
+                <echo>WARNING: COULD NOT DETERMINE OS TYPE</echo>
+                <echo>YOU SHOULD INSTALL bin executables TO YOUR ${jeus.home}/bin MANUALLY!</echo>
+            </else>
+        </if>
+    </target>
+
+    <macrodef name="create-domain-dir">
+        <attribute name="domaindir"/>
+        <sequential>
+            <mkdir dir="@{domaindir}"/>
+            <mkdir dir="@{domaindir}/.applications"/>
+            <mkdir dir="@{domaindir}/.deploymentplans"/>
+            <!--mkdir dir="@{domaindir}/autodeploy"/-->
+            <mkdir dir="@{domaindir}/bin"/>
+            <mkdir dir="@{domaindir}/config"/>
+            <!--mkdir dir="@{domaindir}/data"/-->
+            <!--mkdir dir="@{domaindir}/logs"/-->
+            <mkdir dir="@{domaindir}/lib"/>
+            <mkdir dir="@{domaindir}/lib/application"/>
+            <mkdir dir="@{domaindir}/servers"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="create-server-dir">
+        <attribute name="serverdir"/>
+        <sequential>
+            <mkdir dir="@{serverdir}"/>
+            <mkdir dir="@{serverdir}/bin"/>
+            <mkdir dir="@{serverdir}/.workspace"/>
+            <mkdir dir="@{serverdir}/.workspace/deployed"/>
+            <mkdir dir="@{serverdir}/.workspace/deployed/deploymentplans"/>
+            <mkdir dir="@{serverdir}/logs"/>
+            <mkdir dir="@{serverdir}/lib"/>
+            <mkdir dir="@{serverdir}/lib/application"/>
+        </sequential>
+    </macrodef>
+
+    <target name="create-domain-dir">
+        <create-domain-dir domaindir="${jeus.home}/domains/${domain}"/>
+    </target>
+
+    <target name="create-domain" description="Create a domain configuration. Set -Ddomain=XXX for domain name (default is domain1),
+ -Djeus.address=XXX for das listen address, -Djeus.port=XXX for das listen port,
+ -Dservername=XXX for das name(default is adminServer), -Dusevirtualmulticast=true|false for virtual multicast,
+ -Dheartbeataddress=233.XXX.XXX.XXX for heart-beat address and -Dheatbeatport=XXX for heart-beat port. For more details of other options, please see domain-config-template.properties.">
+        <if>
+            <isset property="servername"/>
+            <then>
+                <property name="servername" value="${servername}"/>
+            </then>
+            <else>
+                <property name="servername" value="${config-template.domain.admin.server.name}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="nodename"/>
+            <then>
+                <property name="nodename" value="${nodename}"/>
+            </then>
+            <else>
+                <property name="nodename" value="${config-template.nodename}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="usevirtualmulticast"/>
+            <then>
+                <property name="usevirtualmulticast" value="${usevirtualmulticast}"/>
+            </then>
+            <else>
+                <property name="usevirtualmulticast" value="${config-template.usevirtualmulticast}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="heartbeataddress"/>
+            <then>
+                <property name="heartbeataddress" value="${heartbeataddress}"/>
+            </then>
+            <else>
+                <property name="heartbeataddress" value="${config-template.heartbeataddress}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="heartbeatport"/>
+            <then>
+                <property name="heartbeatport" value="${heartbeatport}"/>
+            </then>
+            <else>
+                <property name="heartbeatport" value="${config-template.heartbeatport}"/>
+            </else>
+        </if>
+        <echo>Creating a domain configuration: domaindir="${jeus.home}/domains/${domain} domain = ${domain}, server-name = ${servername}, admin password=${jeus.password}, server base port=${jeus.port}, server base listen address=${jeus.address}</echo>
+
+        <if>
+            <available file="${jeus.home}/domains/${domain}" />
+            <then>
+                <echo>WARNING: COULD NOT CREATE DOMAIN '${domain}' - ALREADY EXISTS</echo>
+            </then>
+            <else>
+                <create-domain-dir domaindir="${jeus.home}/domains/${domain}"/>
+
+                <!-- compose configurations -->
+                <mkdir dir="${jeus.home}/domains/${domain}/config/servlet"/>
+                <mkdir dir="${jeus.home}/domains/${domain}/config/security"/>
+
+                <copy todir="${jeus.home}/domains/${domain}/config" includeEmptyDirs="false" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${domain}/config/servlet" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/servlet" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${domain}/config/security" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/security" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${domain}/config/security" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/security" includes="**/*"/>
+                </copy>
+
+                <!-- copy domain.xml and generate domain random ID -->
+                <java classname="jeus.util.JeusAntUtil" fork="false">
+                    <classpath>
+                        <pathelement path="${jeus.home}/lib/system/jeus-ant-util.jar"/>
+                    </classpath>
+                    <arg value="${jeus.home}/setup/config/domain/domain.xml"/>
+                    <arg value="${jeus.home}/domains/${domain}/config/domain.xml"/>
+                    <sysproperty key="jeus.listenaddress" value="${jeus.address}"/>
+                </java>
+
+                <echo>productionmode = ${productionmode}</echo>
+                <!-- replace tokens -->
+                <replace file="${jeus.home}/domains/${domain}/config/domain.xml">
+                    <replacefilter token="@@PRODUCTIONMODE@@" value="${productionmode}"/>
+                    <replacefilter token="@@HOSTNAME@@" value="${servername}"/>
+                    <replacefilter token="@@COMMAND-OPTION@@" value="${jvm.config}"/>
+                    <replacefilter token="@@BASE-PORT@@" value="${jeus.port}"/>
+                    <replacefilter token="@@HTTP-PORT@@" value="${http.port}"/>
+                    <replacefilter token="@@JMS-PORT@@" value="${jms.port}"/>
+                	<replacefilter token="@@JAVA-SECURITY-PROPERTIES@@" value="${jeus.home}/domains/${domain}/config/security/java.security"/>
+                	<replacefilter token="@@SAMPLESDIR@@" value="${jeus.home}${file.separator}samples${file.separator}"/>
+                </replace>
+
+                <replace file="${jeus.home}/domains/${domain}/config/security/SYSTEM_DOMAIN/accounts.xml">
+                    <replacefilter token="@@PASSWORD@@" value="${jeus.password}"/>
+                    <replacefilter token="@@USERNAME@@" value="${jeus.username}"/>
+                </replace>
+                <replace file="${jeus.home}/domains/${domain}/config/security/SYSTEM_DOMAIN/policies.xml">
+                    <replacefilter token="@@USERNAME@@" value="${jeus.username}"/>
+                </replace>
+
+                <!-- Set GMS configuration -->
+                <java classname="jeus.util.JeusAntUtilForMarshal" fork="false">
+                    <classpath>
+                        <pathelement path="${jeus.home}/lib/system/jeus-ant-util.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jeusjaxb.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jaxb-osgi.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/xercesImpl.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jaxb2-basics-runtime.jar"/>
+                    </classpath>
+
+                    <!-- Caution : system property should be synchronized with JeusAntUtilForMarshal -->
+                    <sysproperty key="jeus.domain.xml.filepath" value="${jeus.home}/domains/${domain}/config/domain.xml"/>
+                    <sysproperty key="jeus.server.name" value="${servername}"/>
+                    <sysproperty key="jeus.node.name" value="${nodename}"/>
+                    <sysproperty key="jeus.scf.usevirtualmulticast" value="${usevirtualmulticast}"/>
+                    <sysproperty key="jeus.scf.heartbeataddress" value="${heartbeataddress}"/>
+                    <sysproperty key="jeus.scf.heartbeatport" value="${heartbeatport}"/>
+                    <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5004"/>
+                </java>
+
+                <!-- copy script files to DOMAIN_HOME\bin -->
+                <if>
+                    <os family="windows"/>
+                    <then>
+                        <copy todir="${jeus.home}/domains/${domain}/bin">
+                            <fileset dir="${jeus.home}/setup/bin/DOMAINHOME_bin/win"/>
+                        </copy>
+                        <replace file="${jeus.home}/domains/${domain}/bin/startDomainAdminServer.cmd">
+                            <replacefilter token="@domain_name@" value="${domain}"/>
+                        </replace>
+                        <replace file="${jeus.home}/domains/${domain}/bin/startManagedServer.cmd">
+                            <replacefilter token="@domain_name@" value="${domain}"/>
+                        </replace>
+                    </then>
+                    <elseif>
+                        <os family="unix"/>
+                        <then>
+                            <copy todir="${jeus.home}/domains/${domain}/bin">
+                                <fileset dir="${jeus.home}/setup/bin/DOMAINHOME_bin/unix"/>
+                            </copy>
+
+                            <replace file="${jeus.home}/domains/${domain}/bin/startDomainAdminServer">
+                                <replacefilter token="@domain_name@" value="${domain}"/>
+                            </replace>
+                            <replace file="${jeus.home}/domains/${domain}/bin/startManagedServer">
+                                <replacefilter token="@domain_name@" value="${domain}"/>
+                            </replace>
+                            <replace file="${jeus.home}/domains/${domain}/bin/startCloudServer">
+                                <replacefilter token="@domain_name@" value="${domain}"/>
+                            </replace>
+
+                            <chmod dir="${jeus.home}/domains/${domain}/bin" includes="*" perm="a+x"/>
+                        </then>
+                    </elseif>
+                    <else>
+                        <echo>WARNING: COULD NOT DETERMINE OS TYPE</echo>
+                        <echo>YOU SHOULD INSTALL bin executables TO YOUR ${jeus.home}/domains/${domain}/bin MANUALLY!</echo>
+                    </else>
+                </if>
+
+                <!-- server directory -->
+                <if>
+                    <available file="${jeus.home}/domains/${domain}/servers/${servername}"/>
+                    <then>
+                        <echo>WARNING: COULD NOT CREATE DOMAIN '${servername}' - ALREADY EXISTS</echo>
+                    </then>
+                    <else>
+                        <create-server-dir serverdir="${jeus.home}/domains/${domain}/servers/${servername}"/>
+                    </else>
+                </if>
+            </else>
+
+        </if>
+
+        <var name="nodename" unset="true"/>
+    </target>
+
+    <target name="create-cloudserver" description="Create a cloud server configuration. Set -Ddomain=XXX for domain name (default is domain1),
+ -Djeus.address=XXX for das listen address, -Djeus.port=XXX for das listen port,
+ -Dservername=XXX for das name(default is adminServer), -Dusevirtualmulticast=true|false for virtual multicast,
+ -Dheartbeataddress=233.XXX.XXX.XXX for heart-beat address and -Dheatbeatport=XXX for heart-beat port. For more details of other options, please see domain-config-template.properties.">
+        <if>
+            <isset property="servername"/>
+            <then>
+                <property name="servername" value="${servername}"/>
+            </then>
+            <else>
+                <property name="servername" value="${config-template.cloud.server.name}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="nodename"/>
+            <then>
+                <property name="nodename" value="${nodename}"/>
+            </then>
+            <else>
+                <property name="nodename" value="${config-template.nodename}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="usevirtualmulticast"/>
+            <then>
+                <property name="usevirtualmulticast" value="${usevirtualmulticast}"/>
+            </then>
+            <else>
+                <property name="usevirtualmulticast" value="${config-template.usevirtualmulticast}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="heartbeataddress"/>
+            <then>
+                <property name="heartbeataddress" value="${heartbeataddress}"/>
+            </then>
+            <else>
+                <property name="heartbeataddress" value="${config-template.heartbeataddress}"/>
+            </else>
+        </if>
+        <if>
+            <isset property="heartbeatport"/>
+            <then>
+                <property name="heartbeatport" value="${heartbeatport}"/>
+            </then>
+            <else>
+                <property name="heartbeatport" value="${config-template.heartbeatport}"/>
+            </else>
+        </if>
+        <echo>Creating a cloud server configuration: domaindir="${jeus.home}/domains/${servername} domain = ${servername}, server-name = ${servername}, admin password=${jeus.password}, server base port=${jeus.port}, server base listen address=${jeus.address}</echo>
+
+        <if>
+            <available file="${jeus.home}/domains/${servername}" />
+            <then>
+                <echo>WARNING: COULD NOT CREATE DOMAIN '${servername}' - ALREADY EXISTS</echo>
+            </then>
+            <else>
+                <create-domain-dir domaindir="${jeus.home}/domains/${servername}"/>
+
+                <!-- compose configurations -->
+                <mkdir dir="${jeus.home}/domains/${servername}/config/servlet"/>
+                <mkdir dir="${jeus.home}/domains/${servername}/config/security"/>
+
+                <copy todir="${jeus.home}/domains/${servername}/config" includeEmptyDirs="false" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${servername}/config/servlet" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/servlet" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${servername}/config/security" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/security" includes="*"/>
+                </copy>
+                <copy todir="${jeus.home}/domains/${servername}/config/security" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config/domain/security" includes="**/*"/>
+                </copy>
+
+                <!-- copy domain.xml and generate domain random ID -->
+                <java classname="jeus.util.JeusAntUtil" fork="false">
+                    <classpath>
+                        <pathelement path="${jeus.home}/lib/system/jeus-ant-util.jar"/>
+                    </classpath>
+                    <arg value="${jeus.home}/setup/config/domain/domain.xml"/>
+                    <arg value="${jeus.home}/domains/${servername}/config/domain.xml"/>
+                    <sysproperty key="jeus.listenaddress" value="${jeus.address}"/>
+                </java>
+
+                <echo>productionmode = ${productionmode}</echo>
+                <!-- replace tokens -->
+                <replace file="${jeus.home}/domains/${servername}/config/domain.xml">
+                    <replacefilter token="@@PRODUCTIONMODE@@" value="${productionmode}"/>
+                    <replacefilter token="@@HOSTNAME@@" value="${servername}"/>
+                    <replacefilter token="@@COMMAND-OPTION@@" value="${jvm.config}"/>
+                    <replacefilter token="@@BASE-PORT@@" value="${jeus.port}"/>
+                    <replacefilter token="@@HTTP-PORT@@" value="${http.port}"/>
+                    <replacefilter token="@@JMS-PORT@@" value="${jms.port}"/>
+                	<replacefilter token="@@JAVA-SECURITY-PROPERTIES@@" value="${jeus.home}/domains/${servername}/config/security/java.security"/>
+                	<replacefilter token="@@SAMPLESDIR@@" value="${jeus.home}${file.separator}samples${file.separator}"/>
+                </replace>
+
+                <replace file="${jeus.home}/domains/${servername}/config/security/SYSTEM_DOMAIN/accounts.xml">
+                    <replacefilter token="@@PASSWORD@@" value="${jeus.password}"/>
+                    <replacefilter token="@@USERNAME@@" value="${jeus.username}"/>
+                </replace>
+                <replace file="${jeus.home}/domains/${servername}/config/security/SYSTEM_DOMAIN/policies.xml">
+                    <replacefilter token="@@USERNAME@@" value="${jeus.username}"/>
+                </replace>
+
+                <!-- Set GMS configuration -->
+                <java classname="jeus.util.JeusAntUtilForMarshal" fork="false">
+                    <classpath>
+                        <pathelement path="${jeus.home}/lib/system/jeus-ant-util.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jeusjaxb.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jaxb-osgi.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/xercesImpl.jar"/>
+                        <pathelement path="${jeus.home}/lib/system/jaxb2-basics-runtime.jar"/>
+                    </classpath>
+
+                    <!-- Caution : system property should be synchronized with JeusAntUtilForMarshal -->
+                    <sysproperty key="jeus.domain.xml.filepath" value="${jeus.home}/domains/${servername}/config/domain.xml"/>
+                    <sysproperty key="jeus.server.name" value="${servername}"/>
+                    <sysproperty key="jeus.node.name" value="${nodename}"/>
+                    <sysproperty key="jeus.scf.usevirtualmulticast" value="${usevirtualmulticast}"/>
+                    <sysproperty key="jeus.scf.heartbeataddress" value="${heartbeataddress}"/>
+                    <sysproperty key="jeus.scf.heartbeatport" value="${heartbeatport}"/>
+                    <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5004"/>
+                </java>
+
+                <!-- copy script files to DOMAIN_HOME\bin -->
+                <if>
+                    <os family="windows"/>
+                    <then>
+                        <copy todir="${jeus.home}/domains/${servername}/bin">
+                            <fileset dir="${jeus.home}/setup/bin/DOMAINHOME_bin/win"/>
+                        </copy>
+                        <replace file="${jeus.home}/domains/${servername}/bin/startDomainAdminServer.cmd">
+                            <replacefilter token="@domain_name@" value="${domain}"/>
+                        </replace>
+                        <replace file="${jeus.home}/domains/${servername}/bin/startManagedServer.cmd">
+                            <replacefilter token="@domain_name@" value="${servername}"/>
+                        </replace>
+                    </then>
+                    <elseif>
+                        <os family="unix"/>
+                        <then>
+                            <copy todir="${jeus.home}/domains/${servername}/bin">
+                                <fileset dir="${jeus.home}/setup/bin/DOMAINHOME_bin/unix"/>
+                            </copy>
+
+                            <replace file="${jeus.home}/domains/${servername}/bin/startDomainAdminServer">
+                                <replacefilter token="@domain_name@" value="${servername}"/>
+                            </replace>
+                            <replace file="${jeus.home}/domains/${servername}/bin/startManagedServer">
+                                <replacefilter token="@domain_name@" value="${servername}"/>
+                            </replace>
+                            <replace file="${jeus.home}/domains/${servername}/bin/startCloudServer">
+                                <replacefilter token="@domain_name@" value="${servername}"/>
+                            </replace>
+
+                            <chmod dir="${jeus.home}/domains/${servername}/bin" includes="*" perm="a+x"/>
+                        </then>
+                    </elseif>
+                    <else>
+                        <echo>WARNING: COULD NOT DETERMINE OS TYPE</echo>
+                        <echo>YOU SHOULD INSTALL bin executables TO YOUR ${jeus.home}/domains/${domain}/bin MANUALLY!</echo>
+                    </else>
+                </if>
+
+                <!-- server directory -->
+                <if>
+                    <available file="${jeus.home}/domains/${servername}/servers/${servername}"/>
+                    <then>
+                        <echo>WARNING: COULD NOT CREATE DOMAIN '${servername}' - ALREADY EXISTS</echo>
+                    </then>
+                    <else>
+                        <create-server-dir serverdir="${jeus.home}/domains/${servername}/servers/${servername}"/>
+                    </else>
+                </if>
+            </else>
+
+        </if>
+
+        <var name="nodename" unset="true"/>
+    </target>
+
+    <target name="delete-domain" description="Delete a domain configuration. Use -Ddomain=XXX to specify domain name(Default is domain1).">
+        <echo>Deleting a domain configuration: domain = ${domain}</echo>
+
+        <delete dir="${jeus.home}/domains/${domain}"/>
+    </target>
+
+    <target name="create-nodesxml" description="Create nodes.xml">
+        <if>
+            <isset property="config-template.nodename"/>
+            <then>
+                <property name="config-template.nodename" value="${config-template.nodename}"/>
+                <echo>isset "${config-template.nodename}</echo>
+            </then>
+            <else>
+                <property name="config-template.nodename" value="node1"/>
+                <echo>else "${config-template.nodename}</echo>
+            </else>
+        </if>
+        <if>
+            <isset property="nodename"/>
+            <then>
+                <property name="nodename" value="${nodename}"/>
+            </then>
+            <else>
+                <property name="nodename" value="${config-template.nodename}"/>
+            </else>
+        </if>
+        <if>
+            <available file="${jeus.home}/domains/nodes.xml"/>
+            <then>
+                <echo>WARNING: COULD NOT CREATE nodes.xml - ALREADY EXISTS</echo>
+            </then>
+            <else>
+                <copy todir="${jeus.home}/domains" overwrite="${overwrite}">
+                    <fileset dir="${jeus.home}/setup/config" includes="nodes.xml"/>
+                </copy>
+
+                <replace file="${jeus.home}/domains/nodes.xml">
+                    <replacefilter token="@@HOSTNAME@@" value="${nodename}"/>
+                    <replacefilter token="@@JEUSHOME@@" value="${jeus.home}"/>
+                    <replacefilter token="@@USERNAME@@" value="${user.name}"/>
+                    <replacefilter token="@@USERHOME@@" value="${user.home}"/>
+                </replace>
+            </else>
+        </if>
+    </target>
+
+    <target name="delete-nodesxml" description="Delete nodes.xml">
+        <delete file="${jeus.home}/domains/nodes.xml"/>
+    </target>
+
+    <target name="install-nativelib" description="install OS-dependent native libraries">
+        <if>
+            <isset property="config-template.source"/>
+            <then>
+                <echo>OS type defined in config-template=${config-template.source}</echo>
+                <property name="source" value="${config-template.source}"/>
+            </then>
+            <else>
+                <!-- platform dependent install -->
+                <echo>os.name=${os.name}, os.version=${os.version}, os.arch=${os.arch}</echo>
+                <if>
+                    <os family="windows"/>
+                    <then>
+                        <if>
+                            <or>
+                                <os arch="amd64"/>
+                                <os arch="x64"/>
+                            </or>
+                            <then>
+                                <property name="source" value="win64"/>
+                            </then>
+                            <else>
+                                <property name="source" value="win32"/>
+                            </else>
+                        </if>
+                    </then>
+                    <elseif>
+                        <os family="mac"/>
+                        <then>
+                            <property name="source" value="mac"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <or>
+                            <os name="Linux" arch="i386"/>
+                            <os name="Linux" arch="x86"/> <!-- 64bit may be i686 or i64 -->
+                        </or>
+                        <then>
+                            <property name="source" value="linux_x86_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <or>
+                            <os name="Linux" arch="amd64"/>
+                            <os name="Linux" arch="x86_64"/>
+                        </or>
+                        <then>
+                            <property name="source" value="linux_x86_64"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="Linux" arch="ppc"/>
+                        <then>
+                            <property name="source" value="linux_ppc_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="Linux" arch="ppc64"/>
+                        <then>
+                            <property name="source" value="linux_ppc_64"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="SunOS" arch="sparc"/>
+                        <then>
+                            <property name="source" value="sunos_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="SunOS" arch="sparcv9"/>
+                        <then>
+                            <property name="source" value="sunos_64"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <or>
+                            <os name="SunOS" arch="x86"/>
+                            <os name="SunOS" arch="i386"/>
+                        </or>
+                        <then>
+                            <property name="source" value="sunos_x86"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <or>
+                            <os name="HP-UX" arch="PA_RISC"/>
+                            <os name="HP-UX" arch="PA_RISC2.0"/>
+                        </or>
+                        <then>
+                            <property name="source" value="hp-ux_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <or>
+                            <os name="HP-UX" arch="PA_RISCW"/>
+                            <os name="HP-UX" arch="PA_RISC2.0W"/>
+                        </or>
+                        <then>
+                            <property name="source" value="hp-ux_64"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="HP-UX" arch="IA64N"/>
+                        <then>
+                            <property name="source" value="hp-ux_ia64_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="AIX" arch="ppc"/>
+                        <then>
+                            <property name="source" value="aix5l_32"/>
+                        </then>
+                    </elseif>
+                    <elseif>
+                        <os name="AIX" arch="ppc64"/>
+                        <then>
+                            <property name="source" value="aix5l_64"/>
+                        </then>
+                    </elseif>
+                    <!-- Add more OS types here -->
+
+                </if>
+            </else>
+        </if>
+
+        <if>
+            <isset property="source"/>
+            <then>
+                <echo>Found OS type = ${source}</echo>
+                <copy todir="${jeus.home}/lib/system">
+                    <fileset dir="${jeus.home}/setup/lib_native/${source}" includes="*"/>
+                </copy>
+
+                <!-- For HP-UX -->
+                <chmod dir="${jeus.home}/lib/system" includes="*" perm="a+x"/>
+
+            </then>
+
+            <else>
+                <echo>WARNING: COULD NOT DETERMINE OS TYPE</echo>
+                <echo>YOU SHOULD INSTALL NATIVE LIBRARIES TO YOUR ${jeus.home}/lib/system MANUALLY!</echo>
+            </else>
+        </if>
+
+    </target>
+
+    <target name="clean-all" depends="clean-bin, clean-config" description="Clean installed initial configurations"/>
+
+    <target name="clean-bin" description="">
+        <delete dir="${jeus.home}/bin"/>
+    </target>
+
+    <target name="clean-config" depends="delete-domain, delete-nodesxml" description=""/>
+
+    <target name="migrate" description="Migrate legacy node config to domain config. Use directly -Dservername=XXX to specify the migration node.">
+
+        <fail unless="servername">-Dservername={servername-to-migrate} should be given</fail>
+
+        <create-domain-dir domaindir="${jeus.home}/domains/${servername}"/>
+
+        <!-- move node config -->
+        <move todir="${jeus.home}/domains/${servername}/config">
+            <fileset dir="${jeus.home}/config/${servername}"/>
+        </move>
+
+        <!--<delete dir="${jeus.home}/logs"/>-->
+        <!--<delete dir="${jeus.home}/webhome"/>-->
+        <echo>Following dirs are not used anymore. Delete these dirs manually.</echo>
+        <echo>- ${jeus.home}/logs</echo>
+        <echo>- ${jeus.home}/webhome</echo>
+
+    </target>
+</project>

@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xs:schema xmlns="http://www.tmaxsoft.com/xml/ns/jeus" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.tmaxsoft.com/xml/ns/jeus" version="8.0">
+
+    <xs:include schemaLocation="jeus-common.xsd"/>
+
+    <xs:element name="jeus-connector-dd" type="jeus-connector-ddType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+				[Description]: 리소스 어댑터 모듈의 최상위 항목이다. jeus-connector-dd.xml 파일에는 이 태그가 반드시 존재한다.
+				[Label]: Jeus Connector Dd
+			]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="jeus-connector-ddType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="module-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 리소스 어댑터 모듈의 이름이다.
+                    JEUS 6 Fix#7부터는 더 이상 사용하지 않는다.
+						[Label]: Module Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-workmanager" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. Work Manager 사용 여부를 설정한다.
+                    true로 설정한 경우 리소스 어댑터가 시작되기 직전에 설정에 따라 초기화된다.
+						[Label]: Use Workmanager
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="worker-pool" type="deprecated-worker-poolType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager를 설정한다.
+						[Label]: Worker Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="connection-pool" type="connection-poolType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 아웃바운드 Connection Pool을 설정한다.
+						[Label]: Connection Pool
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="java-security-permission" type="securityPermissionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JEUS가 J2SE Security를 사용할 때 해당 애플리케이션에게 허용할 J2SE Permission을 설정한다.
+						[Label]: Java Security Permission
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="8.0" name="version" type="jeus-versionType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="deprecated-worker-poolType">
+        <xs:sequence>
+            <xs:element default="0" minOccurs="0" name="min" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager가 관리하는 스레드 수의 최솟값을 설정한다.
+						[Label]: Min
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="5" minOccurs="0" name="max" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager가 관리하는 스레드 수의 최댓값을 설정한다.
+						[Label]: Max
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1" minOccurs="0" name="step" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated 이 값은 항상 1이다.
+						[Label]: Step
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="60000" minOccurs="0" name="keep-alive-time" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 최솟값 이외의 스레드의 경우, 설정된 시간 동안 사용되지 않는다면 자동적으로 Thread Pool에서 제거된다.
+                    밀리세컨드 단위로 설정한다.
+                    0이면 제거하지 않으며 기본값은 1분이다.
+						[Label]: Keep Alive Time
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="60000" minOccurs="0" name="pooled-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. Keep Alive Time의 사용을 권장한다.
+						[Label]: Pooled Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="4096" minOccurs="0" name="queue-size" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager가 Work를 저장할 Queue의 크기를 지정한다.
+						[Label]: Queue Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="pre-allocation" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager가 초기화될 때 최솟값에 설정된 수의 스레드를 미리 생성해 놓는다.
+						[Label]: Pre Allocation
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="submit-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated
+						[Label]: Submit Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="release-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated
+						[Label]: Release Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="-1" minOccurs="0" name="shutdown-timeout" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Work Manager가 종료될 때 바로 종료하지 않고 여기에 설정된 시간만큼 기다린다.
+                    즉, Graceful Shutdown을 지원한다.
+                    밀리세컨드 단위로 설정한다.
+                    -1 또는 0이면 기다리지 않는다.
+						[Label]: Shutdown Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="connection-poolType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="connectionfactory-interface" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: ra.xml에 등록한 <connection-definition>의 <connectionfactory-interface>의 설정값을 나타낸다.
+                    하나의 리소스 어댑터 모듈에는 <connection-definition> 설정을 여러 개 할 수 있고, 그에 맞춰서 Connection Pool을 생성해야 한다.
+                    그래서 ra.xml에 <connection-definition>이 2개 이상 설정되어 있을 경우에는 이 값을 반드시 설정해야 한다.
+						[Label]: Connectionfactory Interface
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="export-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool의 JNDI 이름이다.
+                    임의로 지정할 수 있지만 Standalone 모듈인 경우에는 전체 노드에서 유일한 이름이어야 한다.
+						[Label]: Export Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="log-file" type="log-fileType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 리소스 어댑터의 ManagedConnectionFactory가 사용할 로그 파일을 지정한다.
+						[Label]: Log File
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="transaction-support" type="transaction-supportType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool이 지원하는 트랜잭션 타입을 설정한다.
+                    여기에 설정된 값은 ra.xml에 설정된 값보다 우선된다.
+                    XATransactionOnly 값은 더 이상 사용하지 않으며 XATransaction으로 취급한다.
+						[Label]: Transaction Support
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="user" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 기본 인증을 서버에 맡길 경우 이에 필요한 User의 이름을 설정한다.
+						[Label]: User
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="password" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 기본 인증을 서버에 맡길 경우 이에 필요한 Password를 설정한다.
+                    Password를 암호화해서 저장할 때에는 '{algorithm}ciphertext'와 같은 형식으로 입력한다.
+                    [Example]: {DES}FQrLbQ/D8O1lDVS71L28rw==
+						[Label]: Password
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="true" minOccurs="0" name="use-wrapper" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated.
+						[Label]: Use Wrapper
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="dissociation-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. Dissociation을 적용하는 시간값을 설정한다.
+                    해당 리소스 어댑터에서 이 기능을 지원하지 않는 경우 무시된다.
+						[Label]: Dissociation Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="invalidation-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. Invalidation을 적용할 시간값을 설정한다.
+                    이 시간이 경과해도 Connection Pool로 돌아오지 않는 커넥션은 강제로 제거된다.
+						[Label]: Invalidation Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="validation-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 리소스 어댑터가 Connection Pool의 커넥션을 검증하는 시간 단위를 설정한다.
+                    리소스 어댑터의 ManagedConnectionFactory가 ValidatingManagedConnectionFactory 인터페이스를 구현했으면 이 시간 단위로 Invalid 커넥션은 Connection Pool에서 제거된다.
+						[Label]: Validation Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="skip-connection-matching" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 커넥션 인증을 위한 Connection Matching 과정을 생략한다.
+						[Label]: Skip Connection Matching
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-lazy-transaction-enlistment" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: JCA 표준에서 언급하는 트랜잭션 최적화 기능 중 하나인 "Lazy Transaction Enlistment" 옵션 사용 여부를 설정한다.
+                    이 옵션을 사용할 경우 예상하는 트랜잭션 시나리오와 달라질 수 있으므로 주의한다.
+						[Label]: Use Lazy Transaction Enlistment
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="pool-management" type="pool-managementType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool에 관련된 값을 설정한다.
+						[Label]: Pool Management
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="property" type="typePropertyType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: ManagedConnectionFactory에 적용할 속성을 추가한다.
+                    ra.xml에 설정된 값보다 우선된다.
+						[Label]: Property
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="log-fileType">
+        <xs:sequence>
+            <xs:element name="file-name" type="xs:token">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool이 사용할 로그 파일 이름을 설정한다.
+                        [Example]: C:\logs\mylog.log
+						[Label]: File Name
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="512" minOccurs="0" name="buffer-size" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool이 로그 파일에 출력할 때 사용하는 Buffer의 크기를 지정한다.
+                        [Value Description]: Byte 단위이다.
+                        [Performance Recommandation]: 이 값이 클수록 파일에 출력되는 메시지는 지연되어 출력되지만 Logging 성능은 좋아진다.
+                        [Example]: 512
+						[Label]: Buffer Size
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="valid-day" type="off-intType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 날짜 단위로 로그 파일을 바꿀 때 사용한다.
+                      1 이상의 값을 설정하면 로그 파일 이름 뒤에 파일이 사용된 날짜가 자동으로 붙게 된다.
+                      [Value Description]: day
+                      [Example]: 1
+						[Label]: Valid Day
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="pool-managementType">
+        <xs:sequence>
+            <xs:element default="2" minOccurs="0" name="min" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool에 의해 관리되는 커넥션 수의 최솟값을 설정한다..
+						[Label]: Min
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="10" minOccurs="0" name="max" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool에 의해 관리되는 커넥션 수의 최댓값을 설정한다..
+						[Label]: Max
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="1" minOccurs="0" name="step" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 커넥션을 늘릴 필요가 있는 상황에서 한 번에 늘리는 단위 개수를 의미한다.
+						[Label]: Step
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="600000" minOccurs="0" name="pooled-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. <period>를 사용한다.
+						[Label]: Pooled Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="600000" minOccurs="0" name="period" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정 주기마다 Connection Pool의 커넥션 수를 조정한다.
+                    특히 Connection Pool에 최소 커넥션 수보다 많은 커넥션이 존재하는 경우에는 최솟값으로 줄여준다.
+                    또한 최소값보다 실제 커넥션 수가 적은 경우에는 최솟값으로 조정해준다.
+                    그러나 애플리케이션이 커넥션 인증을 하는 경우에는 커넥션을 임의로 생성할 수 없기 때문에 최솟값으로 늘려주지 않는다.
+                    [Value Description]: 밀리세컨드 단위로 설정하고, 0 이면 제거하지 않는다.
+						[Label]: Period
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="wait-connection" type="wait-connectionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Pool에 유휴 커넥션이 없을 때 스레드들이 커넥션을 얻기 위해 기다릴지 여부를 결정한다.
+                    이 설정을 하지 않을 경우 Pool에 이미 최댓값만큼 커넥션이 생성되었음에도 불구하고 Pool이 비어있으면
+                    일회용 커넥션(disposable connection)을 생성해서 애플리케이션에 넘겨주게 된다.
+						[Label]: Wait Connection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="use-match-connection" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connectio Match를 사용할 것인지 결정한다.
+                    자세한 내용은 JCA 표준을 참조한다.
+						[Label]: Use Match Connection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="false" minOccurs="0" name="allow-disposable-connection-when-match-failed" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Match가 실패했을 경우 일회용(disposable) 커넥션을 사용할 것인지를 설정한다.
+                    Connection Match를 하지 않는 경우에는 이 값을 사용하지 않는다.
+						[Label]: Allow Disposable Connection When Match Failed
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="connection-validation" type="jcaConnectionValidationType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 커넥션 유효성 검사에 관련된 설정을 한다.
+                    리소스 어댑터가 제공하는 ManagedConnectionFactory가 javax.resource.spi.ValidatingManagedConnectionFactory를 구현했을 경우에만 사용 가능하다.
+						[Label]: Connection Validation
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="action-on-connection-leak" type="action-on-resource-leakType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 컴포넌트(주로 Stateless Component - Servlet/JSP, Stateless Session Bean, MDB)에서 사용한 커넥션에 대한 Logging이나 반환 액션을 설정한다.
+						[Label]: Action On Connection Leak
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="connection-trace" type="jca-connection-traceType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 커넥션을 모니터링하기 위한 옵션이다.
+                    기본 기능은 어떤 애플리케이션이 커넥션을 사용하고 있는지 알 수 있도록 getConnection할 때의 Stack 정보를 표시한다.
+						[Label]: Connection Trace
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="0" minOccurs="0" name="max-use-count" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 물리적 커넥션을 몇 번 사용할지 결정하는 옵션이다.
+                        이 횟수만큼 사용되고 나면 새로운 커넥션으로 교체된다.
+						[Label]: Max Use Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="10000" minOccurs="0" name="pool-destroy-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: Connection Pool을 Destroy할 때 대기하는 시간이다.
+                        리소스 어댑터를 Undeploy할 때 Pool을 Destroy하게 되는데 이때 커넥션을 닫으면서 리소스와 네트워크 통신을 할 경우 Block될 가능성이 존재한다.
+                        만약, 여기에 설정된 시간만큼 기다린 뒤에도 Destroy가 진행되지 않으면 이를 무시하고 계속 Undeploy를 진행한다.
+						[Label]: Pool Destroy Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="disposable-connection" type="disposable-connectionType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. JEUS 6 Fix#7부터는 사용하지 않는 옵션이다.
+                    DB Connection Pool과 마찬가지로 <wait-connection> 설정을 사용하지 않을 경우에는 항상 일회용(disposable) 커넥션을 생성한다.
+						[Label]: Disposable Connection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="wait-connectionType">
+        <xs:sequence>
+            <xs:element default="false" minOccurs="0" name="wait-connection" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 커넥션을 얻기 위해 기다릴 것인지 여부를 설정한다.
+						[Label]: Wait Connection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="5" minOccurs="0" name="max-waiter-count" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 커넥션을 얻기 위해 기다리는 클라이언트의 최대 수이다.
+                    이보다 많을 경우 바로 실패한 것으로 간주된다.
+                    JEUS 6 Fix#7부터는 사용하지 않는 옵션이다.
+						[Label]: Max Waiter Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="5" minOccurs="0" name="max-wait-trial" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated 설정한 횟수만큼 Connection Matching을 실패했다면 커넥션을 얻는 데 실패한 것으로 간주한다.
+                    JEUS 6 Fix#7부터는 사용하지 않는 옵션이다.
+						[Label]: Max Wait Trial
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="10000" minOccurs="0" name="wait-timeout" type="nonNegativeLongType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 설정한 시간 동안 기다려도 커넥션을 얻지 못했다면 커넥션을 얻는 데 실패한 것으로 간주한다.
+						[Label]: Wait Timeout
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="disposable-connectionType">
+        <xs:sequence>
+            <xs:element default="true" minOccurs="0" name="allow-disposable-connection" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 커넥션을 얻지 못했을 경우 임시 커넥션을 사용할 것인지를 설정한다.
+						[Label]: Allow Disposable Connection
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element default="3" minOccurs="0" name="max-disposable-count" type="nonNegativeIntType">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: @Deprecated. 임시 커넥션의 최대 개수이다.
+                    임시 커넥션은 사용이 끝나면 자동적으로 제거된다.
+						[Label]: Max Disposable Count
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="destroy-policy-on-validationType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="FailedConnectionOnly">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 유효성 체크가 실패한 물리적 커넥션만 닫는다.
+						[Label]: FailedConnectionOnly
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="AllConnections">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+						[Description]: 유효성 체크가 실패했을 경우 Pool에 있는 다른 커넥션을 한 번 더 체크해 보고 그래도 실패하면 해당 Connection Pool의 모든 커넥션을 닫는다.
+                        애플리케이션이 사용하고 있던 커넥션들도 모두 닫히게 된다.
+                        그리고 Pool Resizing 주기(<period>)에 의해서 최소 커넥션 수만큼 채워진다.
+						[Label]: AllConnections
+					]]></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
