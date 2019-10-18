@@ -102,4 +102,17 @@
             </system-logging>
         </server>
     </servers>
+    <deployed-applications>
+      <deployed-application>
+         <id>BOOT</id>
+         <path>/home/vcap/app</path>
+         <type>_</type>
+         <target-all-servers>true</target-all-servers>
+         <classloading>ISOLATED</classloading>
+         <use-fast-deploy>false</use-fast-deploy>
+         <keep-generated>false</keep-generated>
+         <shared>false</shared>
+         <node-java-context>false</node-java-context>
+      </deployed-application>
+    </deployed-applications>
 </domain>
