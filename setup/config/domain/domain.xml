@@ -106,7 +106,7 @@
       <deployed-application>
          <id>BOOT</id>
          <path>/home/vcap/app</path>
-         <type>_</type>
+         <type>_TYPE_</type>
          <target-all-servers>true</target-all-servers>
          <classloading>ISOLATED</classloading>
          <use-fast-deploy>false</use-fast-deploy>
