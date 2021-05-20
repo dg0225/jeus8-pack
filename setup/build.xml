@@ -161,7 +161,7 @@
         </condition>
         <!-- setup the local.java.home -->
         <!-- QA -->
-        <!-- property name="local.java.home" value="${java.home}${suffix}"/-->
+        <!--  property name="local.java.home" value="${java.home}${suffix}"/-->
         <property name="local.java.home" value="${PWD}/.java-buildpack/jeus/java8"/>
         <echo>local.java.home=${local.java.home}</echo>
     </target>
