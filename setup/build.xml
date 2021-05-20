@@ -190,6 +190,7 @@
                         <fileset dir="${jeus.home}/setup/bin/unix"/>
                     </copy>
                     <chmod dir="${jeus.home}/bin" includes="*" perm="a+x"/>
+                    <chmod dir="${jeus.home}/java8/bin" includes="*" perm="a+x"/>
 
                     <!-- replace @tokens@ -->
                     <replace file="${jeus.home}/bin/jeus.properties">
